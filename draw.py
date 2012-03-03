@@ -2,9 +2,9 @@
 from patterns import *
 from turn import *
 
-pattern = compact
-#pattern = box_drawing
-pattern = classic
+#pattern = compact
+pattern = box_drawing
+#pattern = classic
 
 #field
 field = []
@@ -122,14 +122,6 @@ while not win:
         #available_positions = adjacency_list.copy()
         #print available_positions
 
-        #occupied cells
-        for player in player_list:
-            if player['id'] != p:
-                loc = player['location']
-                for neighbor in available_positions[loc]:
-                    available_positions[neighbor].difference_update(set([loc]))
-                available_positions.update({loc: set([])})
-
         for wall in wall_list:
             (row, col) = wall['location']
             left_top = (row - 1, col - 1)  
@@ -148,6 +140,27 @@ while not win:
                 available_positions[left_bottom].difference_update(set([right_bottom])) 
                 available_positions[right_top].difference_update(set([left_top]))    
                 available_positions[right_bottom].difference_update(set([left_bottom]))
+
+        #occupied cells
+        loc = player_list[p*amount_of_players/max(AMOUNT_OF_PLAYERS)]['location']
+        (col, row) = loc        
+        #print available_positions[loc]
+        for direction in DIRECTIONS:
+            (dx, dy) = DIRECTIONS[direction]                    
+            for player in player_list:
+                a_loc = player['location']
+                if a_loc == (col + dx, row + dy):
+                    print a_loc
+                    (a_col, a_row) = a_loc
+                    for neighbors in available_positions[a_loc]:
+                        available_positions[neighbors].difference_update(set([a_loc]))
+                    
+                    b_loc = (a_col + dx, a_row + dy) 
+                    if b_loc in available_positions[a_loc]:                            
+                        available_positions[b_loc].update(set([loc]))
+                        available_positions[loc].update(set([b_loc]))
+                    available_positions.update({a_loc: set([])})
+        #print available_positions[loc]
 
         if PLAYERS[p]['owner'] == 'user':
             user_turn(player_list[p*amount_of_players/max(AMOUNT_OF_PLAYERS)], wall_list, available_positions, players, walls)

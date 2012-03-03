@@ -7,7 +7,7 @@ DIRECTIONS = {'n': (-1, 0),
 AMOUNT_OF_WALLS = 20
 AMOUNT_OF_PLAYERS = (2, 4)
 
-amount_of_players = AMOUNT_OF_PLAYERS[1]
+amount_of_players = AMOUNT_OF_PLAYERS[0]
 width = 11
 height = 11
 width_aspect = 4
