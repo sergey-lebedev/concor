@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 def user_turn(player, wall_list, available_positions, players, width, height):
     command = raw_input()
     (x, y) = player['location']
@@ -75,5 +76,13 @@ def user_turn(player, wall_list, available_positions, players, width, height):
     elif (command == 'q!'):
         end = True
         win = True
+    else:
+        pass
+
+def bot_turn(bot_type, player, wall_list, available_positions, players, width, height):
+    if bot_type == 'bot':
+        pass
+    elif bot_type == 'straight_bot':
+        pass
     else:
         pass

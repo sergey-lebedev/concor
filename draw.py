@@ -22,7 +22,7 @@ height_aspect = 2
 wall_length = 2
 
 PLAYERS = [{'color': 'red', 'location': (width/2, height - 1), 'target_loc': [], 'owner': 'user'},
-           {'color': 'blue', 'location': (width/2, 0), 'target_loc': [], 'owner': 'bot'},
+           {'color': 'blue', 'location': (width/2, 0), 'target_loc': [], 'owner': 'straight_bot'},
            {'color': 'yellow', 'location': (0, height/2), 'target_loc': [], 'owner': 'bot'},
            {'color': 'green', 'location': (width - 1, height/2), 'target_loc': [], 'owner': 'bot'}]
 
@@ -168,8 +168,8 @@ while not win:
 
         if PLAYERS[p]['owner'] == 'user':
             user_turn(player_list[p], wall_list, available_positions, players, width, height)
-        elif PLAYERS[p]['owner'] == 'bot':
-            #bot_turn()
+        else:
+            bot_turn(PLAYERS[p]['owner'], player_list[p], wall_list, available_positions, players, width, height)
             pass
         if player_list[p]['location'] in PLAYERS[p]['target_loc']:
             win = True
