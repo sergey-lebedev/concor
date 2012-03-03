@@ -29,8 +29,12 @@ players = [None]*width
 for i in range(len(players)):
     players[i] = [0]*height
 
-player_list = []
+plist = []
 for i in range(amount_of_players):
+    plist.append(max(AMOUNT_OF_PLAYERS)/amount_of_players*i)
+print plist
+player_list = []
+for i in plist:
     (x, y) = PLAYERS[i]['location']
     player_list.append({'id': i, 'location': (x, y)})
 
@@ -115,6 +119,15 @@ while not win:
             available_positions.update({positions: adjacency_list[positions].copy()})
         #available_positions = adjacency_list.copy()
         #print available_positions
+
+        #occupied cells
+        for player in player_list:
+            if player['id'] != p:
+                loc = player['location']
+                available_positions.update({loc: set([])})
+                for neighbor in available_positions[loc]:
+                    available_positions[neighbor].difference_update(set([loc]))
+    
         for wall in wall_list:
             (row, col) = wall['location']
             left_top = (row - 1, col - 1)  
@@ -145,5 +158,5 @@ while not win:
             print "Player %d '%s' win"% (p, PLAYERS[p]['owner']) 
         if end:
             break
-        p += 1
-        p %= amount_of_players
+        p += max(AMOUNT_OF_PLAYERS)/amount_of_players
+        p %= max(AMOUNT_OF_PLAYERS)
