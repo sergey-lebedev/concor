@@ -2,35 +2,47 @@
 from settings import *
 
 def user_turn(player, wall_list, available_positions, players, walls):
-    command = raw_input()
     (x, y) = player['location']
     loc = (x, y)
+    print available_positions[loc]
+    for a_loc in available_positions[loc]:
+        (a_col, a_row) = a_loc
+        if (a_col - x) > 0:
+            increment_x = a_col - x
+        if (a_col - x) < 0:
+            decrement_x = x - a_col
+        if (a_row - y) > 0:
+            increment_y = a_row - y
+        if (a_row - y) < 0:
+            decrement_y = y - a_row
+
+    command = raw_input()
     #(X, Y) = wall_list[0]['location']        
     if (command == 'i'):
-        if (x, y - 1) in available_positions[loc]:
+        if (x, y - decrement_y) in available_positions[loc]:
             players[x][y] = 0
-            y -= 1
+            y -= decrement_y
             y = max(0, y)
             player['location'] = (x, y)
             players[x][y] = 1  
     elif (command == 'j'):
-        if (x - 1, y) in available_positions[loc]:
+        if (x - decrement_x, y) in available_positions[loc]:
             players[x][y] = 0    
-            x -= 1
+            x -= decrement_x
             x = max(0, x)
             player['location'] = (x, y)
             players[x][y] = 1 
     elif (command == 'k'):
-        if (x, y + 1) in available_positions[loc]:
+        if (x, y + increment_y) in available_positions[loc]:
             players[x][y] = 0    
-            y += 1
+            y += increment_y
             y = min(height-1, y)
             player['location'] = (x, y)
             players[x][y] = 1 
     elif (command == 'l'):
-        if (x + 1, y) in available_positions[loc]:
+        if (x + increment_x, y) in available_positions[loc]:
             players[x][y] = 0    
-            x += 1
+            x += increment_x
             x = min(width-1, x)
             player['location'] = (x, y)
             players[x][y] = 1
