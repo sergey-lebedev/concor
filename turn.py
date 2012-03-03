@@ -107,7 +107,7 @@ def bot_turn(PLAYER, player, wall_list, available_positions, players):
         pass
     elif bot_type == 'straight_bot':
         loc = player['location']
-        #neighbor = loc
+        neighbor = loc
         #breadth-first search
         queue = []
         queue.append(loc)   
