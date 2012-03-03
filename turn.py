@@ -5,7 +5,7 @@ def user_turn(player, wall_list, available_positions, players, walls):
     command = raw_input()
     (x, y) = player['location']
     loc = (x, y)
-    (X, Y) = wall_list[0]['location']        
+    #(X, Y) = wall_list[0]['location']        
     if (command == 'i'):
         if (x, y - 1) in available_positions[loc]:
             players[x][y] = 0
@@ -35,44 +35,50 @@ def user_turn(player, wall_list, available_positions, players, walls):
             player['location'] = (x, y)
             players[x][y] = 1
     elif (command == 'I'):
-        walls[X][Y] = 0    
-        Y -= 1
-        Y = max(1, Y)
-        if (wall_list[0]['type'] == 'vertical') & (Y <= 1):
-            wall_list[0]['type'] = 'horizontal'
-        wall_list[0]['location'] = (X, Y)
-        walls[X][Y] = 1 
+        pass
+        #walls[X][Y] = 0    
+        #Y -= 1
+        #Y = max(1, Y)
+        #if (wall_list[0]['type'] == 'vertical') & (Y <= 1):
+        #    wall_list[0]['type'] = 'horizontal'
+        #wall_list[0]['location'] = (X, Y)
+        #walls[X][Y] = 1 
     elif (command == 'J'):
-        walls[X][Y] = 0    
-        X -= 1
-        X = max(1, X)
-        if (wall_list[0]['type'] == 'horizontal') & (X <= 1):
-            wall_list[0]['type'] = 'vertical'
-        wall_list[0]['location'] = (X, Y)
-        walls[X][Y] = 1 
+        pass
+        #walls[X][Y] = 0    
+        #X -= 1
+        #X = max(1, X)
+        #if (wall_list[0]['type'] == 'horizontal') & (X <= 1):
+        #    wall_list[0]['type'] = 'vertical'
+        #wall_list[0]['location'] = (X, Y)
+        #walls[X][Y] = 1 
     elif (command == 'K'):
-        walls[X][Y] = 0    
-        Y += 1
-        Y = min(height - wall_length + 1, Y)
-        if (wall_list[0]['type'] == 'vertical') & (Y > height - wall_length):
-            wall_list[0]['type'] = 'horizontal'
-        wall_list[0]['location'] = (X, Y)
-        walls[X][Y] = 1 
+        pass
+        #walls[X][Y] = 0    
+        #Y += 1
+        #Y = min(height - wall_length + 1, Y)
+        #if (wall_list[0]['type'] == 'vertical') & (Y > height - wall_length):
+        #    wall_list[0]['type'] = 'horizontal'
+        #wall_list[0]['location'] = (X, Y)
+        #walls[X][Y] = 1 
     elif (command == 'L'):
-        walls[X][Y] = 0    
-        X += 1
-        X = min(width - wall_length + 1, X)
-        if (wall_list[0]['type'] == 'horizontal') & (X > width - wall_length):
-            wall_list[0]['type'] = 'vertical'
-        wall_list[0]['location'] = (X, Y)
-        walls[X][Y] = 1
+        pass
+        #walls[X][Y] = 0    
+        #X += 1
+        #X = min(width - wall_length + 1, X)
+        #if (wall_list[0]['type'] == 'horizontal') & (X > width - wall_length):
+        #    wall_list[0]['type'] = 'vertical'
+        #wall_list[0]['location'] = (X, Y)
+        #walls[X][Y] = 1
     elif (command == 'R'):
-        if (wall_list[0]['type'] == 'horizontal'):
-            wall_list[0]['type'] = 'vertical'   
-        elif (wall_list[0]['type'] == 'vertical'):
-            wall_list[0]['type'] = 'horizontal'       
+        pass
+        #if (wall_list[0]['type'] == 'horizontal'):
+        #    wall_list[0]['type'] = 'vertical'   
+        #elif (wall_list[0]['type'] == 'vertical'):
+        #    wall_list[0]['type'] = 'horizontal'       
     elif (command == 'N'):
-        wall_list.insert(0, {'type': 'horizontal', 'location': (1, 1)})                
+        pass
+        #wall_list.insert(0, {'type': 'horizontal', 'location': (1, 1)})                
     elif (command == 'q'):
         end = True
     elif (command == 'q!'):
@@ -84,11 +90,12 @@ def user_turn(player, wall_list, available_positions, players, walls):
 def bot_turn(PLAYER, player, wall_list, available_positions, players):
     bot_type = PLAYER['owner']
     target_loc = PLAYER['target_loc']
+    #print target_loc
     if bot_type == 'bot':
         pass
     elif bot_type == 'straight_bot':
         loc = player['location']
-        neighbor = loc
+        #neighbor = loc
         #breadth-first search
         queue = []
         queue.append(loc)   
@@ -99,15 +106,17 @@ def bot_turn(PLAYER, player, wall_list, available_positions, players):
         while (queue != []) and not is_break:
             node = queue[0]
             for neighbor in available_positions[node]:
-                if neighbor not in visited:
+                if neighbor not in visited and not is_break:
                     path.update({neighbor: node})
                     visited.append(neighbor)
-                    if neighbor in PLAYER['target_loc']:
+                    if neighbor in target_loc:
                         is_break = True
                         #print neighbor
                     queue.append(neighbor)
+                if is_break: 
+                    break    
             queue.remove(node)
-        #print path
+
         node = neighbor
         while node != loc:
             neighbor = node

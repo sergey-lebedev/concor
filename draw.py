@@ -39,6 +39,7 @@ for i in plist:
     player_list.append({'id': i, 'location': (x, y)})
 
 for player in player_list:
+    (x, y) = player['location']
     players[x][y] =  player['id']      
 
 #player picture
@@ -56,8 +57,9 @@ walls = [None]*width
 for i in range(len(walls)):
     walls[i] = [0]*height
 
+wall_list = []
 #wall_list = [{'type': 'vertical', 'x': X, 'y': Y}]
-wall_list = [{'type': 'horizontal', 'location': (X, Y)}]
+#wall_list = [{'type': 'horizontal', 'location': (X, Y)}]
 for wall in wall_list:
     walls[x][y] =  1
 
@@ -124,10 +126,10 @@ while not win:
         for player in player_list:
             if player['id'] != p:
                 loc = player['location']
-                available_positions.update({loc: set([])})
                 for neighbor in available_positions[loc]:
                     available_positions[neighbor].difference_update(set([loc]))
-    
+                available_positions.update({loc: set([])})
+
         for wall in wall_list:
             (row, col) = wall['location']
             left_top = (row - 1, col - 1)  
@@ -148,11 +150,12 @@ while not win:
                 available_positions[right_bottom].difference_update(set([left_bottom]))
 
         if PLAYERS[p]['owner'] == 'user':
-            user_turn(player_list[p], wall_list, available_positions, players, walls)
+            user_turn(player_list[p*amount_of_players/max(AMOUNT_OF_PLAYERS)], wall_list, available_positions, players, walls)
         else:
-            bot_turn(PLAYERS[p], player_list[p], wall_list, available_positions, players)
+            print p
+            bot_turn(PLAYERS[p], player_list[p*amount_of_players/max(AMOUNT_OF_PLAYERS)], wall_list, available_positions, players)
 
-        if player_list[p]['location'] in PLAYERS[p]['target_loc']:
+        if player_list[p*amount_of_players/max(AMOUNT_OF_PLAYERS)]['location'] in PLAYERS[p]['target_loc']:
             win = True
             end = True
             print "Player %d '%s' win"% (p, PLAYERS[p]['owner']) 

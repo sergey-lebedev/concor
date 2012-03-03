@@ -8,8 +8,8 @@ AMOUNT_OF_WALLS = 20
 AMOUNT_OF_PLAYERS = (2, 4)
 
 amount_of_players = AMOUNT_OF_PLAYERS[1]
-width = 1
-height = 1
+width = 11
+height = 11
 width_aspect = 4
 height_aspect = 2
 wall_length = 2
@@ -20,7 +20,7 @@ PLAYERS = [{'color': 'red', 'location': (width/2, height - 1), 'target_loc': [],
            {'color': 'green', 'location': (width - 1, height/2), 'target_loc': [], 'owner': 'straight_bot'}]
 
 for i in range(amount_of_players):
-    (x, y) = PLAYERS[i]['location']
+    (x, y) = PLAYERS[i*max(AMOUNT_OF_PLAYERS)/amount_of_players]['location']
     target_loc = []
     if (x == 0) or (x == (width - 1)):
         for j in range(height):
@@ -28,5 +28,5 @@ for i in range(amount_of_players):
     elif (y == 0) or (y == (height - 1)):
         for j in range(width):
             target_loc.append((j, height - 1 - y))
-    PLAYERS[i]['target_loc'] = target_loc
+    PLAYERS[i*max(AMOUNT_OF_PLAYERS)/amount_of_players]['target_loc'] = target_loc
     #print target_loc
