@@ -135,14 +135,14 @@ while not win:
                 available_positions[right_bottom].difference_update(set([left_bottom]))
 
         if PLAYERS[p]['owner'] == 'user':
-            user_turn(player_list[p], wall_list, available_positions, players, width, height)
+            user_turn(player_list[p], wall_list, available_positions, players, walls)
         else:
-            bot_turn(PLAYERS[p]['owner'], player_list[p], wall_list, available_positions, players, width, height)
-            pass
+            bot_turn(PLAYERS[p], player_list[p], wall_list, available_positions, players)
+
         if player_list[p]['location'] in PLAYERS[p]['target_loc']:
             win = True
             end = True
-            print 'win!'
+            print "Player %d '%s' win"% (p, PLAYERS[p]['owner']) 
         if end:
             break
         p += 1

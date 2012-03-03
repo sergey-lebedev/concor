@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from settings import *
 
-def user_turn(player, wall_list, available_positions, players, width, height):
+def user_turn(player, wall_list, available_positions, players, walls):
     command = raw_input()
     (x, y) = player['location']
     loc = (x, y)
@@ -81,14 +81,39 @@ def user_turn(player, wall_list, available_positions, players, width, height):
     else:
         pass
 
-def bot_turn(bot_type, player, wall_list, available_positions, players, width, height):
+def bot_turn(PLAYER, player, wall_list, available_positions, players):
+    bot_type = PLAYER['owner']
+    target_loc = PLAYER['target_loc']
     if bot_type == 'bot':
         pass
     elif bot_type == 'straight_bot':
         loc = player['location']
-        (col, row) = loc
-        (x, y) = (col, row)
+        neightbor = loc
         #breadth-first search
+        queue = []
+        queue.append(loc)   
+        visited = []
+        visited.append(loc)
+        is_break = False
+        path = {}
+        while (queue != []) and not is_break:
+            node = queue[0]
+            for neighbor in available_positions[node]:
+                if neighbor not in visited:
+                    path.update({neighbor: node})
+                    visited.append(neighbor)
+                    if neighbor in PLAYER['target_loc']:
+                        is_break = True
+                        #print neighbor
+                    queue.append(neighbor)
+            queue.remove(node)
+        #print path
+        node = neighbor
+        while node != loc:
+            neighbor = node
+            node = path[neighbor]
+
+        (x, y) = neighbor
         players[x][y] = 0    
         player['location'] = (x, y)
         players[x][y] = 1

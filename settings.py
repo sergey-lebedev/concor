@@ -14,10 +14,10 @@ width_aspect = 4
 height_aspect = 2
 wall_length = 2
 
-PLAYERS = [{'color': 'red', 'location': (width/2, height - 1), 'target_loc': [], 'owner': 'user'},
+PLAYERS = [{'color': 'red', 'location': (width/2, height - 1), 'target_loc': [], 'owner': 'straight_bot'},
            {'color': 'blue', 'location': (width/2, 0), 'target_loc': [], 'owner': 'straight_bot'},
-           {'color': 'yellow', 'location': (0, height/2), 'target_loc': [], 'owner': 'bot'},
-           {'color': 'green', 'location': (width - 1, height/2), 'target_loc': [], 'owner': 'bot'}]
+           {'color': 'yellow', 'location': (0, height/2), 'target_loc': [], 'owner': 'straight_bot'},
+           {'color': 'green', 'location': (width - 1, height/2), 'target_loc': [], 'owner': 'straight_bot'}]
 
 for i in range(amount_of_players):
     (x, y) = PLAYERS[i]['location']
