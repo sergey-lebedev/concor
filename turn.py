@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from settings import *
+
 def user_turn(player, wall_list, available_positions, players, width, height):
     command = raw_input()
     (x, y) = player['location']
@@ -83,6 +85,12 @@ def bot_turn(bot_type, player, wall_list, available_positions, players, width, h
     if bot_type == 'bot':
         pass
     elif bot_type == 'straight_bot':
-        pass
+        loc = player['location']
+        (col, row) = loc
+        (x, y) = (col, row)
+        #breadth-first search
+        players[x][y] = 0    
+        player['location'] = (x, y)
+        players[x][y] = 1
     else:
         pass
