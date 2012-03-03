@@ -3,8 +3,8 @@ from patterns import *
 from settings import *
 
 #pattern = compact
-pattern = box_drawing
-#pattern = classic
+#pattern = box_drawing
+pattern = classic
 
 #field
 field = []

@@ -20,18 +20,9 @@ for player in player_list:
     (x, y) = player['location']
     players[x][y] =  player['id']      
 
-#walls
-X = 1
-Y = 1
-walls = [None]*width
-for i in range(len(walls)):
-    walls[i] = [0]*height
-
 wall_list = []
 #wall_list = [{'type': 'vertical', 'x': X, 'y': Y}]
 #wall_list = [{'type': 'horizontal', 'location': (X, Y)}]
-for wall in wall_list:
-    walls[x][y] =  1
 
 #adjacency_list
 adjacency_list = {}
@@ -102,17 +93,19 @@ while not win:
         #print available_positions[loc]
 
         if PLAYERS[p]['owner'] == 'user':
-            user_turn(player_list[p*amount_of_players/max(AMOUNT_OF_PLAYERS)], wall_list, available_positions, players, walls)
+            user_turn(player_list, player_list[p*amount_of_players/max(AMOUNT_OF_PLAYERS)], wall_list, available_positions, players)
         else:
             print p
             bot_turn(PLAYERS[p], player_list[p*amount_of_players/max(AMOUNT_OF_PLAYERS)], wall_list, available_positions, players)
 
+        draw(player_list, wall_list)
+
         if player_list[p*amount_of_players/max(AMOUNT_OF_PLAYERS)]['location'] in PLAYERS[p]['target_loc']:
             win = True
             end = True
-            print "Player %d '%s' win"% (p, PLAYERS[p]['owner']) 
+            print "Player %d '%s' win"% (p, PLAYERS[p]['owner'])
+ 
         if end:
             break
         p += max(AMOUNT_OF_PLAYERS)/amount_of_players
         p %= max(AMOUNT_OF_PLAYERS)
-        draw(player_list, wall_list)
