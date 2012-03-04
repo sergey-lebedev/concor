@@ -89,6 +89,17 @@ while not win:
                     if b_loc in available_positions[a_loc]:                            
                         available_positions[b_loc].update(set([loc]))
                         available_positions[loc].update(set([b_loc]))
+                    else:
+                        (ldx, ldy) = DIRECTIONS[LEFT[direction]]
+                        c_loc = (a_col + ldx, a_row + ldy)
+                        if c_loc in available_positions[a_loc]:
+                            available_positions[c_loc].update(set([loc]))
+                            available_positions[loc].update(set([c_loc]))
+                        (rdx, rdy) = DIRECTIONS[RIGHT[direction]]
+                        d_loc = (a_col + rdx, a_row + rdy)
+                        if d_loc in available_positions[a_loc]:
+                            available_positions[d_loc].update(set([loc]))
+                            available_positions[loc].update(set([d_loc]))        
                     available_positions.update({a_loc: set([])})
         #print available_positions[loc]
 

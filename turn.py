@@ -23,6 +23,7 @@ def user_turn(player_list, player, wall_list, available_positions, players):
             decrement_y = y - a_row
     ready = True
     command = raw_input()
+    first_symbol = False
     #(X, Y) = wall['location']        
     if (command == 'i'):
         if (x, y - decrement_y) in available_positions[loc]:
@@ -54,9 +55,12 @@ def user_turn(player_list, player, wall_list, available_positions, players):
             players[x][y] = 1
     else:
         ready = False
+        first_symbol = True
 
     while not ready:
+        #if first_symbol: 
         command = raw_input()
+        #    first_symbol = False
         if (command == 'I'):
             if walls_installed != 0:
                 wall = wall_list[len(wall_list) - 1]    
@@ -102,27 +106,24 @@ def user_turn(player_list, player, wall_list, available_positions, players):
                     wall['type'] = 'horizontal'   
     
         elif (command == 'N'):
-            print walls_installed
             if walls_installed == 0:
                 wall = {'type': 'horizontal', 'location': (1, 1)}
                 wall_list.append(wall)
                 walls_installed +=1
                 (X, Y) = wall['location']
-            print walls_installed
-            #draw(player_list, wall_list)
 
         elif (command == 'D'):
             if walls_installed != 0:
                 removed_wall = wall_list.pop()
                 (X, Y) = removed_wall['location']
                 walls_installed -=1
-        elif (command == 'ready'):
+        elif (command == 'r'):
             ready = True         
-        elif (command == 'q'):
-            end = True
-        elif (command == 'q!'):
-            end = True
-            win = True
+        #elif (command == 'q'):
+        #    end = True
+        #elif (command == 'q!'):
+        #    end = True
+        #    win = True
         else:
             pass
         draw(player_list, wall_list)

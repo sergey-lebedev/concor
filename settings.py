@@ -3,13 +3,20 @@ DIRECTIONS = {'n': (-1, 0),
              'e': (0, 1),
              's': (1, 0),
              'w': (0, -1)}
-
+LEFT = {'n': 'w',
+        'w': 's',
+        's': 'e',
+        'e': 'n'}
+RIGHT = {'n': 'e',
+         'e': 's',
+         's': 'w',
+         'w': 'n'}
 AMOUNT_OF_WALLS = 20
 AMOUNT_OF_PLAYERS = (2, 4)
 
 amount_of_players = AMOUNT_OF_PLAYERS[0]
-width = 9
-height = 9
+width = 11
+height = 11
 width_aspect = 4
 height_aspect = 2
 wall_length = 2
