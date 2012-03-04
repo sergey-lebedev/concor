@@ -11,48 +11,28 @@ def user_turn(player_list, player, wall_list, available_positions, players):
     decrement_x = 0
     increment_y = 0
     decrement_y = 0
-    for a_loc in available_positions[loc]:
-        (a_col, a_row) = a_loc
-        if (a_col - x) > 0:
-            increment_x = a_col - x
-        if (a_col - x) < 0:
-            decrement_x = x - a_col
-        if (a_row - y) > 0:
-            increment_y = a_row - y
-        if (a_row - y) < 0:
-            decrement_y = y - a_row
+    neighbors = []
+    for location in available_positions[loc]:
+        neighbors.append(location)
+
+    draw(player_list, wall_list, neighbors)
     ready = True
     command = raw_input()
     first_symbol = False
-    #(X, Y) = wall['location']        
-    if (command == 'i'):
-        if (x, y - decrement_y) in available_positions[loc]:
-            players[x][y] = 0
-            y -= decrement_y
-            y = max(0, y)
-            player['location'] = (x, y)
-            players[x][y] = 1  
-    elif (command == 'j'):
-        if (x - decrement_x, y) in available_positions[loc]:
-            players[x][y] = 0    
-            x -= decrement_x
-            x = max(0, x)
-            player['location'] = (x, y)
-            players[x][y] = 1 
-    elif (command == 'k'):
-        if (x, y + increment_y) in available_positions[loc]:
-            players[x][y] = 0    
-            y += increment_y
-            y = min(height-1, y)
-            player['location'] = (x, y)
-            players[x][y] = 1 
-    elif (command == 'l'):
-        if (x + increment_x, y) in available_positions[loc]:
-            players[x][y] = 0    
-            x += increment_x
-            x = min(width-1, x)
-            player['location'] = (x, y)
-            players[x][y] = 1
+    #(X, Y) = wall['location']
+    command_list = []
+    command_dict = {}
+    for i in range(len(neighbors)):
+        char = str(i + 1)
+        command_list.append(char)
+        command_dict[char] = i
+
+    numbers[char] = char        
+    if command in command_list:
+        players[x][y] = 0
+        (x, y) = neighbors[command_dict[command]]
+        player['location'] = (x, y)
+        players[x][y] = 1  
     else:
         ready = False
         first_symbol = True
@@ -61,7 +41,7 @@ def user_turn(player_list, player, wall_list, available_positions, players):
         #if first_symbol: 
         command = raw_input()
         #    first_symbol = False
-        if (command == 'I'):
+        if (command == 'i'):
             if walls_installed != 0:
                 wall = wall_list[len(wall_list) - 1]    
                 Y -= 1
@@ -70,7 +50,7 @@ def user_turn(player_list, player, wall_list, available_positions, players):
                     wall['type'] = 'horizontal'
                 wall['location'] = (X, Y)
  
-        elif (command == 'J'):
+        elif (command == 'j'):
             if walls_installed != 0:
                 wall = wall_list[len(wall_list) - 1]   
                 X -= 1
@@ -79,7 +59,7 @@ def user_turn(player_list, player, wall_list, available_positions, players):
                     wall['type'] = 'vertical'
                 wall['location'] = (X, Y)
 
-        elif (command == 'K'):
+        elif (command == 'k'):
             if walls_installed != 0:
                 wall = wall_list[len(wall_list) - 1]  
                 Y += 1
@@ -88,7 +68,7 @@ def user_turn(player_list, player, wall_list, available_positions, players):
                     wall['type'] = 'horizontal'
                 wall['location'] = (X, Y)
 
-        elif (command == 'L'):
+        elif (command == 'l'):
             if walls_installed != 0:
                 wall = wall_list[len(wall_list) - 1]  
                 X += 1
@@ -97,7 +77,7 @@ def user_turn(player_list, player, wall_list, available_positions, players):
                     wall['type'] = 'vertical'
                 wall['location'] = (X, Y)
 
-        elif (command == 'R'):
+        elif (command == 'r'):
             if walls_installed != 0:
                 wall = wall_list[len(wall_list) - 1]
                 if (wall['type'] == 'horizontal'):
@@ -105,19 +85,19 @@ def user_turn(player_list, player, wall_list, available_positions, players):
                 elif (wall['type'] == 'vertical'):
                     wall['type'] = 'horizontal'   
     
-        elif (command == 'N'):
+        elif (command == 'n'):
             if walls_installed == 0:
                 wall = {'type': 'horizontal', 'location': (1, 1)}
                 wall_list.append(wall)
                 walls_installed +=1
                 (X, Y) = wall['location']
 
-        elif (command == 'D'):
+        elif (command == 'd'):
             if walls_installed != 0:
                 removed_wall = wall_list.pop()
                 (X, Y) = removed_wall['location']
                 walls_installed -=1
-        elif (command == 'r'):
+        elif (command == 'b'):
             ready = True         
         #elif (command == 'q'):
         #    end = True

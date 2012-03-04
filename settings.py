@@ -14,7 +14,7 @@ RIGHT = {'n': 'e',
 AMOUNT_OF_WALLS = 20
 AMOUNT_OF_PLAYERS = (2, 4)
 
-amount_of_players = AMOUNT_OF_PLAYERS[0]
+amount_of_players = AMOUNT_OF_PLAYERS[1]
 width = 11
 height = 11
 width_aspect = 4

@@ -32,6 +32,10 @@ player_pic[:cutoff] = ['blank']*cutoff
 if cutoff != 0:
     player_pic[-cutoff:] = ['blank']*cutoff
 
+#digits
+digit_positions = width_aspect - 1
+digit = ['blank']*digit_positions
+
 #wall picture
 vertical_wall = ['heavy_vertical']*(height_aspect*wall_length - 1)
 horizontal_wall = ['heavy_horizontal']*(width_aspect*wall_length - 1)
@@ -40,7 +44,7 @@ horizontal_wall = ['heavy_horizontal']*(width_aspect*wall_length - 1)
 #cutoff = (player_positions - 1) / 2
 #player_pic[:cutoff] = ['blank']*cutoff
 
-def draw(player_list, wall_list):
+def draw(player_list, wall_list, additional=[]):
     temp_field = []
     for lines in field:
         temp_field.append(lines[:])
@@ -60,6 +64,12 @@ def draw(player_list, wall_list):
                 temp_field[col*height_aspect][(row - 1)*width_aspect + 1 + i] = horizontal_wall[i]
         else:
             pass  
+
+    for i in range(len(additional)):
+        (row, col) = additional[i]  
+        digit[digit_positions/2] = str(i + 1)
+        for j in range(digit_positions):
+            temp_field[col*height_aspect + 1][row*width_aspect + 1 + j] = digit[j]
 
     for i in range(height_aspect*height + 1):
         string = ''

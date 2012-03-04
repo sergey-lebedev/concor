@@ -90,6 +90,7 @@ while not win:
                         available_positions[b_loc].update(set([loc]))
                         available_positions[loc].update(set([b_loc]))
                     else:
+                        #sideway jump
                         (ldx, ldy) = DIRECTIONS[LEFT[direction]]
                         c_loc = (a_col + ldx, a_row + ldy)
                         if c_loc in available_positions[a_loc]:
