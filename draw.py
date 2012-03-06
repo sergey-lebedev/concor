@@ -7,6 +7,9 @@ from settings import *
 #pattern = box_drawing
 pattern = classic
 
+vertical_offset = 25 - height*height_aspect
+horizontal_offset = (80 - width*width_aspect)/2
+
 #field
 field = []
 for i in range(height_aspect*height + 1):
@@ -73,8 +76,9 @@ def draw(player_list, wall_list, additional=[]):
             temp_field[col*height_aspect + 1][row*width_aspect + 1 + j] = digit[j]
 
     os.system('clear')
+    print '\n'*vertical_offset
     for i in range(height_aspect*height + 1):
-        string = ''
+        string = ' '*horizontal_offset
         for j in range(width_aspect*width + 1):
                 string += pattern[temp_field[i][j]]
         print string
