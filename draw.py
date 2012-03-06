@@ -3,12 +3,12 @@ import os
 from patterns import *
 from settings import *
 
-#pattern = compact
+pattern = compact
 #pattern = box_drawing
-pattern = classic
+#pattern = classic
 
-vertical_offset = 25 - height*height_aspect
-horizontal_offset = (80 - width*width_aspect)/2
+vertical_offset = (25 - (height*height_aspect + 1))/2
+horizontal_offset = (80 - (width*width_aspect + 1))/2
 
 #field
 field = []
@@ -30,11 +30,13 @@ for i in range(height_aspect*height + 1):
 
 #player picture
 player_positions = width_aspect - 1
-player_pic = ['player']*player_positions
-cutoff = (player_positions - 1) / 2
-player_pic[:cutoff] = ['blank']*cutoff
-if cutoff != 0:
-    player_pic[-cutoff:] = ['blank']*cutoff
+player_pic = []
+for i in range(amount_of_players):
+    player_pic.append(['player_%d'%(i*max(AMOUNT_OF_PLAYERS)/amount_of_players)]*player_positions)
+    cutoff = (player_positions - 1) / 2
+    player_pic[i][:cutoff] = ['blank']*cutoff
+    if cutoff != 0:
+        player_pic[i][-cutoff:] = ['blank']*cutoff
 
 #digits
 digit_positions = width_aspect - 1
@@ -53,11 +55,13 @@ def draw(player_list, wall_list, additional=[]):
     for lines in field:
         temp_field.append(lines[:])
     
+    i = 0
     for player in player_list:
         (row, col) = player['location']   
-        for i in range(len(player_pic)):
-            temp_field[col*height_aspect + 1][row*width_aspect + 1 + i] = player_pic[i]
-    
+        for j in range(len(player_pic[i])):
+            temp_field[col*height_aspect + 1][row*width_aspect + 1 + j] = player_pic[i][j]
+        i +=1    
+
     for wall in wall_list:
         (row, col) = wall['location']
         if wall['type'] == 'vertical':

@@ -11,7 +11,10 @@ compact = {'blank': ' ',
            'heavy_horizontal': '=',
            'heavy_vertical': u'║',
            'heavy_vertical_and_horizontal': '#',
-           'player': 'O'
+           'player_0': 'A', 
+           'player_1': 'B', 
+           'player_2': 'C', 
+           'player_3': 'D'
           }
 compact.update(numbers)
 box_drawing = {'blank': ' ',
@@ -22,8 +25,11 @@ box_drawing = {'blank': ' ',
                'heavy_vertical': u'┃',
                'heavy_vertical_and_horizontal': u'╋',
                'vertical_heavy_and_horizontal_light': u'╂',
-               'vertical_light_and_horizontal_heavy': u'┿',   
-               'player': u'█'            
+               'vertical_light_and_horizontal_heavy': u'┿',
+               'player_0': u'█', 
+               'player_1': u'▓', 
+               'player_2': u'▒', 
+               'player_3': u'░'    
               }
 box_drawing.update(numbers)
 classic = {'blank': ' ',
@@ -35,6 +41,9 @@ classic = {'blank': ' ',
            'heavy_vertical_and_horizontal': u'╬',
            'vertical_heavy_and_horizontal_light': u'╫',
            'vertical_light_and_horizontal_heavy': u'╪',               
-           'player': u'█'
+           'player_0': u'█', 
+           'player_1': u'▓', 
+           'player_2': u'▒', 
+           'player_3': u'░'    
           }
 classic.update(numbers)
