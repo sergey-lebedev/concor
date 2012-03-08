@@ -3,9 +3,9 @@ import os
 from patterns import *
 from settings import *
 
-pattern = compact
+#pattern = compact
 #pattern = box_drawing
-#pattern = classic
+pattern = classic
 
 vertical_offset = (25 - (height*height_aspect + 1))/2
 horizontal_offset = (80 - (width*width_aspect + 1))/2
@@ -49,6 +49,37 @@ horizontal_wall = ['heavy_horizontal']*(width_aspect*wall_length - 1)
 #player_pic = ['player']*player_positions
 #cutoff = (player_positions - 1) / 2
 #player_pic[:cutoff] = ['blank']*cutoff
+
+#corner_polish
+def corner_polish(field):
+    for i in range(len(field)):
+        vertical_min = 0
+        vertical_max = len(field) - 1
+        vertical_minimax = [vertical_min, vertical_max]
+        for j in range(len(field[i])):
+            horizontal_min = 0
+            horizontal_max = len(field[i]) - 1
+            horizontal_minimax = [horizontal_min, horizontal_max]
+            char = field[i][j]
+            if (char == 'light_vertical_and_horizontal'):
+                if (i == vertical_min) and (j not in horizontal_minimax):                    
+                    field[i][j] = 'light_down_and_horizontal'
+                if (i == vertical_max) and (j not in horizontal_minimax):
+                    field[i][j] = 'light_up_and_horizontal'
+                if (j == horizontal_min) and (i not in vertical_minimax):
+                    field[i][j] = 'light_vertical_and_right'
+                if (j == horizontal_max) and (i not in vertical_minimax):
+                    field[i][j] = 'light_vertical_and_left'
+                if (i == vertical_min) and (j == horizontal_min):   
+                    field[i][j] = 'light_down_and_right'
+                elif (i == vertical_min) and (j == horizontal_max):
+                    field[i][j] = 'light_down_and_left'
+                elif (i == vertical_max) and (j == horizontal_max):
+                    field[i][j] = 'light_up_and_left'                
+                elif (i == vertical_max) and (j == horizontal_min):
+                    field[i][j] = 'light_up_and_right'                 
+
+corner_polish(field)
 
 def draw(player_list, wall_list, additional=[]):
     temp_field = []

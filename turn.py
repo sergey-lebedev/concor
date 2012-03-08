@@ -7,10 +7,6 @@ def user_turn(player_list, player, wall_list, available_positions, players):
     loc = (x, y)
     walls_installed = 0
     #print available_positions[loc]
-    increment_x = 0
-    decrement_x = 0
-    increment_y = 0
-    decrement_y = 0
     neighbors = []
     for location in available_positions[loc]:
         neighbors.append(location)
