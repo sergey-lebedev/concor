@@ -3,29 +3,29 @@ from settings import *
 from draw import *
 
 def w2p(wall_list):
-    print wall_list
+    #print wall_list
     p = {}
     for i in range(1, width):
         for j in range(1, height):
-            p.update({(i, j): ['horizontal', 'vertical']})
+            p.update({(i, j): set(['horizontal', 'vertical'])})
     for wall in wall_list:
         (x, y) = wall['location']
-        p[(x, y)] = []
+        p[(x, y)] = set([])
         if wall['type'] == 'horizontal':
             for direction in ['w', 'e']:
                 (dx, dy) = DIRECTIONS[direction]
                 location = (x + dx, y + dy)
                 if location in p:
-                    p[location].remove('horizontal')
+                    p[location].difference_update(set(['horizontal']))
         elif wall['type'] == 'vertical':
             for direction in ['n', 's']:
                 (dx, dy) = DIRECTIONS[direction]
                 location = (x + dx, y + dy)
                 if location in p:
-                    p[location].remove('vertical')
+                    p[location].difference_update(set(['vertical']))
         else:
             pass
-    print p
+    #print p
     return p
 
 def user_turn(player_list, player, wall_list, available_positions, players):
@@ -60,7 +60,10 @@ def user_turn(player_list, player, wall_list, available_positions, players):
         ready = False
         first_symbol = True
 
-    while not ready:
+    if player['amount_of_walls'] == 0:
+        ready = True
+
+    while (not ready) :
         #if first_symbol: 
         command = raw_input()
         #    first_symbol = False
@@ -112,8 +115,9 @@ def user_turn(player_list, player, wall_list, available_positions, players):
             if (walls_installed == 0) and (player['amount_of_walls'] != 0):
                 for i in range(1, width):
                     for j in range(1, height):
-                        if p[(i, j)] != []:           
-                            wall = {'type': p[(i, j)][0], 'location': (i, j)}
+                        if p[(i, j)] != set([]):           
+                            wall_type = list(p[(i, j)])
+                            wall = {'type': wall_type[0], 'location': (i, j)}
                             break
                 wall_list.append(wall)
                 walls_installed +=1
@@ -127,7 +131,7 @@ def user_turn(player_list, player, wall_list, available_positions, players):
         elif (command == 'b'):
             if walls_installed != 0:
                 if wall['type'] in p[(X, Y)]:
-                    ready = True    
+                    ready = True                  
             else:
                 ready = False
             player['amount_of_walls'] -= walls_installed    
