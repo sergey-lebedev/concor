@@ -7,7 +7,7 @@ def w2p(wall_list):
     p = {}
     for i in range(1, width):
         for j in range(1, height):
-            p.update({(i, j): ['vertical', 'horizontal']})
+            p.update({(i, j): ['horizontal', 'vertical']})
     for wall in wall_list:
         (x, y) = wall['location']
         p[(x, y)] = []
@@ -109,8 +109,12 @@ def user_turn(player_list, player, wall_list, available_positions, players):
                     wall['type'] = 'horizontal'   
     
         elif (command == 'n'):
-            if walls_installed == 0:
-                wall = {'type': 'horizontal', 'location': (1, 1)}
+            if (walls_installed == 0) and (player['amount_of_walls'] != 0):
+                for i in range(1, width):
+                    for j in range(1, height):
+                        if p[(i, j)] != []:           
+                            wall = {'type': p[(i, j)][0], 'location': (i, j)}
+                            break
                 wall_list.append(wall)
                 walls_installed +=1
                 (X, Y) = wall['location']
@@ -121,10 +125,12 @@ def user_turn(player_list, player, wall_list, available_positions, players):
                 (X, Y) = removed_wall['location']
                 walls_installed -=1
         elif (command == 'b'):
-            if wall['type'] in p[(X, Y)]:
-                ready = True    
+            if walls_installed != 0:
+                if wall['type'] in p[(X, Y)]:
+                    ready = True    
             else:
-                ready = False     
+                ready = False
+            player['amount_of_walls'] -= walls_installed    
         #elif (command == 'q'):
         #    end = True
         #elif (command == 'q!'):

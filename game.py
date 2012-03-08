@@ -14,7 +14,7 @@ print plist
 player_list = []
 for i in plist:
     (x, y) = PLAYERS[i]['location']
-    player_list.append({'id': i, 'location': (x, y)})
+    player_list.append({'id': i, 'location': (x, y), 'amount_of_walls': AMOUNT_OF_WALLS/amount_of_players})
 
 for player in player_list:
     (x, y) = player['location']
