@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from user_input import *
 from settings import *
-from draw import *
+from draw import *                  
 
 def bot_turn(PLAYER, player, wall_list, available_positions, players):
     bot_type = PLAYER['owner']

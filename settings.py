@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-DIRECTIONS = {'n': (-1, 0),
-             'e': (0, 1),
-             's': (1, 0),
-             'w': (0, -1)}
+DIRECTIONS = {'n': (0, -1),
+             'e': (1, 0),
+             's': (0, 1),
+             'w': (-1, 0)}
 LEFT = {'n': 'w',
         'w': 's',
         's': 'e',
@@ -21,7 +21,7 @@ width_aspect = 4
 height_aspect = 2
 wall_length = 2
 
-PLAYERS = [{'color': 'red', 'location': (width/2, height - 1), 'target_loc': [], 'owner': 'straight_bot'},
+PLAYERS = [{'color': 'red', 'location': (width/2, height - 1), 'target_loc': [], 'owner': 'user'},
            {'color': 'yellow', 'location': (0, height/2), 'target_loc': [], 'owner': 'straight_bot'},
            {'color': 'blue', 'location': (width/2, 0), 'target_loc': [], 'owner': 'user'},
            {'color': 'green', 'location': (width - 1, height/2), 'target_loc': [], 'owner': 'straight_bot'}]

@@ -30,10 +30,10 @@ for i in range(width):
     for j in range(height):
         link_list = set([])
         for direction in DIRECTIONS:
-            (row, col) = DIRECTIONS[direction]
-            if ((col + j) >= 0) & ((col + j) < height) &\
-               ((row + i) >= 0) & ((row + i) < width): 
-                link_list.add((row + i, col + j))
+            (dx, dy) = DIRECTIONS[direction]
+            if ((dy + j) >= 0) & ((dy + j) < height) &\
+               ((dx + i) >= 0) & ((dx + i) < width): 
+                link_list.add((dx + i, dy + j))
         adjacency_list.update({(i, j): link_list})
 
 end = False
@@ -53,11 +53,11 @@ while not win:
         #print available_positions
 
         for wall in wall_list:
-            (row, col) = wall['location']
-            left_top = (row - 1, col - 1)  
-            right_top = (row, col - 1) 
-            left_bottom = (row - 1, col) 
-            right_bottom = (row, col) 
+            (col, row) = wall['location']
+            left_top = (col - 1, row - 1)  
+            right_top = (col, row - 1) 
+            left_bottom = (col - 1, row) 
+            right_bottom = (col, row) 
 
             #print left_top, right_top,left_bottom, right_bottom
             if (wall['type'] == 'horizontal'):
@@ -110,12 +110,12 @@ while not win:
                             available_positions[d_loc].update(set([loc]))
                             available_positions[loc].update(set([d_loc]))        
                     available_positions.update({a_loc: set([])})
-        print available_positions[loc]
+        #print available_positions[loc]
 
         if PLAYERS[p]['owner'] == 'user':
             user_turn(player_list, player_list[p*amount_of_players/max(AMOUNT_OF_PLAYERS)], wall_list, available_positions, players)
         else:
-            print p
+            #print p
             bot_turn(PLAYERS[p], player_list[p*amount_of_players/max(AMOUNT_OF_PLAYERS)], wall_list, available_positions, players)
 
         draw(player_list, wall_list)
