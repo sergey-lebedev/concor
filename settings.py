@@ -15,13 +15,13 @@ AMOUNT_OF_WALLS = 20
 AMOUNT_OF_PLAYERS = (2, 4)
 
 amount_of_players = AMOUNT_OF_PLAYERS[0]
-width = 9
-height = 9
+width = 5
+height = 5
 width_aspect = 4
 height_aspect = 2
 wall_length = 2
 
-PLAYERS = [{'color': 'red', 'location': (width/2, height - 1), 'target_loc': [], 'owner': 'user'},
+PLAYERS = [{'color': 'red', 'location': (width/2, height - 1), 'target_loc': [], 'owner': 'straight_bot'},
            {'color': 'yellow', 'location': (0, height/2), 'target_loc': [], 'owner': 'straight_bot'},
            {'color': 'blue', 'location': (width/2, 0), 'target_loc': [], 'owner': 'user'},
            {'color': 'green', 'location': (width - 1, height/2), 'target_loc': [], 'owner': 'straight_bot'}]
