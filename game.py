@@ -13,8 +13,11 @@ for i in range(amount_of_players):
 print plist
 player_list = []
 for i in plist:
-    (x, y) = PLAYERS[i]['location']
-    player_list.append({'id': i, 'location': (x, y), 'amount_of_walls': AMOUNT_OF_WALLS/amount_of_players})
+    player_list.append({'id': i, 
+                        'location': PLAYERS[i]['location'], 
+                        'amount_of_walls': AMOUNT_OF_WALLS/amount_of_players,
+                        'target_loc': PLAYERS[i]['target_loc']
+    })
 
 for player in player_list:
     (x, y) = player['location']
@@ -38,7 +41,7 @@ while not win:
             user_turn(player_list, player_list[p*amount_of_players/max(AMOUNT_OF_PLAYERS)], wall_list, available_positions, players)
         else:
             #print p
-            bot_turn(PLAYERS[p], player_list[p*amount_of_players/max(AMOUNT_OF_PLAYERS)], wall_list, available_positions, players)
+            bot_turn(PLAYERS[p], player_list[p*amount_of_players/max(AMOUNT_OF_PLAYERS)], player_list, wall_list, available_positions, players)
 
         draw(player_list, wall_list)
 

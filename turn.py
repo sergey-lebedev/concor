@@ -120,12 +120,12 @@ def bfs(loc, available_positions, target_loc):
 
     return step, neighbor 
 
-def minimax(wall_list, player_list):
+def minimax(loc, wall_list, player_list):
     pass
 
-def bot_turn(PLAYER, player, wall_list, available_positions, players):
+def bot_turn(PLAYER, player, player_list, wall_list, available_positions, players):
     bot_type = PLAYER['owner']
-    target_loc = PLAYER['target_loc']
+    target_loc = player['target_loc']
     #print target_loc
     if bot_type == 'bot':
         pass
@@ -137,5 +137,68 @@ def bot_turn(PLAYER, player, wall_list, available_positions, players):
         players[x][y] = 0    
         player['location'] = (x, y)
         players[x][y] = 1
+    elif bot_type == 'simple_bot':
+        loc = player['location']
+        #opponent_list
+        opponent_list = []
+        for item in player_list:
+            if item != player:
+                opponent_list.append(item)
+        #neigbors
+        neighbors = []
+        for location in available_positions[loc]:
+            neighbors.append(location)
+        #possibility matrix
+        p = w2p(wall_list)
+        #actions
+        action_list = []
+        #movement
+        distances = []
+        for opponent in opponent_list:
+            [step, dummy] = bfs(opponent['location'], available_positions, opponent['target_loc'])
+            distances.append(step)
+        distance = min(distances)
+        for neighbor in neighbors:
+            [step, dummy] = bfs(neighbor, available_positions, target_loc)
+            value = distance - step
+            action = {'action_type': 'movement', 'location': neighbor, 'cost': value}
+            action_list.append(action)
+        #building
+        for i in range(1, width):
+            for j in range(1, height):
+                location = (i, j)
+                if p[location] != set([]):           
+                    for wall_type in list(p[location]):
+                        projected_wall_list = list(wall_list)
+                        wall = {'type': wall_type, 'location': location}
+                        projected_wall_list.append(wall)
+                        distances = []
+                        for opponent in opponent_list:
+                            projected_available_positions = available_positions_generator(opponent['location'], projected_wall_list, player_list)
+                            [step, dummy] = bfs(opponent['location'], projected_available_positions, opponent['target_loc'])
+                            distances.append(step)
+                        distance = min(distances)
+                        projected_available_positions = available_positions_generator(loc, projected_wall_list, player_list)
+                        [step, dummy] = bfs(loc, projected_available_positions, target_loc)
+                        value = distance - step
+                        action = {'action_type': 'building', 'wall': wall,'cost': value}  
+                        action_list.append(action)            
+        #print action_list
+        #action select
+        maximal_cost = None
+        for actions in action_list:
+            if actions['cost'] > maximal_cost:
+                maximal_cost = actions['cost']
+                action = actions
+        print action
+        if action['action_type'] == 'movement':
+            (x, y) = action['location']
+            player['location'] = (x, y)
+            players[x][y] = 1 
+        elif action['action_type'] == 'building':
+            wall_list.append(action['wall'])
+            player['amount_of_walls'] -= 1   
+        else:
+            pass   
     else:
         pass
