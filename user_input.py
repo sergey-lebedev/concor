@@ -113,15 +113,17 @@ def user_turn(player_list, player, wall_list, available_positions, players):
     
         elif (command == 'n'):
             if (walls_installed == 0) and (player['amount_of_walls'] != 0):
+                wall = None
                 for i in range(1, width):
                     for j in range(1, height):
                         if p[(i, j)] != set([]):           
                             wall_type = list(p[(i, j)])
                             wall = {'type': wall_type[0], 'location': (i, j)}
                             break
-                wall_list.append(wall)
-                walls_installed +=1
-                (X, Y) = wall['location']
+                if wall != None:
+                    wall_list.append(wall)
+                    walls_installed +=1
+                    (X, Y) = wall['location']
 
         elif (command == 'd'):
             if walls_installed != 0:
