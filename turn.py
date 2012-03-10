@@ -27,7 +27,6 @@ def available_positions_generator(loc, wall_list, player_list):
         #print positions
         available_positions.update({positions: adjacency_list[positions].copy()})
     #available_positions = adjacency_list.copy()
-    #print available_positions
 
     for wall in wall_list:
         (col, row) = wall['location']
@@ -86,7 +85,7 @@ def available_positions_generator(loc, wall_list, player_list):
                         available_positions[d_loc].update(set([loc]))
                         available_positions[loc].update(set([d_loc]))        
                 available_positions.update({a_loc: set([])})
-    #print available_positions[loc]    
+    #print available_positions[loc]     
     return available_positions 
 
 def bfs(loc, available_positions, target_loc):
@@ -98,10 +97,10 @@ def bfs(loc, available_positions, target_loc):
     visited.append(loc)
     is_break = False
     path = {}
-    while (queue != []) and not is_break:
-        node = queue[0]
+    while (queue != []) and (not is_break):
+        node = queue.pop(0)
         for neighbor in available_positions[node]:
-            if neighbor not in visited and not is_break:
+            if (neighbor not in visited) and (not is_break):
                 path.update({neighbor: node})
                 visited.append(neighbor)
                 if neighbor in target_loc:
@@ -110,7 +109,7 @@ def bfs(loc, available_positions, target_loc):
                 queue.append(neighbor)
             if is_break: 
                 break    
-        queue.remove(node)
+        #queue.remove(node)
 
     node = neighbor
     step = 0
@@ -156,16 +155,22 @@ def bot_turn(PLAYER, player, player_list, wall_list, available_positions, player
         #movement
         distances = []
         for opponent in opponent_list:
-            [step, dummy] = bfs(opponent['location'], available_positions, opponent['target_loc'])
+            #print opponent
+            opponent_available_positions = available_positions_generator(opponent['location'], wall_list, player_list)
+            [step, dummy] = bfs(opponent['location'], opponent_available_positions, opponent['target_loc'])
+            #print step
             distances.append(step)
         distance = min(distances)
+        print distance
         for neighbor in neighbors:
             [step, dummy] = bfs(neighbor, available_positions, target_loc)
+            #print step
             value = distance - step
             action = {'action_type': 'movement', 'location': neighbor, 'cost': value}
+            #print action
             action_list.append(action)
         #win move
-        intersection = set(neighbor).intersection(set(target_loc))
+        intersection = set(neighbors).intersection(set(target_loc))
         if intersection != set([]):
             location = list(intersection)[0]
             value = width*height
@@ -187,10 +192,11 @@ def bot_turn(PLAYER, player, player_list, wall_list, available_positions, player
                                 [step, dummy] = bfs(opponent['location'], projected_available_positions, opponent['target_loc'])
                                 distances.append(step)
                             distance = min(distances)
-                            projected_available_positions = available_positions_generator(loc, projected_wall_list, [])
+                            projected_available_positions = available_positions_generator(loc, projected_wall_list, player_list)
                             [step, dummy] = bfs(loc, projected_available_positions, target_loc)
                             value = distance - step
-                            action = {'action_type': 'building', 'wall': wall,'cost': value}  
+                            action = {'action_type': 'building', 'wall': wall,'cost': value}
+                            #print action  
                             action_list.append(action)            
             #print action_list
         #action select
