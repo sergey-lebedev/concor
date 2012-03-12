@@ -71,3 +71,27 @@ classic = {'blank': ' ',
            'player_3': u'░'    
           }
 classic.update(numbers)
+multicolored = {'blank': ' ',
+                'light_horizontal': u'─',
+                'light_vertical': u'│',
+                'light_vertical_and_horizontal': u'┼',
+                'light_down_and_horizontal': u'┬',
+                'light_up_and_horizontal': u'┴',
+                'light_vertical_and_right': u'├',
+                'light_vertical_and_left': u'┤',
+                'light_down_and_right': u'┌',
+                'light_down_and_left': u'┐',
+                'light_up_and_left': u'┘',           
+                'light_up_and_right': u'└',
+                'heavy_horizontal': u'═',
+                'heavy_vertical': u'║',
+                'heavy_vertical_and_horizontal': u'╬',
+                'vertical_heavy_and_horizontal_light': u'╫',
+                'vertical_light_and_horizontal_heavy': u'╪',               
+                'player_0': u'\033[101m' + ' ' + u'\033[0m', 
+                'player_1': u'\033[102m' + ' ' + u'\033[0m', 
+                'player_2': u'\033[104m' + ' ' + u'\033[0m', 
+                'player_3': u'\033[103m' + ' ' + u'\033[0m'    
+               }
+multicolored.update(numbers)
+

@@ -5,7 +5,8 @@ from settings import *
 
 #pattern = compact
 #pattern = box_drawing
-pattern = classic
+#pattern = classic
+pattern = multicolored
 
 vertical_offset = (25 - (height*height_aspect + 1))/2
 horizontal_offset = (80 - (width*width_aspect + 1))/2

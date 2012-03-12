@@ -137,7 +137,7 @@ def bot_turn(PLAYER, player, player_list, wall_list, available_positions, player
     elif bot_type == 'straight_bot':
         loc = player['location']
         [step, neighbor] = bfs(loc, available_positions, target_loc)
-        print step
+        #print step
         (x, y) = neighbor
         players[x][y] = 0    
         player['location'] = (x, y)
@@ -166,7 +166,7 @@ def bot_turn(PLAYER, player, player_list, wall_list, available_positions, player
             #print step
             distances.append(step)
         distance = min(distances)
-        print distance
+        #print distance
         for neighbor in neighbors:
             [step, dummy] = bfs(neighbor, available_positions, target_loc)
             #print step
