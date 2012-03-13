@@ -172,9 +172,12 @@ def bot_turn(PLAYER, player, player_list, wall_list, available_positions, player
             #print step
             if (step != None) and (distance != None):
                 value = distance - step
-                action = {'action_type': 'movement', 'location': neighbor, 'cost': value}
-                #print action
-                action_list.append(action)
+            else:
+                #retreat
+                value = None
+            action = {'action_type': 'movement', 'location': neighbor, 'cost': value}
+            #print action
+            action_list.append(action)
         #win move
         intersection = set(neighbors).intersection(set(target_loc))
         if intersection != set([]):
