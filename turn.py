@@ -173,7 +173,6 @@ def bot_turn(PLAYER, player, player_list, wall_list, available_positions, player
             if (step != None) and (distance != None):
                 value = distance - step
             else:
-                #retreat
                 value = None
             action = {'action_type': 'movement', 'location': neighbor, 'cost': value}
             #print action
