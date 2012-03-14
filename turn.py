@@ -159,16 +159,16 @@ def bot_turn(PLAYER, player, player_list, wall_list, available_positions, player
         action_list = []
         #movement
         distances = []
-        for opponent in opponent_list:
-            #print opponent
-            opponent_available_positions = available_positions_generator(opponent['location'], wall_list, player_list)
-            [step, dummy] = bfs(opponent['location'], opponent_available_positions, opponent['target_loc'])
-            #print step
-            distances.append(step)
-        distance = min(distances)
         #print distance
         for neighbor in neighbors:
             [step, dummy] = bfs(neighbor, available_positions, target_loc)
+            for opponent in opponent_list:
+                #print opponent
+                opponent_available_positions = available_positions_generator(opponent['location'], wall_list, player_list)
+                [step, dummy] = bfs(opponent['location'], opponent_available_positions, opponent['target_loc'])
+                #print step
+                distances.append(step)
+            distance = min(distances)
             #print step
             if (step != None) and (distance != None):
                 value = distance - step
