@@ -42,6 +42,11 @@ for i in range(amount_of_players):
 #digits
 digit_positions = width_aspect - 1
 digit = ['blank']*digit_positions
+numbers={}
+for i in range(10):
+    char = str(i)
+    numbers[char] = char
+pattern.update(numbers)
 
 #wall picture
 vertical_wall = ['heavy_vertical']*(height_aspect*wall_length - 1)
@@ -82,6 +87,9 @@ def corner_polish(field):
 
 corner_polish(field)
 
+def septum_polish(field):
+    pass
+
 def draw(player_list, wall_list, additional=[]):
     temp_field = []
     for lines in field:
@@ -109,7 +117,7 @@ def draw(player_list, wall_list, additional=[]):
         (row, col) = additional[i]  
         digit[digit_positions/2] = str(i + 1)
         for j in range(digit_positions):
-            temp_field[col*height_aspect + 1][row*width_aspect + 1 + j] = digit[j]
+            temp_field[col*height_aspect + 1][row*width_aspect + 1 + j] = digit[j]  
 
     os.system('clear')
     print '\n'*vertical_offset

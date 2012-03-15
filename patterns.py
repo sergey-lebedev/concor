@@ -1,9 +1,5 @@
 # -*- coding: utf-8 -*-
 #patterns
-numbers={}
-for i in range(10):
-    char = str(i)
-    numbers[char] = char
 compact = {'blank': ' ',
            'light_horizontal': '-',
            'light_vertical': '|',
@@ -24,7 +20,6 @@ compact = {'blank': ' ',
            'player_2': 'C', 
            'player_3': 'D'
           }
-compact.update(numbers)
 box_drawing = {'blank': ' ',
                'light_horizontal': u'─',
                'light_vertical': u'│',
@@ -47,7 +42,6 @@ box_drawing = {'blank': ' ',
                'player_2': u'▒', 
                'player_3': u'░'    
               }
-box_drawing.update(numbers)
 classic = {'blank': ' ',
            'light_horizontal': u'─',
            'light_vertical': u'│',
@@ -70,7 +64,6 @@ classic = {'blank': ' ',
            'player_2': u'▒', 
            'player_3': u'░'    
           }
-classic.update(numbers)
 multicolored = {'blank': ' ',
                 'light_horizontal': u'─',
                 'light_vertical': u'│',
@@ -93,5 +86,3 @@ multicolored = {'blank': ' ',
                 'player_2': u'\033[104m' + ' ' + u'\033[0m', 
                 'player_3': u'\033[103m' + ' ' + u'\033[0m'    
                }
-multicolored.update(numbers)
-
