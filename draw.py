@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import os
 from patterns import *
 from settings import *
 
@@ -119,7 +118,7 @@ def draw(player_list, wall_list, additional=[]):
         for j in range(digit_positions):
             temp_field[col*height_aspect + 1][row*width_aspect + 1 + j] = digit[j]  
 
-    os.system('clear')
+    print '\033[2J'
     print '\n'*vertical_offset
     for i in range(height_aspect*height + 1):
         string = ' '*horizontal_offset
