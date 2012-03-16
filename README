@@ -5,3 +5,4 @@ n<Enter>n<Enter> - add a new wall
 r<Enter> - rotate wall
 i,j,k,l<Enter> - move wall
 b<Enter> - build wall
+s<Enter> - switch between turn phases 
