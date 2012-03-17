@@ -2,6 +2,54 @@
 from settings import *
 from draw import *
 
+def vector_sort(vectors):
+    result = []
+    I_quadrant = []
+    II_quadrant = []
+    III_quadrant = []
+    IV_quadrant = []
+    for vector in vectors:
+        (x, y) = vector
+        if (x > 0) and (y >= 0):
+            #I_quadrant
+            counter = 0
+            for items in I_quadrant:
+                (a, b) = items
+                if (b / a) > (y / x):
+                    counter += 1    
+            I_quadrant.insert(counter, vector)                
+        elif (x <= 0) and (y > 0):
+            #II_quadrant
+            counter = 0
+            for items in II_quadrant:
+                (a, b) = items
+                if (a / b) < (x / y):
+                    counter += 1    
+            II_quadrant.insert(counter, vector)  
+        elif (x < 0) and (y <= 0):
+            #III_quadrant
+            counter = 0
+            for items in III_quadrant:
+                (a, b) = items
+                if (b / a) < (y / x):
+                    counter += 1    
+            III_quadrant.insert(counter, vector)  
+        elif (x >= 0) and (y < 0):
+            #IV_quadrant
+            counter = 0
+            for items in IV_quadrant:
+                (a, b) = items
+                if (a / b) < (x / y):
+                    counter += 1    
+            IV_quadrant.insert(counter, vector) 
+        else:
+            pass
+    result.extend(III_quadrant)
+    result.extend(IV_quadrant)
+    result.extend(I_quadrant)
+    result.extend(II_quadrant)  
+    return result
+
 def w2p(wall_list):
     #print wall_list
     p = {}
@@ -41,6 +89,19 @@ def user_turn(player_list, player, wall_list, available_positions, players):
     #(X, Y) = wall['location']
     command_list = []
     command_dict = {}
+    directions = []
+    print neighbors
+    for neighbor in neighbors:
+        (a, b) = neighbor
+        directions.append((a - x, b - y))
+    print directions
+    directions = vector_sort(directions)
+    print directions
+    neighbors = []
+    for direction in directions:
+        (a, b) = direction
+        neighbors.append((x + a, y + b))
+    print neighbors   
     for i in range(len(neighbors)):
         char = str(i + 1)
         command_list.append(char)
