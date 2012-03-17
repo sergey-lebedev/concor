@@ -7,7 +7,7 @@ from settings import *
 #pattern = classic
 pattern = multicolored
 
-vertical_offset = (25 - (height*height_aspect + 1 - 1))/2
+vertical_offset = (25 - (height*height_aspect + 1 + 5))/2
 horizontal_offset = (80 - (width*width_aspect + 1))/2
 
 #field
@@ -128,9 +128,10 @@ def draw(player_list, wall_list, additional=[]):
     print '\033[2J'
     print '\n'*vertical_offset
     info_string = info(player_list)
-    print ' '*horizontal_offset + info_string
     for i in range(height_aspect*height + 1):
         string = ' '*horizontal_offset
         for j in range(width_aspect*width + 1):
                 string += pattern[temp_field[i][j]]
         print string
+    print ' '*horizontal_offset + info_string
+    print '\n'*vertical_offset
