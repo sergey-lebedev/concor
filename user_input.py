@@ -90,18 +90,14 @@ def user_turn(player_list, player, wall_list, available_positions, players):
     command_list = []
     command_dict = {}
     directions = []
-    print neighbors
     for neighbor in neighbors:
         (a, b) = neighbor
         directions.append((a - x, b - y))
-    print directions
     directions = vector_sort(directions)
-    print directions
     neighbors = []
     for direction in directions:
         (a, b) = direction
         neighbors.append((x + a, y + b))
-    print neighbors   
     for i in range(len(neighbors)):
         char = str(i + 1)
         command_list.append(char)
