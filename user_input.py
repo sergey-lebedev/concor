@@ -121,13 +121,11 @@ def user_turn(player_list, player, wall_list, available_positions, players):
                 second_stage = True
 
             if player['amount_of_walls'] == 0:
-                ready = True
+                second_stage = False
 
         walls_installed = 0
         while not ready and second_stage:
-            #if first_symbol: 
             command = raw_input()
-            #    first_symbol = False
             if (command == 'i'):
                 if walls_installed != 0:
                     wall = wall_list[len(wall_list) - 1]    
