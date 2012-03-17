@@ -10,44 +10,44 @@ def vector_sort(vectors):
     IV_quadrant = []
     for vector in vectors:
         (x, y) = vector
-        if (x > 0) and (y >= 0):
+        if (x >= 0) and (y > 0):
             #I_quadrant
             counter = 0
             for items in I_quadrant:
                 (a, b) = items
-                if (b / a) > (y / x):
+                if (a / b) > (x / y):
                     counter += 1    
             I_quadrant.insert(counter, vector)                
-        elif (x <= 0) and (y > 0):
+        elif (x < 0) and (y >= 0):
             #II_quadrant
             counter = 0
             for items in II_quadrant:
                 (a, b) = items
-                if (a / b) < (x / y):
+                if (b / a) < (y / x):
                     counter += 1    
             II_quadrant.insert(counter, vector)  
-        elif (x < 0) and (y <= 0):
+        elif (x <= 0) and (y < 0):
             #III_quadrant
             counter = 0
             for items in III_quadrant:
                 (a, b) = items
-                if (b / a) < (y / x):
+                if (a / b) > (x / y):
                     counter += 1    
             III_quadrant.insert(counter, vector)  
-        elif (x >= 0) and (y < 0):
+        elif (x > 0) and (y <= 0):
             #IV_quadrant
             counter = 0
             for items in IV_quadrant:
                 (a, b) = items
-                if (a / b) < (x / y):
+                if (b / a) < (y / x):
                     counter += 1    
             IV_quadrant.insert(counter, vector) 
         else:
             pass
-    result.extend(III_quadrant)
+    result.extend(II_quadrant)
+    result.extend(III_quadrant)  
     result.extend(IV_quadrant)
     result.extend(I_quadrant)
-    result.extend(II_quadrant)  
     return result
 
 def w2p(wall_list):
