@@ -39,10 +39,7 @@ for i in range(amount_of_players):
         new_player_template = '%s_%s'%(color_template, player_template)
         pattern[new_player_template] = pattern[color_template] + pattern[player_template]
         player_template = new_player_template
-    print player_template
-    print pattern[player_template]
     player_pic.append([player_template]*player_positions)
-    print player_pic
     cutoff = (player_positions - 1) / 2
     player_pic[i][:cutoff] = ['blank']*cutoff
     if cutoff != 0:
@@ -106,9 +103,7 @@ def info(player_list):
         player_template = 'player_%d'%i
         if pattern == multicolored:
             color_template = PLAYERS[i]['color']
-            new_player_template = '%s_%s'%(color_template, player_template)
-            pattern[new_player_template] = pattern[color_template] + pattern[player_template]
-            player_template = new_player_template 
+            player_template = '%s_%s'%(color_template, player_template)
         string += ' ' + pattern[player_template] + '[' + str(player['amount_of_walls']) + ']'
     return string
 
