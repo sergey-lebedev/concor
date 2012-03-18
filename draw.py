@@ -32,7 +32,10 @@ for i in range(height_aspect*height + 1):
 player_positions = width_aspect - 1
 player_pic = []
 for i in range(amount_of_players):
-    player_pic.append(['player_%d'%(i*max(AMOUNT_OF_PLAYERS)/amount_of_players)]*player_positions)
+    #color_template = PLAYERS[i*max(AMOUNT_OF_PLAYERS)/amount_of_players]['color']
+    player_template = 'player_%d'%(i*max(AMOUNT_OF_PLAYERS)/amount_of_players)
+    player_pic.append([player_template]*player_positions)
+    #print player_pic
     cutoff = (player_positions - 1) / 2
     player_pic[i][:cutoff] = ['blank']*cutoff
     if cutoff != 0:
