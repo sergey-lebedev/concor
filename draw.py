@@ -32,10 +32,17 @@ for i in range(height_aspect*height + 1):
 player_positions = width_aspect - 1
 player_pic = []
 for i in range(amount_of_players):
-    #color_template = PLAYERS[i*max(AMOUNT_OF_PLAYERS)/amount_of_players]['color']
+    color_template = ''
     player_template = 'player_%d'%(i*max(AMOUNT_OF_PLAYERS)/amount_of_players)
+    if pattern == multicolored:
+        color_template = PLAYERS[i*max(AMOUNT_OF_PLAYERS)/amount_of_players]['color']
+        new_player_template = '%s_%s'%(color_template, player_template)
+        pattern[new_player_template] = pattern[color_template] + pattern[player_template]
+        player_template = new_player_template
+    print player_template
+    print pattern[player_template]
     player_pic.append([player_template]*player_positions)
-    #print player_pic
+    print player_pic
     cutoff = (player_positions - 1) / 2
     player_pic[i][:cutoff] = ['blank']*cutoff
     if cutoff != 0:
@@ -95,8 +102,14 @@ def septum_polish(field):
 def info(player_list):  
     string = ''
     for player in player_list:
-        i = player['id']
-        string += ' ' + pattern['player_%d'%i] + '[' + str(player['amount_of_walls']) + ']'
+        i = player['id']    
+        player_template = 'player_%d'%i
+        if pattern == multicolored:
+            color_template = PLAYERS[i]['color']
+            new_player_template = '%s_%s'%(color_template, player_template)
+            pattern[new_player_template] = pattern[color_template] + pattern[player_template]
+            player_template = new_player_template 
+        string += ' ' + pattern[player_template] + '[' + str(player['amount_of_walls']) + ']'
     return string
 
 def draw(player_list, wall_list, additional=[]):
