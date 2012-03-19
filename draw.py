@@ -31,6 +31,8 @@ for i in range(height_aspect*height + 1):
 
 #colorwalls
 invertor = ''
+if pattern == multicolored:
+    invertor = u'\033[07m'
 if pattern == colorwalls:
     invertor = u'\033[07m'
     for i in range(amount_of_players):    

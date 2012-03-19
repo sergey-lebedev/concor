@@ -81,10 +81,10 @@ multicolored = {'blank': ' ',
                 'heavy_vertical_and_horizontal': u'╬',
                 'vertical_heavy_and_horizontal_light': u'╫',
                 'vertical_light_and_horizontal_heavy': u'╪',
-                'red': u'\033[101m',
-                'green': u'\033[102m',     
-                'blue': u'\033[104m',
-                'yellow': u'\033[103m',
+                'red': u'\033[31m', #u'\033[101m',
+                'green': u'\033[32m', #u'\033[102m'   
+                'blue': u'\033[34m', #u'\033[104m'
+                'yellow': u'\033[33m', #u'\033[103m'
                 'player_0': u'\033[01m' + ' ' + u'\033[0m', 
                 'player_1': u'\033[01m' + ' ' + u'\033[0m', 
                 'player_2': u'\033[01m' + ' ' + u'\033[0m', 
