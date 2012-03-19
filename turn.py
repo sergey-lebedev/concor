@@ -192,7 +192,7 @@ def bot_turn(PLAYER, player, player_list, wall_list, available_positions, player
                     if p[location] != set([]):           
                         for wall_type in p[location]:
                             projected_wall_list = list(wall_list)
-                            wall = {'type': wall_type, 'location': location}
+                            wall = {'type': wall_type, 'location': location, 'player_id': player['id']}
                             projected_wall_list.append(wall)
                             distances = []
                             for opponent in opponent_list:

@@ -177,7 +177,7 @@ def user_turn(player_list, player, wall_list, available_positions, players):
                         for j in range(1, height):
                             if p[(i, j)] != set([]):           
                                 wall_type = list(p[(i, j)])
-                                wall = {'type': wall_type[0], 'location': (i, j)}
+                                wall = {'type': wall_type[0], 'location': (i, j), 'player_id': player['id']}
                                 break
                     if wall != None:
                         wall_list.append(wall)

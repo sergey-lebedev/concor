@@ -33,6 +33,11 @@ for i in range(height_aspect*height + 1):
 invertor = ''
 if pattern == colorwalls:
     invertor = u'\033[07m'
+    for i in range(amount_of_players):    
+        color_template = PLAYERS[i*max(AMOUNT_OF_PLAYERS)/amount_of_players]['color']
+        for wall_template in ['heavy_vertical', 'heavy_horizontal']:
+            new_wall_template = '%s_%s'%(color_template, wall_template)    
+            pattern[new_wall_template] = pattern[color_template] + pattern[wall_template]
 
 #player picture
 player_positions = width_aspect - 1
@@ -127,12 +132,19 @@ def draw(player_list, wall_list, additional=[]):
 
     for wall in wall_list:
         (row, col) = wall['location']
+        color_template = PLAYERS[wall['player_id']]['color']
         if wall['type'] == 'vertical':
+            vertical_wall_template = 'heavy_vertical'
+            if pattern == colorwalls:               
+                vertical_wall_template = '%s_%s'%(color_template, vertical_wall_template)    
             for i in range(len(vertical_wall)):
-                temp_field[(col - 1)*height_aspect + 1 + i][row*width_aspect] = vertical_wall[i]
+                temp_field[(col - 1)*height_aspect + 1 + i][row*width_aspect] = vertical_wall_template
         elif wall['type'] == 'horizontal':
+            horizontal_wall_template = 'heavy_horizontal'
+            if pattern == colorwalls:               
+                horizontal_wall_template = '%s_%s'%(color_template, horizontal_wall_template)
             for i in range(len(horizontal_wall)):
-                temp_field[col*height_aspect][(row - 1)*width_aspect + 1 + i] = horizontal_wall[i]
+                temp_field[col*height_aspect][(row - 1)*width_aspect + 1 + i] = horizontal_wall_template
         else:
             pass  
 
