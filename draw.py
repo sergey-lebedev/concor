@@ -5,7 +5,8 @@ from settings import *
 #pattern = compact
 #pattern = box_drawing
 #pattern = classic
-pattern = multicolored
+#pattern = multicolored
+pattern = colorwalls
 
 vertical_offset = (25 - (height*height_aspect + 1 + 5))/2
 horizontal_offset = (80 - (width*width_aspect + 1))/2
@@ -28,16 +29,21 @@ for i in range(height_aspect*height + 1):
 
         field[i].append(char)
 
+#colorwalls
+invertor = ''
+if pattern == colorwalls:
+    invertor = u'\033[07m'
+
 #player picture
 player_positions = width_aspect - 1
 player_pic = []
 for i in range(amount_of_players):
     color_template = ''
     player_template = 'player_%d'%(i*max(AMOUNT_OF_PLAYERS)/amount_of_players)
-    if pattern == multicolored:
+    if pattern == multicolored or pattern == colorwalls:
         color_template = PLAYERS[i*max(AMOUNT_OF_PLAYERS)/amount_of_players]['color']
         new_player_template = '%s_%s'%(color_template, player_template)
-        pattern[new_player_template] = pattern[color_template] + pattern[player_template]
+        pattern[new_player_template] = invertor + pattern[color_template] + pattern[player_template]
         player_template = new_player_template
     player_pic.append([player_template]*player_positions)
     cutoff = (player_positions - 1) / 2
@@ -101,7 +107,7 @@ def info(player_list):
     for player in player_list:
         i = player['id']    
         player_template = 'player_%d'%i
-        if pattern == multicolored:
+        if pattern == multicolored or pattern == colorwalls:
             color_template = PLAYERS[i]['color']
             player_template = '%s_%s'%(color_template, player_template)
         string += ' ' + pattern[player_template] + '[' + str(player['amount_of_walls']) + ']'
