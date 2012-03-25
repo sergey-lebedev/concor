@@ -6,13 +6,13 @@ import locale
 locale.setlocale(locale.LC_ALL,"")
 code = locale.getpreferredencoding()
 
-enable_curses = False
+enable_curses = True
 
 #pattern = compact
 #pattern = box_drawing
-#pattern = classic
+pattern = classic
 #pattern = multicolored
-pattern = colorwalls
+#pattern = colorwalls
 
 #field
 field = []

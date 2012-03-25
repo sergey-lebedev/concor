@@ -10,7 +10,7 @@ for i in range(len(players)):
 plist = []
 for i in range(amount_of_players):
     plist.append(max(AMOUNT_OF_PLAYERS)/amount_of_players*i)
-print plist
+#print plist
 player_list = []
 for i in plist:
     player_list.append({'id': i, 
@@ -37,14 +37,14 @@ if enable_curses:
     curses.curs_set(0)
 
 draw(player_list, wall_list, curscr)
-while not win:
+while not end:
     while True:
         #occupied cells
         loc = player_list[p*amount_of_players/max(AMOUNT_OF_PLAYERS)]['location']
         available_positions = available_positions_generator(loc, wall_list, player_list)
 
         if PLAYERS[p]['owner'] == 'user':
-            user_turn(player_list, player_list[p*amount_of_players/max(AMOUNT_OF_PLAYERS)], wall_list, available_positions, players, curscr)
+            end = user_turn(player_list, player_list[p*amount_of_players/max(AMOUNT_OF_PLAYERS)], wall_list, available_positions, players, curscr)
         else:
             #print p
             bot_turn(PLAYERS[p], player_list[p*amount_of_players/max(AMOUNT_OF_PLAYERS)], player_list, wall_list, available_positions, players)
@@ -52,13 +52,12 @@ while not win:
         draw(player_list, wall_list, curscr)
 
         if player_list[p*amount_of_players/max(AMOUNT_OF_PLAYERS)]['location'] in PLAYERS[p]['target_loc']:
-            win = True
             end = True
-            if enable_curses:
-                curses.endwin()
             print "Player %d '%s' win"% (p, PLAYERS[p]['owner'])
  
         if end:
+            if enable_curses:
+                curses.endwin()
             break
         p += max(AMOUNT_OF_PLAYERS)/amount_of_players
         p %= max(AMOUNT_OF_PLAYERS)

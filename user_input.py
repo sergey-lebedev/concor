@@ -80,7 +80,6 @@ def w2p(wall_list):
 def user_turn(player_list, player, wall_list, available_positions, players, curscr):
     (x, y) = player['location']
     loc = (x, y)
-
     #print available_positions[loc]
     neighbors = []
     for location in available_positions[loc]:
@@ -104,7 +103,8 @@ def user_turn(player_list, player, wall_list, available_positions, players, curs
         command_list.append(char)
         command_dict[char] = i
 
-    numbers[char] = char      
+    numbers[char] = char     
+    quit = False 
     ready = False
     second_stage = False
     while not ready:  
@@ -116,11 +116,15 @@ def user_turn(player_list, player, wall_list, available_positions, players, curs
                 command = curses.keyname(k)
             else:
                 command = raw_input()
+
             if command in command_list:
                 players[x][y] = 0
                 (x, y) = neighbors[command_dict[command]]
                 player['location'] = (x, y)
                 players[x][y] = 1
+                ready = True
+            elif (command == 'q'):
+                quit = True
                 ready = True
             else:
                 ready = False
@@ -137,6 +141,7 @@ def user_turn(player_list, player, wall_list, available_positions, players, curs
                 command = curses.keyname(k)
             else:
                 command = raw_input()
+
             if (command == 'i'):
                 if walls_installed != 0:
                     wall = wall_list[len(wall_list) - 1]    
@@ -207,11 +212,6 @@ def user_turn(player_list, player, wall_list, available_positions, players, curs
                 else:
                     ready = False
                 player['amount_of_walls'] -= walls_installed    
-            #elif (command == 'q'):
-            #    end = True
-            #elif (command == 'q!'):
-            #    end = True
-            #    win = True
             elif (command == 's'):
                 if walls_installed != 0:
                     removed_wall = wall_list.pop()
@@ -219,6 +219,10 @@ def user_turn(player_list, player, wall_list, available_positions, players, curs
                     walls_installed -=1
                 ready = False
                 second_stage = False
+            elif (command == 'q'):
+                quit = True
+                ready = True
             else:
                 pass
             draw(player_list, wall_list, curscr)
+    return quit
