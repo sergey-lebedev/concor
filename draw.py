@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from patterns import *
 from settings import *
+import curses
 
 #pattern = compact
 #pattern = box_drawing
@@ -120,7 +121,7 @@ def info(player_list):
         string += ' ' + pattern[player_template] + '[' + str(player['amount_of_walls']) + ']'
     return string
 
-def draw(player_list, wall_list, additional=[]):
+def draw(player_list, wall_list, curscr, additional=[]):
     temp_field = []
     for lines in field:
         temp_field.append(lines[:])
@@ -156,13 +157,31 @@ def draw(player_list, wall_list, additional=[]):
         for j in range(digit_positions):
             temp_field[col*height_aspect + 1][row*width_aspect + 1 + j] = digit[j]  
 
-    print '\033[2J'
-    print '\n'*vertical_offset
-    info_string = info(player_list)
-    for i in range(height_aspect*height + 1):
-        string = ' '*horizontal_offset
-        for j in range(width_aspect*width + 1):
-                string += pattern[temp_field[i][j]]
-        print string
-    print ' '*horizontal_offset + info_string
-    print '\n'*vertical_offset
+    if enable_curses:
+        curscr.move(0, vertical_offset)
+        info_string = info(player_list)
+        for i in range(height_aspect*height + 1):
+            string = ' '*horizontal_offset
+            for j in range(width_aspect*width + 1):
+                    string += pattern[temp_field[i][j]]
+            #try:
+            curscr.addstr(string + '\n')
+            #except curses.error:
+            #    pass
+        #curscr.move(0, vertical_offset)
+        #try:
+        curscr.addstr(' '*horizontal_offset + info_string + '\n')
+        #except curses.error:
+        #    pass
+        curscr.refresh()
+    else:
+        print '\033[2J'
+        print '\n'*vertical_offset
+        info_string = info(player_list)
+        for i in range(height_aspect*height + 1):
+            string = ' '*horizontal_offset
+            for j in range(width_aspect*width + 1):
+                    string += pattern[temp_field[i][j]]
+            print string
+        print ' '*horizontal_offset + info_string
+        print '\n'*vertical_offset

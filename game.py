@@ -30,7 +30,12 @@ wall_list = []
 end = False
 win = False
 p = 0
-draw(player_list, wall_list)
+
+curscr = None
+if enable_curses:
+    curscr = curses.initscr()
+
+draw(player_list, wall_list, curscr)
 while not win:
     while True:
         #occupied cells
@@ -38,16 +43,18 @@ while not win:
         available_positions = available_positions_generator(loc, wall_list, player_list)
 
         if PLAYERS[p]['owner'] == 'user':
-            user_turn(player_list, player_list[p*amount_of_players/max(AMOUNT_OF_PLAYERS)], wall_list, available_positions, players)
+            user_turn(player_list, player_list[p*amount_of_players/max(AMOUNT_OF_PLAYERS)], wall_list, available_positions, players, curscr)
         else:
             #print p
             bot_turn(PLAYERS[p], player_list[p*amount_of_players/max(AMOUNT_OF_PLAYERS)], player_list, wall_list, available_positions, players)
 
-        draw(player_list, wall_list)
+        draw(player_list, wall_list, curscr)
 
         if player_list[p*amount_of_players/max(AMOUNT_OF_PLAYERS)]['location'] in PLAYERS[p]['target_loc']:
             win = True
             end = True
+            if enable_curses:
+                curses.endwin()
             print "Player %d '%s' win"% (p, PLAYERS[p]['owner'])
  
         if end:

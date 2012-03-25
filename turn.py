@@ -225,7 +225,7 @@ def bot_turn(PLAYER, player, player_list, wall_list, available_positions, player
             action = equal_actions_list[random.randint(0, variants - 1)]
         else:
             action = {'action_type': None}      
-        print action
+        #print action
         if action['action_type'] == 'movement':
             (x, y) = action['location']
             player['location'] = (x, y)
