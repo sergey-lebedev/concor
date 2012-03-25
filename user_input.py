@@ -106,6 +106,7 @@ def user_turn(player_list, player, wall_list, available_positions, players, curs
     numbers[char] = char     
     quit = False 
     ready = False
+    new_wall = False
     second_stage = False
     while not ready:  
         while not ready and not second_stage:
@@ -126,6 +127,10 @@ def user_turn(player_list, player, wall_list, available_positions, players, curs
             elif (command == 'q'):
                 quit = True
                 ready = True
+            elif (command == 'n'):
+                new_wall = True
+                ready = False
+                second_stage = True
             else:
                 ready = False
                 second_stage = True
@@ -134,7 +139,7 @@ def user_turn(player_list, player, wall_list, available_positions, players, curs
                 second_stage = False
 
         walls_installed = 0
-        while not ready and second_stage:
+        while not ready and second_stage:      
             if enable_curses:
                 curses.noecho()
                 k = curscr.getch()
@@ -142,7 +147,22 @@ def user_turn(player_list, player, wall_list, available_positions, players, curs
             else:
                 command = raw_input()
 
-            if (command == 'i'):
+            if (command == 'n'):
+                new_wall = False
+                if (walls_installed == 0) and (player['amount_of_walls'] != 0):
+                    wall = None
+                    for i in range(1, width):
+                        for j in range(1, height):
+                            if p[(i, j)] != set([]):           
+                                wall_type = list(p[(i, j)])
+                                wall = {'type': wall_type[0], 'location': (i, j), 'player_id': player['id']}
+                                break
+                    if wall != None:
+                        wall_list.append(wall)
+                        walls_installed +=1
+                        (X, Y) = wall['location']
+
+            elif (command == 'i'):
                 if walls_installed != 0:
                     wall = wall_list[len(wall_list) - 1]    
                     Y -= 1
@@ -185,20 +205,6 @@ def user_turn(player_list, player, wall_list, available_positions, players, curs
                         wall['type'] = 'vertical'   
                     elif (wall['type'] == 'vertical'):
                         wall['type'] = 'horizontal'   
-        
-            elif (command == 'n'):
-                if (walls_installed == 0) and (player['amount_of_walls'] != 0):
-                    wall = None
-                    for i in range(1, width):
-                        for j in range(1, height):
-                            if p[(i, j)] != set([]):           
-                                wall_type = list(p[(i, j)])
-                                wall = {'type': wall_type[0], 'location': (i, j), 'player_id': player['id']}
-                                break
-                    if wall != None:
-                        wall_list.append(wall)
-                        walls_installed +=1
-                        (X, Y) = wall['location']
 
             elif (command == 'd'):
                 if walls_installed != 0:
