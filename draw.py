@@ -2,15 +2,14 @@
 from patterns import *
 from settings import *
 import curses
+import locale
+locale.setlocale(locale.LC_ALL,"")
 
 #pattern = compact
 #pattern = box_drawing
-#pattern = classic
+pattern = classic
 #pattern = multicolored
-pattern = colorwalls
-
-if enable_curses:
-    pattern = compact
+#pattern = colorwalls
 
 vertical_offset = (25 - (height*height_aspect + 1 + 5))/2
 horizontal_offset = (80 - (width*width_aspect + 1))/2
@@ -168,12 +167,12 @@ def draw(player_list, wall_list, curscr, additional=[]):
             for j in range(width_aspect*width + 1):
                     string += pattern[temp_field[i][j]]
             #try:
-            curscr.addstr(string + '\n')
+            curscr.addstr(string.encode('utf_8') + '\n')
             #except curses.error:
             #    pass
         #curscr.move(0, vertical_offset)
         #try:
-        curscr.addstr(' '*horizontal_offset + info_string + '\n')
+        curscr.addstr(' '*horizontal_offset + info_string.encode('utf_8') + '\n')
         #except curses.error:
         #    pass
         curscr.refresh()
