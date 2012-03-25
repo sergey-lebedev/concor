@@ -178,6 +178,7 @@ def draw(player_list, wall_list, curscr, additional=[]):
                 pass
         try:
             curscr.move(cur_y + 1, horizontal_offset)
+            curscr.clrtoeol()
             curscr.addstr(info_string.encode(code))
         except curses.error:
             pass
