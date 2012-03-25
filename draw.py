@@ -4,6 +4,7 @@ from settings import *
 import curses
 import locale
 locale.setlocale(locale.LC_ALL,"")
+code = locale.getpreferredencoding()
 
 enable_curses = False
 
@@ -12,9 +13,6 @@ enable_curses = False
 #pattern = classic
 #pattern = multicolored
 pattern = colorwalls
-
-vertical_offset = (25 - (height*height_aspect + 1 + 5))/2
-horizontal_offset = (80 - (width*width_aspect + 1))/2
 
 #field
 field = []
@@ -162,23 +160,32 @@ def draw(player_list, wall_list, curscr, additional=[]):
             temp_field[col*height_aspect + 1][row*width_aspect + 1 + j] = digit[j]  
 
     if enable_curses:
-        curscr.move(0, vertical_offset)
+        [MAX_Y, MAX_X] = curscr.getmaxyx()
+        vertical_offset = (MAX_Y - (height*height_aspect + 1 + 3))/2
+        horizontal_offset = (MAX_X - (width*width_aspect + 1))/2
+        curscr.move(vertical_offset, 0)
         info_string = info(player_list)
+        [cur_y, cur_x] = curscr.getyx()
         for i in range(height_aspect*height + 1):
-            string = ' '*horizontal_offset
+            string = ''
             for j in range(width_aspect*width + 1):
                     string += pattern[temp_field[i][j]]
-            #try:
-            curscr.addstr(string.encode('utf_8') + '\n')
-            #except curses.error:
-            #    pass
-        #curscr.move(0, vertical_offset)
-        #try:
-        curscr.addstr(' '*horizontal_offset + info_string.encode('utf_8') + '\n')
-        #except curses.error:
-        #    pass
+            try:
+                curscr.move(cur_y + 1, horizontal_offset)
+                curscr.addstr(string.encode(code))
+                [cur_y, cur_x] = curscr.getyx()
+            except curses.error:
+                pass
+        try:
+            curscr.move(cur_y + 1, horizontal_offset)
+            curscr.addstr(info_string.encode(code))
+        except curses.error:
+            pass
         curscr.refresh()
     else:
+        vertical_offset = (25 - (height*height_aspect + 1 + 5))/2
+        horizontal_offset = (80 - (width*width_aspect + 1))/2
+
         print '\033[2J'
         print '\n'*vertical_offset
         info_string = info(player_list)
