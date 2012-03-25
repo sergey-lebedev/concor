@@ -9,6 +9,9 @@ import curses
 #pattern = multicolored
 pattern = colorwalls
 
+if enable_curses:
+    pattern = compact
+
 vertical_offset = (25 - (height*height_aspect + 1 + 5))/2
 horizontal_offset = (80 - (width*width_aspect + 1))/2
 

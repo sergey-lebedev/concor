@@ -112,8 +112,8 @@ def user_turn(player_list, player, wall_list, available_positions, players, curs
             draw(player_list, wall_list, curscr, neighbors)
             if enable_curses:
                 curses.noecho()
-                command = curscr.getch()
-                curscr.addch(command)
+                k = curscr.getch()
+                command = curses.keyname(k)
             else:
                 command = raw_input()
             if command in command_list:
@@ -133,8 +133,8 @@ def user_turn(player_list, player, wall_list, available_positions, players, curs
         while not ready and second_stage:
             if enable_curses:
                 curses.noecho()
-                command = curscr.getch()
-                curscr.addch(command)
+                k = curscr.getch()
+                command = curses.keyname(k)
             else:
                 command = raw_input()
             if (command == 'i'):
