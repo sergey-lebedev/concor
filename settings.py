@@ -20,7 +20,6 @@ height = 9
 width_aspect = 4
 height_aspect = 2
 wall_length = 2
-enable_curses = False
 
 PLAYERS = [{'color': 'red', 'location': (width/2, height - 1), 'target_loc': [], 'owner': 'user'},
            {'color': 'green', 'location': (0, height/2), 'target_loc': [], 'owner': 'simple_bot'},

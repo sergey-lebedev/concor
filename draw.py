@@ -5,11 +5,13 @@ import curses
 import locale
 locale.setlocale(locale.LC_ALL,"")
 
+enable_curses = False
+
 #pattern = compact
 #pattern = box_drawing
-pattern = classic
+#pattern = classic
 #pattern = multicolored
-#pattern = colorwalls
+pattern = colorwalls
 
 vertical_offset = (25 - (height*height_aspect + 1 + 5))/2
 horizontal_offset = (80 - (width*width_aspect + 1))/2
