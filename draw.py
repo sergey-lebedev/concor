@@ -164,7 +164,6 @@ def draw(player_list, wall_list, curscr, additional=[]):
         vertical_offset = (MAX_Y - (height*height_aspect + 1 + 3))/2
         horizontal_offset = (MAX_X - (width*width_aspect + 1))/2
         curscr.move(vertical_offset, 0)
-        info_string = info(player_list)
         [cur_y, cur_x] = curscr.getyx()
         for i in range(height_aspect*height + 1):
             string = ''
@@ -176,6 +175,7 @@ def draw(player_list, wall_list, curscr, additional=[]):
                 [cur_y, cur_x] = curscr.getyx()
             except curses.error:
                 pass
+        info_string = info(player_list)
         try:
             curscr.move(cur_y + 1, horizontal_offset)
             curscr.clrtoeol()
@@ -189,11 +189,11 @@ def draw(player_list, wall_list, curscr, additional=[]):
 
         print '\033[2J'
         print '\n'*vertical_offset
-        info_string = info(player_list)
         for i in range(height_aspect*height + 1):
             string = ' '*horizontal_offset
             for j in range(width_aspect*width + 1):
                     string += pattern[temp_field[i][j]]
             print string
+        info_string = info(player_list)
         print ' '*horizontal_offset + info_string
         print '\n'*vertical_offset
