@@ -53,11 +53,15 @@ while not end:
 
         if player_list[p*amount_of_players/max(AMOUNT_OF_PLAYERS)]['location'] in PLAYERS[p]['target_loc']:
             end = True
-            print "Player %d '%s' win"% (p, PLAYERS[p]['owner'])
+            win = True
  
         if end:
             if enable_curses:
                 curses.endwin()
             break
+
         p += max(AMOUNT_OF_PLAYERS)/amount_of_players
         p %= max(AMOUNT_OF_PLAYERS)
+
+if win:
+    print "Player %d '%s' win"% (p, PLAYERS[p]['owner'])
