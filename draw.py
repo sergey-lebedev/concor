@@ -3,6 +3,7 @@ from patterns import *
 from settings import *
 import curses
 import locale
+
 locale.setlocale(locale.LC_ALL,"")
 code = locale.getpreferredencoding()
 
@@ -163,7 +164,10 @@ def draw(player_list, wall_list, curscr, additional=[]):
         [MAX_Y, MAX_X] = curscr.getmaxyx()
         vertical_offset = (MAX_Y - (height*height_aspect + 1 + 3))/2
         horizontal_offset = (MAX_X - (width*width_aspect + 1))/2
-        curscr.move(vertical_offset, 0)
+        try:
+            curscr.move(vertical_offset, 0)
+        except curses.error:
+            curses.endwin()
         [cur_y, cur_x] = curscr.getyx()
         for i in range(height_aspect*height + 1):
             string = ''
@@ -174,14 +178,14 @@ def draw(player_list, wall_list, curscr, additional=[]):
                 curscr.addstr(string.encode(code))
                 [cur_y, cur_x] = curscr.getyx()
             except curses.error:
-                pass
+                curses.endwin()
         info_string = info(player_list)
         try:
             curscr.move(cur_y + 1, horizontal_offset)
             curscr.clrtoeol()
             curscr.addstr(info_string.encode(code))
         except curses.error:
-            pass
+            curses.endwin()
         curscr.refresh()
     else:
         vertical_offset = (25 - (height*height_aspect + 1 + 5))/2
