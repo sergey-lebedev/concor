@@ -7,6 +7,9 @@ locale.setlocale(locale.LC_ALL,"")
 code = locale.getpreferredencoding()
 
 enable_curses = True
+enable_color_players = False
+enable_color_walls = False
+
 if enable_curses:
     try:
         import curses
@@ -17,7 +20,6 @@ if enable_curses:
 #pattern = box_drawing
 pattern = classic
 #pattern = multicolored
-#pattern = colorwalls
 
 #field
 field = []
@@ -39,15 +41,12 @@ for i in range(height_aspect*height + 1):
 
 #colorwalls
 invertor = ''
-if pattern == multicolored:
+enable_colors = False
+if enable_color_players or enable_color_walls:
     invertor = u'\033[07m'
-if pattern == colorwalls:
-    invertor = u'\033[07m'
-    for i in range(amount_of_players):    
-        color_template = PLAYERS[i*max(AMOUNT_OF_PLAYERS)/amount_of_players]['color']
-        for wall_template in ['heavy_vertical', 'heavy_horizontal']:
-            new_wall_template = '%s_%s'%(color_template, wall_template)    
-            pattern[new_wall_template] = pattern[color_template] + pattern[wall_template]
+    pattern = multicolored
+    pattern['default'] = ''
+    enable_colors = True
 
 #player picture
 player_positions = width_aspect - 1
@@ -55,7 +54,7 @@ player_pic = []
 for i in range(amount_of_players):
     color_template = ''
     player_template = 'player_%d'%(i*max(AMOUNT_OF_PLAYERS)/amount_of_players)
-    if pattern == multicolored or pattern == colorwalls:
+    if enable_colors:
         color_template = PLAYERS[i*max(AMOUNT_OF_PLAYERS)/amount_of_players]['color']
         new_player_template = '%s_%s'%(color_template, player_template)
         pattern[new_player_template] = invertor + pattern[color_template] + pattern[player_template]
@@ -122,7 +121,7 @@ def info(player_list):
     for player in player_list:
         i = player['id']    
         player_template = 'player_%d'%i
-        if pattern == multicolored or pattern == colorwalls:
+        if enable_colors:
             color_template = PLAYERS[i]['color']
             player_template = '%s_%s'%(color_template, player_template)
         string += ' ' + pattern[player_template] + '[' + str(player['amount_of_walls']) + ']'
@@ -147,14 +146,19 @@ def draw(player_list, wall_list, curscr, additional=[]):
         color_template = PLAYERS[wall['player_id']]['color']
         if wall['type'] == 'vertical':
             vertical_wall_template = 'heavy_vertical'
-            if pattern == colorwalls:               
-                vertical_wall_template = '%s_%s'%(color_template, vertical_wall_template)    
+            if enable_color_walls:               
+                #vertical_wall_template = '%s_%s'%(color_template, vertical_wall_template) 
+                for i in range(len(vertical_wall)):
+                    temp_field[(col - 1)*height_aspect + 1 + i][row*width_aspect]['color'] = color_template
             for i in range(len(vertical_wall)):
                 temp_field[(col - 1)*height_aspect + 1 + i][row*width_aspect]['char'] = vertical_wall_template
+  
         elif wall['type'] == 'horizontal':
             horizontal_wall_template = 'heavy_horizontal'
-            if pattern == colorwalls:               
-                horizontal_wall_template = '%s_%s'%(color_template, horizontal_wall_template)
+            if enable_color_walls:               
+                #horizontal_wall_template = '%s_%s'%(color_template, horizontal_wall_template)
+                for i in range(len(horizontal_wall)):
+                    temp_field[col*height_aspect][(row - 1)*width_aspect + 1 + i]['color'] = color_template
             for i in range(len(horizontal_wall)):
                 temp_field[col*height_aspect][(row - 1)*width_aspect + 1 + i]['char'] = horizontal_wall_template
         else:
@@ -177,13 +181,15 @@ def draw(player_list, wall_list, curscr, additional=[]):
         [cur_y, cur_x] = curscr.getyx()
         for i in range(height_aspect*height + 1):
             string = ''
+            curscr.move(cur_y + 1, horizontal_offset)
             for j in range(width_aspect*width + 1):
                     char = temp_field[i][j]['char']
                     color = temp_field[i][j]['color']
-                    string += pattern[char]
+                    string = pattern[char]
+                    curscr.addstr(string.encode(code))
             try:
-                curscr.move(cur_y + 1, horizontal_offset)
-                curscr.addstr(string.encode(code))
+                #curscr.move(cur_y + 1, horizontal_offset)
+                #curscr.addstr(string.encode(code))
                 [cur_y, cur_x] = curscr.getyx()
             except curses.error:
                 curses.endwin()
@@ -206,7 +212,14 @@ def draw(player_list, wall_list, curscr, additional=[]):
             for j in range(width_aspect*width + 1):
                 char = temp_field[i][j]['char']
                 color = temp_field[i][j]['color']
-                string += pattern[char]
+                if enable_colors and (color != 'default'):
+                    left_modificator = pattern[color]
+                    right_modificator = u'\033[0m'
+                else:
+                    left_modificator = ''
+                    right_modificator = ''                 
+                string += left_modificator + pattern[char] + right_modificator
+
             print string
         info_string = info(player_list)
         print ' '*horizontal_offset + info_string
