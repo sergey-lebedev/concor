@@ -8,7 +8,10 @@ code = locale.getpreferredencoding()
 
 enable_curses = True
 if enable_curses:
-    import curses   
+    try:
+        import curses
+    except:
+        enable_curses = False   
 
 #pattern = compact
 #pattern = box_drawing
@@ -175,7 +178,9 @@ def draw(player_list, wall_list, curscr, additional=[]):
         for i in range(height_aspect*height + 1):
             string = ''
             for j in range(width_aspect*width + 1):
-                    string += pattern[temp_field[i][j]['char']]
+                    char = temp_field[i][j]['char']
+                    color = temp_field[i][j]['color']
+                    string += pattern[char]
             try:
                 curscr.move(cur_y + 1, horizontal_offset)
                 curscr.addstr(string.encode(code))
@@ -199,7 +204,9 @@ def draw(player_list, wall_list, curscr, additional=[]):
         for i in range(height_aspect*height + 1):
             string = ' '*horizontal_offset
             for j in range(width_aspect*width + 1):
-                    string += pattern[temp_field[i][j]['char']]
+                char = temp_field[i][j]['char']
+                color = temp_field[i][j]['color']
+                string += pattern[char]
             print string
         info_string = info(player_list)
         print ' '*horizontal_offset + info_string
