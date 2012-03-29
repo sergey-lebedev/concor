@@ -7,19 +7,59 @@ locale.setlocale(locale.LC_ALL,"")
 code = locale.getpreferredencoding()
 
 enable_curses = True
-enable_color_players = False
-enable_color_walls = False
-
-if enable_curses:
-    try:
-        import curses
-    except:
-        enable_curses = False   
+enable_color_players = True
+enable_color_walls = True
 
 #pattern = compact
 #pattern = box_drawing
 pattern = classic
 #pattern = multicolored
+
+if enable_curses:
+    try:
+        import curses
+    except:
+        enable_curses = False  
+
+#colorwalls
+enable_colors = False
+if enable_color_players or enable_color_walls:
+    enable_colors = True
+    pattern = multicolored
+    pattern['default'] = '' 
+
+def init_draw():
+    curscr = None
+    if enable_curses:
+        curscr = curses.initscr()
+        curses.curs_set(0)
+
+    if enable_curses: # and enable_colors:
+        if curses.has_colors():
+            curses.start_color()
+            curses.use_default_colors()
+        else:
+            enable_colors = False
+            enable_color_players = False
+            enable_color_walls = False
+            pattern = classic
+
+    if enable_curses: #and enable_colors:
+        pair_number = 15
+        for color in ('red', 'yellow', 'blue', 'green', 'default'):
+            if (color == 'red'):
+                fg = curses.COLOR_RED
+            elif (color == 'yellow'):
+                fg = curses.COLOR_YELLOW
+            elif (color == 'blue'):
+                fg = curses.COLOR_BLUE
+            elif (color == 'green'):
+                fg = curses.COLOR_GREEN
+            else:
+                fg = -1
+            pair_number += 1
+            curses.init_pair(pair_number, fg, -1) 
+    return curscr
 
 #field
 field = []
@@ -37,33 +77,31 @@ for i in range(height_aspect*height + 1):
             else:
                 char = 'light_vertical_and_horizontal'
 
-        field[i].append({'char': char, 'color': 'default'})
+        field[i].append({'char': char, 'color': 'default', 'modificators': []})
 
-#colorwalls
-invertor = ''
-enable_colors = False
-if enable_color_players or enable_color_walls:
-    invertor = u'\033[07m'
-    pattern = multicolored
-    pattern['default'] = ''
-    enable_colors = True
+dummy = {'char': 'blank', 'color': 'default', 'modificators': []}
 
 #player picture
 player_positions = width_aspect - 1
 player_pic = []
 for i in range(amount_of_players):
-    color_template = ''
+    player_pic.append([])
+    color_template = 'default'
     player_template = 'player_%d'%(i*max(AMOUNT_OF_PLAYERS)/amount_of_players)
-    if enable_colors:
+    modificators = []
+    if enable_color_players:
         color_template = PLAYERS[i*max(AMOUNT_OF_PLAYERS)/amount_of_players]['color']
-        new_player_template = '%s_%s'%(color_template, player_template)
-        pattern[new_player_template] = invertor + pattern[color_template] + pattern[player_template]
-        player_template = new_player_template
-    player_pic.append([player_template]*player_positions)
-    cutoff = (player_positions - 1) / 2
-    player_pic[i][:cutoff] = ['blank']*cutoff
-    if cutoff != 0:
-        player_pic[i][-cutoff:] = ['blank']*cutoff
+        #new_player_template = '%s_%s'%(color_template, player_template)
+        #pattern[new_player_template] = invertor + pattern[color_template] + pattern[player_template]
+        #player_template = new_player_template
+        modificators = ['bold', 'inverted']
+    player_element =  {'char': player_template, 'color': color_template, 'modificators': modificators}  
+    for j in range(player_positions):
+        cutoff = (player_positions - 1) / 2
+        if (j >= cutoff) and (j < (player_positions - cutoff)):
+            player_pic[i].append(player_element)
+        else:
+            player_pic[i].append(dummy)
 
 #digits
 digit_positions = width_aspect - 1
@@ -73,6 +111,10 @@ for i in range(10):
     char = str(i)
     numbers[char] = char
 pattern.update(numbers)
+
+#additional symbols
+pattern.update({'left_square_bracket': '['})
+pattern.update({'right_square_bracket': ']'})
 
 #wall picture
 vertical_wall = ['heavy_vertical']*(height_aspect*wall_length - 1)
@@ -117,15 +159,22 @@ def septum_polish(field):
     pass
 
 def info(player_list):  
-    string = ''
+    info_template = []
     for player in player_list:
         i = player['id']    
         player_template = 'player_%d'%i
-        if enable_colors:
+        color_template = 'default'
+        modificators = []
+        if enable_color_players:
             color_template = PLAYERS[i]['color']
-            player_template = '%s_%s'%(color_template, player_template)
-        string += ' ' + pattern[player_template] + '[' + str(player['amount_of_walls']) + ']'
-    return string
+            modificators = ['bold', 'inverted']
+        info_template.append(dummy) 
+        info_template.append({'char': player_template, 'color': color_template, 'modificators': modificators})
+        info_template.append({'char': 'left_square_bracket', 'color': 'default', 'modificators': []})
+        for char in str(player['amount_of_walls']):
+            info_template.append({'char': char, 'color': 'default', 'modificators': []})    
+        info_template.append({'char': 'right_square_bracket', 'color': 'default', 'modificators': []})
+    return info_template
 
 def draw(player_list, wall_list, curscr, additional=[]):
     temp_field = []
@@ -136,9 +185,9 @@ def draw(player_list, wall_list, curscr, additional=[]):
     
     i = 0
     for player in player_list:
-        (row, col) = player['location']   
+        (row, col) = player['location']
         for j in range(len(player_pic[i])):
-            temp_field[col*height_aspect + 1][row*width_aspect + 1 + j]['char'] = player_pic[i][j]
+            temp_field[col*height_aspect + 1][row*width_aspect + 1 + j] = player_pic[i][j]
         i +=1    
 
     for wall in wall_list:
@@ -185,21 +234,59 @@ def draw(player_list, wall_list, curscr, additional=[]):
             for j in range(width_aspect*width + 1):
                     char = temp_field[i][j]['char']
                     color = temp_field[i][j]['color']
+                    if (color == 'red'):
+                        pair_number = 16
+                    elif (color == 'yellow'):
+                        pair_number = 17
+                    elif (color == 'blue'):
+                        pair_number = 18
+                    elif (color == 'green'):
+                        pair_number = 19
+                    else:
+                        pair_number = 20
+                    attr = curses.color_pair(pair_number)
+                    for modificator in temp_field[i][j]['modificators']:
+                        if (modificator == 'bold'):
+                            attr += curses.A_BOLD
+                        elif (modificator == 'inverted'):
+                            attr += curses.A_REVERSE
                     string = pattern[char]
-                    curscr.addstr(string.encode(code))
+                    curscr.addstr(string.encode(code), attr)
             try:
                 #curscr.move(cur_y + 1, horizontal_offset)
                 #curscr.addstr(string.encode(code))
                 [cur_y, cur_x] = curscr.getyx()
+                curscr.move(cur_y + 1, horizontal_offset)
+                curscr.clrtoeol()
             except curses.error:
                 curses.endwin()
-        info_string = info(player_list)
-        try:
-            curscr.move(cur_y + 1, horizontal_offset)
-            curscr.clrtoeol()
-            curscr.addstr(info_string.encode(code))
-        except curses.error:
-            curses.endwin()
+
+        info_template = info(player_list)
+        for element in info_template:
+            info_string = ''
+            char = element['char']
+            color = element['color']
+            if (color == 'red'):
+                pair_number = 16
+            elif (color == 'yellow'):
+                pair_number = 17
+            elif (color == 'blue'):
+                pair_number = 18
+            elif (color == 'green'):
+                pair_number = 19
+            else:
+                pair_number = 20
+            attr = curses.color_pair(pair_number)
+            for modificator in element['modificators']:
+                if (modificator == 'bold'):
+                    attr += curses.A_BOLD
+                elif (modificator == 'inverted'):
+                    attr += curses.A_REVERSE
+            info_string = pattern[char]
+            try:
+                curscr.addstr(info_string.encode(code), attr)
+            except curses.error:
+                curses.endwin()
         curscr.refresh()
     else:
         vertical_offset = (25 - (height*height_aspect + 1 + 5))/2
@@ -214,6 +301,11 @@ def draw(player_list, wall_list, curscr, additional=[]):
                 color = temp_field[i][j]['color']
                 if enable_colors and (color != 'default'):
                     left_modificator = pattern[color]
+                    for modificator in temp_field[i][j]['modificators']:
+                        if (modificator == 'bold'):
+                            left_modificator += u'\033[01m'
+                        elif (modificator == 'inverted'):
+                            left_modificator += u'\033[07m'
                     right_modificator = u'\033[0m'
                 else:
                     left_modificator = ''
@@ -221,6 +313,24 @@ def draw(player_list, wall_list, curscr, additional=[]):
                 string += left_modificator + pattern[char] + right_modificator
 
             print string
-        info_string = info(player_list)
-        print ' '*horizontal_offset + info_string
+
+        info_template = info(player_list)
+        info_string = ' '*horizontal_offset
+        for element in info_template:
+            char = element['char']
+            color = element['color']
+            if enable_colors and (color != 'default'):
+                left_modificator = pattern[color]
+                for modificator in element['modificators']:
+                    if (modificator == 'bold'):
+                        left_modificator += u'\033[01m'
+                    elif (modificator == 'inverted'):
+                        left_modificator += u'\033[07m'
+                right_modificator = u'\033[0m'
+            else:
+                left_modificator = ''
+                right_modificator = ''                 
+            info_string += left_modificator + pattern[char] + right_modificator
+
+        print info_string
         print '\n'*vertical_offset

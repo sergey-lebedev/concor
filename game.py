@@ -31,10 +31,7 @@ end = False
 win = False
 p = 0
 
-curscr = None
-if enable_curses:
-    curscr = curses.initscr()
-    curses.curs_set(0)
+curscr = init_draw() 
 
 draw(player_list, wall_list, curscr)
 while not end:
