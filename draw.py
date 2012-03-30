@@ -176,6 +176,46 @@ def info(player_list):
         info_template.append({'char': 'right_square_bracket', 'color': 'default', 'modificators': []})
     return info_template
 
+def render_for_print(element):
+    char = element['char']
+    color = element['color']
+    if enable_colors and (color != 'default'):
+        left_modificator = pattern[color]
+        for modificator in element['modificators']:
+            if (modificator == 'bold'):
+                left_modificator += u'\033[01m'
+            elif (modificator == 'inverted'):
+                left_modificator += u'\033[07m'
+        right_modificator = u'\033[0m'
+    else:
+        left_modificator = ''
+        right_modificator = ''
+
+    return left_modificator + pattern[char] + right_modificator
+
+def render_for_curses(element):
+    char = element['char']
+    color = element['color']
+    if (color == 'red'):
+        pair_number = 16
+    elif (color == 'yellow'):
+        pair_number = 17
+    elif (color == 'blue'):
+        pair_number = 18
+    elif (color == 'green'):
+        pair_number = 19
+    else:
+        pair_number = 20
+    attr = curses.color_pair(pair_number)
+    for modificator in element['modificators']:
+        if (modificator == 'bold'):
+            attr += curses.A_BOLD
+        elif (modificator == 'inverted'):
+            attr += curses.A_REVERSE
+
+    string = pattern[char]
+    return string, attr  
+
 def draw(player_list, wall_list, curscr, additional=[]):
     temp_field = []
     for i in range(len(field)):
@@ -232,26 +272,8 @@ def draw(player_list, wall_list, curscr, additional=[]):
             string = ''
             curscr.move(cur_y + 1, horizontal_offset)
             for j in range(width_aspect*width + 1):
-                    char = temp_field[i][j]['char']
-                    color = temp_field[i][j]['color']
-                    if (color == 'red'):
-                        pair_number = 16
-                    elif (color == 'yellow'):
-                        pair_number = 17
-                    elif (color == 'blue'):
-                        pair_number = 18
-                    elif (color == 'green'):
-                        pair_number = 19
-                    else:
-                        pair_number = 20
-                    attr = curses.color_pair(pair_number)
-                    for modificator in temp_field[i][j]['modificators']:
-                        if (modificator == 'bold'):
-                            attr += curses.A_BOLD
-                        elif (modificator == 'inverted'):
-                            attr += curses.A_REVERSE
-                    string = pattern[char]
-                    curscr.addstr(string.encode(code), attr)
+                [string, attr] = render_for_curses(temp_field[i][j])
+                curscr.addstr(string.encode(code), attr)
             try:
                 #curscr.move(cur_y + 1, horizontal_offset)
                 #curscr.addstr(string.encode(code))
@@ -263,26 +285,7 @@ def draw(player_list, wall_list, curscr, additional=[]):
 
         info_template = info(player_list)
         for element in info_template:
-            info_string = ''
-            char = element['char']
-            color = element['color']
-            if (color == 'red'):
-                pair_number = 16
-            elif (color == 'yellow'):
-                pair_number = 17
-            elif (color == 'blue'):
-                pair_number = 18
-            elif (color == 'green'):
-                pair_number = 19
-            else:
-                pair_number = 20
-            attr = curses.color_pair(pair_number)
-            for modificator in element['modificators']:
-                if (modificator == 'bold'):
-                    attr += curses.A_BOLD
-                elif (modificator == 'inverted'):
-                    attr += curses.A_REVERSE
-            info_string = pattern[char]
+            [info_string, attr] = render_for_curses(element)
             try:
                 curscr.addstr(info_string.encode(code), attr)
             except curses.error:
@@ -296,41 +299,15 @@ def draw(player_list, wall_list, curscr, additional=[]):
         print '\n'*vertical_offset
         for i in range(height_aspect*height + 1):
             string = ' '*horizontal_offset
-            for j in range(width_aspect*width + 1):
-                char = temp_field[i][j]['char']
-                color = temp_field[i][j]['color']
-                if enable_colors and (color != 'default'):
-                    left_modificator = pattern[color]
-                    for modificator in temp_field[i][j]['modificators']:
-                        if (modificator == 'bold'):
-                            left_modificator += u'\033[01m'
-                        elif (modificator == 'inverted'):
-                            left_modificator += u'\033[07m'
-                    right_modificator = u'\033[0m'
-                else:
-                    left_modificator = ''
-                    right_modificator = ''                 
-                string += left_modificator + pattern[char] + right_modificator
+            for j in range(width_aspect*width + 1):              
+                string += render_for_print(temp_field[i][j])
 
             print string
 
         info_template = info(player_list)
         info_string = ' '*horizontal_offset
-        for element in info_template:
-            char = element['char']
-            color = element['color']
-            if enable_colors and (color != 'default'):
-                left_modificator = pattern[color]
-                for modificator in element['modificators']:
-                    if (modificator == 'bold'):
-                        left_modificator += u'\033[01m'
-                    elif (modificator == 'inverted'):
-                        left_modificator += u'\033[07m'
-                right_modificator = u'\033[0m'
-            else:
-                left_modificator = ''
-                right_modificator = ''                 
-            info_string += left_modificator + pattern[char] + right_modificator
+        for element in info_template:     
+            info_string += render_for_print(element)
 
         print info_string
         print '\n'*vertical_offset
