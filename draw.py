@@ -91,9 +91,6 @@ for i in range(amount_of_players):
     modificators = []
     if enable_color_players:
         color_template = PLAYERS[i*max(AMOUNT_OF_PLAYERS)/amount_of_players]['color']
-        #new_player_template = '%s_%s'%(color_template, player_template)
-        #pattern[new_player_template] = invertor + pattern[color_template] + pattern[player_template]
-        #player_template = new_player_template
         modificators = ['bold', 'inverted']
     player_element =  {'char': player_template, 'color': color_template, 'modificators': modificators}  
     for j in range(player_positions):
@@ -119,10 +116,6 @@ pattern.update({'right_square_bracket': ']'})
 #wall picture
 vertical_wall = ['heavy_vertical']*(height_aspect*wall_length - 1)
 horizontal_wall = ['heavy_horizontal']*(width_aspect*wall_length - 1)
-#player_positions = width_aspect - 1
-#player_pic = ['player']*player_positions
-#cutoff = (player_positions - 1) / 2
-#player_pic[:cutoff] = ['blank']*cutoff
 
 #corner_polish
 def corner_polish(field):
@@ -270,13 +263,17 @@ def draw(player_list, wall_list, curscr, additional=[]):
         [cur_y, cur_x] = curscr.getyx()
         for i in range(height_aspect*height + 1):
             string = ''
-            curscr.move(cur_y + 1, horizontal_offset)
+            try:
+                curscr.move(cur_y + 1, horizontal_offset)
+            except curses.error:
+                curses.endwin()
             for j in range(width_aspect*width + 1):
                 [string, attr] = render_for_curses(temp_field[i][j])
-                curscr.addstr(string.encode(code), attr)
+                try:
+                    curscr.addstr(string.encode(code), attr)
+                except curses.error:
+                    curses.endwin()
             try:
-                #curscr.move(cur_y + 1, horizontal_offset)
-                #curscr.addstr(string.encode(code))
                 [cur_y, cur_x] = curscr.getyx()
                 curscr.move(cur_y + 1, horizontal_offset)
                 curscr.clrtoeol()
