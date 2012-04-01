@@ -214,10 +214,10 @@ def user_turn(player_list, player, wall_list, available_positions, players, curs
             elif (command == 'b'):
                 if walls_installed != 0:
                     if wall['type'] in p[(X, Y)]:
-                        ready = True                  
+                        player['amount_of_walls'] -= walls_installed                      
+                        ready = True
                 else:
                     ready = False
-                player['amount_of_walls'] -= walls_installed    
             elif (command == 's'):
                 if walls_installed != 0:
                     removed_wall = wall_list.pop()
