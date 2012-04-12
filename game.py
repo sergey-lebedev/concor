@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import time
 from turn import *
 from draw import *
 
@@ -27,13 +28,15 @@ wall_list = []
 #wall_list = [{'type': 'vertical', 'x': X, 'y': Y}]
 #wall_list = [{'type': 'horizontal', 'location': (X, Y)}]
 
+turn_time_limit = 0.25
+
 end = False
 win = False
 p = 0
 
 curscr = init_draw() 
-
 draw(player_list, wall_list, curscr)
+
 while not end:
     while True:
         #occupied cells
@@ -44,8 +47,11 @@ while not end:
             end = user_turn(player_list, player_list[p*amount_of_players/max(AMOUNT_OF_PLAYERS)], wall_list, available_positions, players, curscr)
         else:
             #print p
+            tic = time.time()
             bot_turn(PLAYERS[p], player_list[p*amount_of_players/max(AMOUNT_OF_PLAYERS)], player_list, wall_list, available_positions, players)
-
+            toc = time.time()
+            turn_time = toc - tic
+            time.sleep(max(0, turn_time_limit - turn_time))
         draw(player_list, wall_list, curscr)
 
         if player_list[p*amount_of_players/max(AMOUNT_OF_PLAYERS)]['location'] in PLAYERS[p]['target_loc']:
