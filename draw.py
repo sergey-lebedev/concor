@@ -63,9 +63,9 @@ def init_draw():
 
 #field
 field = []
-for i in range(height_aspect*height + 1):
+for i in range(height_aspect * height + 1):
     field.append([])
-    for j in range(width_aspect*width + 1):
+    for j in range(width_aspect * width + 1):
         if (i % height_aspect):
             if (j % width_aspect):
                 char = 'blank' 
@@ -87,10 +87,10 @@ player_pic = []
 for i in range(amount_of_players):
     player_pic.append([])
     color_template = 'default'
-    player_template = 'player_%d'%(i*max(AMOUNT_OF_PLAYERS)/amount_of_players)
+    player_template = 'player_%d' % (i * max(AMOUNT_OF_PLAYERS) / amount_of_players)
     modificators = []
     if enable_color_players:
-        color_template = PLAYERS[i*max(AMOUNT_OF_PLAYERS)/amount_of_players]['color']
+        color_template = PLAYERS[i * max(AMOUNT_OF_PLAYERS) / amount_of_players]['color']
         modificators = ['bold', 'inverted']
     player_element =  {'char': player_template, 'color': color_template, 'modificators': modificators}  
     for j in range(player_positions):
@@ -102,7 +102,7 @@ for i in range(amount_of_players):
 
 #digits
 digit_positions = width_aspect - 1
-digit = ['blank']*digit_positions
+digit = ['blank'] * digit_positions
 numbers={}
 for i in range(10):
     char = str(i)
@@ -114,8 +114,8 @@ pattern.update({'left_square_bracket': '['})
 pattern.update({'right_square_bracket': ']'})
 
 #wall picture
-vertical_wall = ['heavy_vertical']*(height_aspect*wall_length - 1)
-horizontal_wall = ['heavy_horizontal']*(width_aspect*wall_length - 1)
+vertical_wall = ['heavy_vertical'] * (height_aspect * wall_length - 1)
+horizontal_wall = ['heavy_horizontal'] * (width_aspect * wall_length - 1)
 
 #corner_polish
 def corner_polish(field):
@@ -220,7 +220,7 @@ def draw(player_list, wall_list, curscr, additional=[]):
     for player in player_list:
         (row, col) = player['location']
         for j in range(len(player_pic[i])):
-            temp_field[col*height_aspect + 1][row*width_aspect + 1 + j] = player_pic[i][j]
+            temp_field[col * height_aspect + 1][row * width_aspect + 1 + j] = player_pic[i][j]
         i +=1    
 
     for wall in wall_list:
@@ -231,18 +231,18 @@ def draw(player_list, wall_list, curscr, additional=[]):
             if enable_color_walls:               
                 #vertical_wall_template = '%s_%s'%(color_template, vertical_wall_template) 
                 for i in range(len(vertical_wall)):
-                    temp_field[(col - 1)*height_aspect + 1 + i][row*width_aspect]['color'] = color_template
+                    temp_field[(col - 1) * height_aspect + 1 + i][row * width_aspect]['color'] = color_template
             for i in range(len(vertical_wall)):
-                temp_field[(col - 1)*height_aspect + 1 + i][row*width_aspect]['char'] = vertical_wall_template
+                temp_field[(col - 1) * height_aspect + 1 + i][row * width_aspect]['char'] = vertical_wall_template
   
         elif wall['type'] == 'horizontal':
             horizontal_wall_template = 'heavy_horizontal'
             if enable_color_walls:               
                 #horizontal_wall_template = '%s_%s'%(color_template, horizontal_wall_template)
                 for i in range(len(horizontal_wall)):
-                    temp_field[col*height_aspect][(row - 1)*width_aspect + 1 + i]['color'] = color_template
+                    temp_field[col * height_aspect][(row - 1) * width_aspect + 1 + i]['color'] = color_template
             for i in range(len(horizontal_wall)):
-                temp_field[col*height_aspect][(row - 1)*width_aspect + 1 + i]['char'] = horizontal_wall_template
+                temp_field[col * height_aspect][(row - 1) * width_aspect + 1 + i]['char'] = horizontal_wall_template
         else:
             pass  
 
@@ -250,24 +250,24 @@ def draw(player_list, wall_list, curscr, additional=[]):
         (row, col) = additional[i]  
         digit[digit_positions/2] = str(i + 1)
         for j in range(digit_positions):
-            temp_field[col*height_aspect + 1][row*width_aspect + 1 + j]['char'] = digit[j]  
+            temp_field[col*height_aspect + 1][row * width_aspect + 1 + j]['char'] = digit[j]  
 
     if enable_curses:
         [MAX_Y, MAX_X] = curscr.getmaxyx()
-        vertical_offset = (MAX_Y - (height*height_aspect + 1 + 3))/2
-        horizontal_offset = (MAX_X - (width*width_aspect + 1))/2
+        vertical_offset = (MAX_Y - (height * height_aspect + 1 + 3))/2
+        horizontal_offset = (MAX_X - (width * width_aspect + 1))/2
         try:
             curscr.move(vertical_offset, 0)
         except curses.error:
             curses.endwin()
         [cur_y, cur_x] = curscr.getyx()
-        for i in range(height_aspect*height + 1):
+        for i in range(height_aspect * height + 1):
             string = ''
             try:
                 curscr.move(cur_y + 1, horizontal_offset)
             except curses.error:
                 curses.endwin()
-            for j in range(width_aspect*width + 1):
+            for j in range(width_aspect * width + 1):
                 [string, attr] = render_for_curses(temp_field[i][j])
                 try:
                     curscr.addstr(string.encode(code), attr)
@@ -289,22 +289,22 @@ def draw(player_list, wall_list, curscr, additional=[]):
                 curses.endwin()
         curscr.refresh()
     else:
-        vertical_offset = (25 - (height*height_aspect + 1 + 5))/2
-        horizontal_offset = (80 - (width*width_aspect + 1))/2
+        vertical_offset = (25 - (height * height_aspect + 1 + 5)) / 2
+        horizontal_offset = (80 - (width * width_aspect + 1)) / 2
 
         print '\033[2J'
         print '\n'*vertical_offset
-        for i in range(height_aspect*height + 1):
-            string = ' '*horizontal_offset
-            for j in range(width_aspect*width + 1):              
+        for i in range(height_aspect * height + 1):
+            string = ' ' * horizontal_offset
+            for j in range(width_aspect * width + 1):              
                 string += render_for_print(temp_field[i][j])
 
             print string
 
         info_template = info(player_list)
-        info_string = ' '*horizontal_offset
+        info_string = ' ' * horizontal_offset
         for element in info_template:     
             info_string += render_for_print(element)
 
         print info_string
-        print '\n'*vertical_offset
+        print '\n' * vertical_offset

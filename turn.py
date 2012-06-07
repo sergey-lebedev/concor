@@ -129,7 +129,7 @@ def minimax(loc, wall_list, player_list):
     pass
 
 def bot_turn(PLAYER, player, player_list, wall_list, available_positions, players):
-    bot_type = PLAYER['owner']
+    bot_type = player['owner']
     target_loc = player['target_loc']
     #print target_loc
     if bot_type == 'bot':
@@ -175,16 +175,16 @@ def bot_turn(PLAYER, player, player_list, wall_list, available_positions, player
             else:
                 value = None
             action = {'action_type': 'movement', 'location': neighbor, 'cost': value}
-            #print action
+            # print action
             action_list.append(action)
-        #win move
+        # win move
         intersection = set(neighbors).intersection(set(target_loc))
         if intersection != set([]):
             location = list(intersection)[0]
             value = width*height
             action = {'action_type': 'movement', 'location': location, 'cost': value}
             action_list.append(action)            
-        #building
+        # building
         if player['amount_of_walls'] > 0:
             for i in range(1, width):
                 for j in range(1, height):
@@ -208,7 +208,7 @@ def bot_turn(PLAYER, player, player_list, wall_list, available_positions, player
                                 #print action  
                                 action_list.append(action)            
             #print action_list
-        #action select
+        # action select
         maximal_cost = None
         equal_actions_list = []
         for actions in action_list:
@@ -225,7 +225,7 @@ def bot_turn(PLAYER, player, player_list, wall_list, available_positions, player
             action = equal_actions_list[random.randint(0, variants - 1)]
         else:
             action = {'action_type': None}      
-        #print action
+        # print action
         if action['action_type'] == 'movement':
             (x, y) = action['location']
             player['location'] = (x, y)
