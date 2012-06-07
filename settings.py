@@ -21,7 +21,7 @@ width_aspect = 4
 height_aspect = 2
 wall_length = 2
 
-PLAYERS = [{'color': 'red', 'location': (width/2, height - 1), 'target_loc': [], 'owner': 'simple_bot'},
+PLAYERS = [{'color': 'red', 'location': (width/2, height - 1), 'target_loc': [], 'owner': 'user'},
            {'color': 'green', 'location': (0, height/2), 'target_loc': [], 'owner': 'simple_bot'},
            {'color': 'blue', 'location': (width/2, 0), 'target_loc': [], 'owner': 'simple_bot'},
            {'color': 'yellow', 'location': (width - 1, height/2), 'target_loc': [], 'owner': 'simple_bot'}]

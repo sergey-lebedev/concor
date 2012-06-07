@@ -93,16 +93,16 @@ def bfs(loc, available_positions, target_loc):
     #breadth-first search
     queue = []
     queue.append(loc)   
-    visited = []
-    visited.append(loc)
+    visited = {}
+    visited.update({loc: True})
     is_break = False
     path = {}
     while (queue != []) and (not is_break):
         node = queue.pop(0)
         for neighbor in available_positions[node]:
-            if (neighbor not in visited) and (not is_break):
+            if not (visited.has_key(neighbor) or is_break):
                 path.update({neighbor: node})
-                visited.append(neighbor)
+                visited.update({neighbor: True})
                 if neighbor in target_loc:
                     is_break = True
                     #print neighbor
@@ -114,7 +114,6 @@ def bfs(loc, available_positions, target_loc):
     if not is_break:
         step = None  
     else:
-
         step = 0
 
     node = neighbor
@@ -225,7 +224,7 @@ def bot_turn(PLAYER, player, player_list, wall_list, available_positions, player
             action = equal_actions_list[random.randint(0, variants - 1)]
         else:
             action = {'action_type': None}      
-        # print action
+        #print action
         if action['action_type'] == 'movement':
             (x, y) = action['location']
             player['location'] = (x, y)

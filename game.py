@@ -68,11 +68,11 @@ def play(player_list):
 
 if not challenge:
     # players setup
-    plist = []
+    plist = list()
     for i in range(amount_of_players):
         plist.append(max(AMOUNT_OF_PLAYERS) / amount_of_players * i)
     # print plist
-    player_list = []
+    player_list = list()
     for i in plist:
         player_list.append({'id': i, 
                             'location': PLAYERS[i]['location'], 
@@ -88,7 +88,8 @@ else:
     botlist = ['simple_bot', 'simple_bot']
     counter = [0] * len(botlist)
     numbers = range(len(botlist))
-    rounds = 1000
+    rounds = 10
+    tic = time.time()
     for r in range(rounds):
         print '%d / %d' % (r + 1, rounds)
         for i in numbers:
@@ -114,10 +115,13 @@ else:
                     counter[i] += 1
                 if winner_id == 2:
                     counter[j] += 1
-
+    toc = time.time()
+    challenge_time = toc - tic
+    print challenge_time
     print botlist
     string = ''
     for i in numbers:
-        string += counter[i]
-        string += ':'
+        if i!=0:
+            string += ':'
+        string += str(counter[i] / 2.0 / rounds)
     print string    
