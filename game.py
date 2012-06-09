@@ -4,7 +4,7 @@ from turn import *
 from draw import *
 
 # challenge mode
-challenge = not False
+challenge = False
 if challenge:
     enable_draw = False
     turn_time_limit = 0
@@ -28,6 +28,9 @@ def play(player_list):
 
     wall_list = []
 
+    # adjacency_list pre-calculation
+    adjacency_list = adjacency_list_generator()
+
     # init draw
     if enable_draw:
         curscr = init_draw() 
@@ -37,7 +40,7 @@ def play(player_list):
         while True:
             # occupied cells
             loc = player_list[p*amount_of_players/max(AMOUNT_OF_PLAYERS)]['location']
-            available_positions = available_positions_generator(loc, wall_list, player_list)
+            available_positions = available_positions_generator(loc, wall_list, player_list, adjacency_list)
 
             owner = player_list[p*amount_of_players/max(AMOUNT_OF_PLAYERS)]['owner']
             if owner == 'user':
@@ -45,7 +48,7 @@ def play(player_list):
             else:
                 #print p
                 tic = time.time()
-                bot_turn(PLAYERS[p], player_list[p*amount_of_players/max(AMOUNT_OF_PLAYERS)], player_list, wall_list, available_positions, players)
+                bot_turn(PLAYERS[p], player_list[p*amount_of_players/max(AMOUNT_OF_PLAYERS)], player_list, wall_list, available_positions, players, adjacency_list)
                 toc = time.time()
                 turn_time = toc - tic
                 time.sleep(max(0, turn_time_limit - turn_time))
