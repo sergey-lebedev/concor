@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from settings import *
 from draw import *
 import curses
 

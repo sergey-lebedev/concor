@@ -2,6 +2,7 @@
 import time
 from turn import *
 from draw import *
+from settings import *
 
 # challenge mode
 challenge = False

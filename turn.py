@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-from user_input import *
-from settings import *
-from draw import *   
+from user_input import *   
 import random
 import time
 
