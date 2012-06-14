@@ -1,39 +1,36 @@
 # -*- coding: utf-8 -*-
-DIRECTIONS = {'n': (0, -1),
+import __builtin__
+__builtin__.DIRECTIONS = {'n': (0, -1),
              'e': (1, 0),
              's': (0, 1),
              'w': (-1, 0)}
-LEFT = {'n': 'w',
+__builtin__.LEFT = {'n': 'w',
         'w': 's',
         's': 'e',
         'e': 'n'}
-RIGHT = {'n': 'e',
+__builtin__.RIGHT = {'n': 'e',
          'e': 's',
          's': 'w',
          'w': 'n'}
-AMOUNT_OF_WALLS = 20
-AMOUNT_OF_PLAYERS = (2, 4)
 
-amount_of_players = AMOUNT_OF_PLAYERS[0]
-width = 9
-height = 9
-width_aspect = 4
-height_aspect = 2
-wall_length = 2
+__builtin__.AMOUNT_OF_WALLS= 20
+__builtin__.AMOUNT_OF_PLAYERS = (2, 4)
+__builtin__.COLORS = [{'color': 'red'},
+           {'color': 'green'},
+           {'color': 'blue'},
+           {'color': 'yellow'}
+]
 
-PLAYERS = [{'color': 'red', 'location': (width/2, height - 1), 'target_loc': [], 'owner': 'user'},
-           {'color': 'green', 'location': (0, height/2), 'target_loc': [], 'owner': 'simple_bot'},
-           {'color': 'blue', 'location': (width/2, 0), 'target_loc': [], 'owner': 'simple_bot'},
-           {'color': 'yellow', 'location': (width - 1, height/2), 'target_loc': [], 'owner': 'simple_bot'}]
+__builtin__.amount_of_players = AMOUNT_OF_PLAYERS[0]
+__builtin__.width = 9
+__builtin__.height = 9
+__builtin__.width_aspect = 4
+__builtin__.height_aspect = 2
+__builtin__.wall_length = 2
 
-for i in range(amount_of_players):
-    (x, y) = PLAYERS[i*max(AMOUNT_OF_PLAYERS)/amount_of_players]['location']
-    target_loc = []
-    if (x == 0) or (x == (width - 1)):
-        for j in range(height):
-            target_loc.append((width - 1 - x, j))
-    elif (y == 0) or (y == (height - 1)):
-        for j in range(width):
-            target_loc.append((j, height - 1 - y))
-    PLAYERS[i*max(AMOUNT_OF_PLAYERS)/amount_of_players]['target_loc'] = target_loc
-    #print target_loc
+__builtin__.enable_curses = True
+__builtin__.enable_colors = True
+__builtin__.enable_color_players = True
+__builtin__.enable_color_walls = True
+__builtin__.enable_draw = True
+__builtin__.turn_time_limit = 0

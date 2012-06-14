@@ -1,8 +1,29 @@
 # -*- coding: utf-8 -*-
 import time
-from turn import *
-from draw import *
+import __builtin__
 from settings import *
+
+__builtin__.width = 9
+__builtin__.height = 9
+
+from turn import *
+
+PLAYERS = [{'color': 'red', 'location': (width/2, height - 1), 'target_loc': [], 'owner': 'user'},
+           {'color': 'green', 'location': (0, height/2), 'target_loc': [], 'owner': 'simple_bot'},
+           {'color': 'blue', 'location': (width/2, 0), 'target_loc': [], 'owner': 'simple_bot'},
+           {'color': 'yellow', 'location': (width - 1, height/2), 'target_loc': [], 'owner': 'simple_bot'}]
+
+for i in range(amount_of_players):
+    (x, y) = PLAYERS[i*max(AMOUNT_OF_PLAYERS)/amount_of_players]['location']
+    target_loc = []
+    if (x == 0) or (x == (width - 1)):
+        for j in range(height):
+            target_loc.append((width - 1 - x, j))
+    elif (y == 0) or (y == (height - 1)):
+        for j in range(width):
+            target_loc.append((j, height - 1 - y))
+    PLAYERS[i*max(AMOUNT_OF_PLAYERS)/amount_of_players]['target_loc'] = target_loc
+    #print target_loc
 
 # challenge mode
 challenge = False

@@ -1,14 +1,9 @@
 # -*- coding: utf-8 -*-
 from patterns import *
-from settings import *
+import __builtin__
 import locale
-
 locale.setlocale(locale.LC_ALL,"")
 code = locale.getpreferredencoding()
-
-enable_curses = True
-enable_color_players = True
-enable_color_walls = True
 
 #pattern = compact
 #pattern = box_drawing
@@ -22,8 +17,7 @@ if enable_curses:
         enable_curses = False  
 
 #colorwalls
-enable_colors = False
-if enable_color_players or enable_color_walls:
+if enable_color_players or enable_color_walls: 
     enable_colors = True
     pattern = multicolored
     pattern['default'] = '' 
@@ -90,7 +84,7 @@ for i in range(amount_of_players):
     player_template = 'player_%d' % (i * max(AMOUNT_OF_PLAYERS) / amount_of_players)
     modificators = []
     if enable_color_players:
-        color_template = PLAYERS[i * max(AMOUNT_OF_PLAYERS) / amount_of_players]['color']
+        color_template = COLORS[i * max(AMOUNT_OF_PLAYERS) / amount_of_players]['color']
         modificators = ['bold', 'inverted']
     player_element =  {'char': player_template, 'color': color_template, 'modificators': modificators}  
     for j in range(player_positions):
@@ -159,7 +153,7 @@ def info(player_list):
         color_template = 'default'
         modificators = []
         if enable_color_players:
-            color_template = PLAYERS[i]['color']
+            color_template = COLORS[i]['color']
             modificators = ['bold', 'inverted']
         info_template.append(dummy) 
         info_template.append({'char': player_template, 'color': color_template, 'modificators': modificators})
@@ -225,7 +219,7 @@ def draw(player_list, wall_list, curscr, additional=[]):
 
     for wall in wall_list:
         (row, col) = wall['location']
-        color_template = PLAYERS[wall['player_id']]['color']
+        color_template = COLORS[wall['player_id']]['color']
         if wall['type'] == 'vertical':
             vertical_wall_template = 'heavy_vertical'
             if enable_color_walls:               
