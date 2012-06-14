@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from patterns import *
-import __builtin__
 import locale
+
 locale.setlocale(locale.LC_ALL,"")
 code = locale.getpreferredencoding()
 

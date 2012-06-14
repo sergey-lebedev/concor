@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import __builtin__
+
 __builtin__.DIRECTIONS = {'n': (0, -1),
              'e': (1, 0),
              's': (0, 1),
