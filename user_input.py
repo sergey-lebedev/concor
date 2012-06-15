@@ -132,7 +132,7 @@ def user_turn(player_list, player, wall_list, available_positions, players, curs
                 second_stage = True
             else:
                 ready = False
-                second_stage = True
+                second_stage = False
 
             if player['amount_of_walls'] == 0:
                 second_stage = False
