@@ -127,8 +127,9 @@ def dijkstra(loc, available_positions, target_loc):
     distances = {loc: 0} 
     queue = [loc]    
     visited = {}
-    seen = {} 
-    while (queue != []):
+    seen = {}
+    is_break = False
+    while (queue != []) and (not is_break):
         node = queue.pop(0)
         for neighbor in available_positions[node]:
             if not (visited.has_key(neighbor)):
@@ -139,7 +140,10 @@ def dijkstra(loc, available_positions, target_loc):
                     distance = distances[node] + 1
                 distances.update({neighbor: distance})                
         visited.update({node: True})
-      
+        if node in target_loc:
+            is_break = True
+            break
+
         estimated = []        
         for unseen in seen.keys():
             if not (visited.has_key(unseen)):    
@@ -149,14 +153,8 @@ def dijkstra(loc, available_positions, target_loc):
             estimated = sorted(estimated)
             queue.append(estimated[0][1])
    
-    target = []
-    for node in target_loc:
-        if visited.has_key(node):
-            target.append((distances[node], node))
-
-    if (target != []):
-        target = sorted(target, reverse=False)
-        step = target[0][0]    
+    if is_break:
+        step = distances[node]  
     else:
         step = None      
 
