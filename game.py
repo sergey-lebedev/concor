@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
+import sys
+import getopt
 import time
 import __builtin__
 from settings import *
 
+__builtin__.enable_curses = True
+__builtin__.challenge = False
 __builtin__.width = 9
 __builtin__.height = 9
 
@@ -10,7 +14,7 @@ from turn import *
 
 PLAYERS = [{'color': 'red', 'location': (width/2, height - 1), 'target_loc': [], 'owner': 'user'},
            {'color': 'green', 'location': (0, height/2), 'target_loc': [], 'owner': 'simple_bot'},
-           {'color': 'blue', 'location': (width/2, 0), 'target_loc': [], 'owner': 'simple_bot'},
+           {'color': 'blue', 'location': (width/2, 0), 'target_loc': [], 'owner': 'complicated_bot'},
            {'color': 'yellow', 'location': (width - 1, height/2), 'target_loc': [], 'owner': 'simple_bot'}]
 
 for i in range(amount_of_players):
@@ -26,7 +30,6 @@ for i in range(amount_of_players):
     #print target_loc
 
 # challenge mode
-challenge = False
 if challenge:
     enable_draw = False
     turn_time_limit = 0
@@ -110,10 +113,10 @@ if not challenge:
     p = play(player_list)
     print "Player %d '%s' win"% (p, PLAYERS[p]['owner'])
 else:
-    botlist = ['simple_bot', 'simple_bot']
+    botlist = ['simple_bot', 'complicated_bot']
     counter = [0] * len(botlist)
     numbers = range(len(botlist))
-    rounds = 10
+    rounds = 100
     tic = time.time()
     for r in range(rounds):
         print '%d / %d' % (r + 1, rounds)
