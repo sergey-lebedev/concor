@@ -122,15 +122,15 @@ def bfs(loc, available_positions, target_loc):
     return step, neighbor
 
 def dijkstra(loc, available_positions, target_loc):
-    # dijkstra algorithm    
+    # dijkstra algorithm
     neighbor = loc
     distances = {loc: 0} 
-    queue = [loc]    
+    queue = [(0, loc)]   
     visited = {}
     seen = {}
     is_break = False
     while (queue != []) and (not is_break):
-        node = queue.pop(0)
+        (dummy, node) = queue.pop(0)
         for neighbor in available_positions[node]:
             if not (visited.has_key(neighbor)):
                 seen.update({neighbor: True})
@@ -138,20 +138,16 @@ def dijkstra(loc, available_positions, target_loc):
                     distance = min(distances[neighbor], distances[node] + 1)
                 else:
                     distance = distances[node] + 1
-                distances.update({neighbor: distance})                
+                distances.update({neighbor: distance})
+                estimation = (distance, neighbor)
+                if estimation not in queue:
+                    queue.append((distance, neighbor))               
         visited.update({node: True})
         if node in target_loc:
             is_break = True
             break
-
-        estimated = []        
-        for unseen in seen.keys():
-            if not (visited.has_key(unseen)):    
-                estimated.append((distances[unseen], unseen))
-        queue = []
-        if estimated != []:             
-            estimated = sorted(estimated)
-            queue.append(estimated[0][1])
+   
+        queue = sorted(queue)
    
     if is_break:
         step = distances[node]  
