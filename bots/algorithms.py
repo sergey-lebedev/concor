@@ -80,6 +80,32 @@ def available_positions_generator(loc, wall_list, player_list, adjacency_list):
     #print available_positions[loc]
     return available_positions
 
+def w2p(wall_list):
+    #print wall_list
+    p = {}
+    for i in range(1, width):
+        for j in range(1, height):
+            p.update({(i, j): set(['horizontal', 'vertical'])})
+    for wall in wall_list:
+        (x, y) = wall['location']
+        p[(x, y)] = set([])
+        if wall['type'] == 'horizontal':
+            for direction in ['w', 'e']:
+                (dx, dy) = DIRECTIONS[direction]
+                location = (x + dx, y + dy)
+                if location in p:
+                    p[location].difference_update(set(['horizontal']))
+        elif wall['type'] == 'vertical':
+            for direction in ['n', 's']:
+                (dx, dy) = DIRECTIONS[direction]
+                location = (x + dx, y + dy)
+                if location in p:
+                    p[location].difference_update(set(['vertical']))
+        else:
+            pass
+    #print p
+    return p
+
 def bfs(loc, available_positions, target_loc):
     # breadth-first search
     neighbor = loc

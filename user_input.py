@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from draw import *
+from bots.algorithms import *
 import curses
 
 def vector_sort(vectors):
@@ -49,32 +50,6 @@ def vector_sort(vectors):
     result.extend(IV_quadrant)
     result.extend(I_quadrant)
     return result
-
-def w2p(wall_list):
-    #print wall_list
-    p = {}
-    for i in range(1, width):
-        for j in range(1, height):
-            p.update({(i, j): set(['horizontal', 'vertical'])})
-    for wall in wall_list:
-        (x, y) = wall['location']
-        p[(x, y)] = set([])
-        if wall['type'] == 'horizontal':
-            for direction in ['w', 'e']:
-                (dx, dy) = DIRECTIONS[direction]
-                location = (x + dx, y + dy)
-                if location in p:
-                    p[location].difference_update(set(['horizontal']))
-        elif wall['type'] == 'vertical':
-            for direction in ['n', 's']:
-                (dx, dy) = DIRECTIONS[direction]
-                location = (x + dx, y + dy)
-                if location in p:
-                    p[location].difference_update(set(['vertical']))
-        else:
-            pass
-    #print p
-    return p
 
 def user_turn(player_list, player, wall_list, available_positions, players, curscr):
     (x, y) = player['location']
