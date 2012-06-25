@@ -134,12 +134,15 @@ def bfs(loc, available_positions, target_loc):
         step = 0
 
     node = neighbor
+    backtrace = [node]
     while (node != loc) and is_break:
         step += 1
         neighbor = node
-        node = path[neighbor]      
-  
-    return step, neighbor
+        node = path[neighbor]
+        backtrace.append(node)
+    backtrace.reverse()
+
+    return step, backtrace
 
 def dijkstra(loc, available_positions, target_loc):
     # dijkstra algorithm

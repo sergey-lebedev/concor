@@ -13,5 +13,7 @@ def bot_turn(PLAYER, player, player_list, wall_list, available_positions,
         simple_bot.turn(player, players, player_list, wall_list, available_positions, adjacency_list)
     elif bot_type == 'complicated_bot':
         complicated_bot.turn(player, players, player_list, wall_list, available_positions, adjacency_list)
+    elif bot_type == 'optimized_bot':
+        optimized_bot.turn(player, players, player_list, wall_list, available_positions, adjacency_list)
     else:
         pass
