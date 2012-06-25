@@ -10,7 +10,8 @@ def trace2places(trace):
             (offset_col, offset_row) = offset
             (place_col, place_row) = (col + offset_col, row + offset_row)
             place = (place_col, place_row)
-            if (place_col > 0) and (place_col < width) and (place_row > 0) and (place_row < height):
+            if (place_col > 0) and (place_col < width) and\
+                (place_row > 0) and (place_row < height):
                 if place not in places:
                    places.append(place)
     return places
@@ -68,7 +69,7 @@ def turn(player, players, player_list, wall_list, available_positions, adjacency
     if player['amount_of_walls'] > 0:
         places = trace2places(trace)
         for location in places:
-            if p[location] != set([]):           
+            if p[location] != set([]):
                 for wall_type in p[location]:
                     projected_wall_list = list(wall_list)
                     wall = {'type': wall_type, 
@@ -87,20 +88,14 @@ def turn(player, players, player_list, wall_list, available_positions, adjacency
                                             opponent['target_loc'])
                         distances.append(step)
                     distance = min(distances)
-                    #tic = time.time()
                     projected_available_positions =\
                         available_positions_generator(loc, 
                                                       projected_wall_list,
                                                       player_list,
                                                       adjacency_list)
-                    #toc = time.time()
-                    #print 'gen', toc - tic
-                    #tic = time.time()
                     [step, dummy] = bfs(loc, 
                                         projected_available_positions, 
                                         target_loc)
-                    #toc = time.time()
-                    #print 'bfs', toc - tic
                     if (step != None) and (distance != None):
                         value = distance - step
                         action = {'action_type': 'building', 'wall': wall, 'cost': value}

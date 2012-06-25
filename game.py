@@ -113,7 +113,7 @@ if not challenge:
     p = play(player_list)
     print "Player %d '%s' win"% (p, PLAYERS[p]['owner'])
 else:
-    botlist = ['simple_bot', 'optimized_bot']
+    botlist = ['optimized_bot', 'optimized_bot']
     counter = [0] * len(botlist)
     numbers = range(len(botlist))
     rounds = 100
