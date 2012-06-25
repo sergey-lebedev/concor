@@ -11,9 +11,9 @@ def trace2places(trace):
             (place_col, place_row) = (col + offset_col, row + offset_row)
             place = (place_col, place_row)
             if (place_col > 0) and (place_col < width) and\
-                (place_row > 0) and (place_row < height):
-                if place not in places:
-                   places.append(place)
+                (place_row > 0) and (place_row < height) and\
+                place not in places:
+                places.append(place)
     return places
 
 def turn(player, players, player_list, wall_list, available_positions, adjacency_list):

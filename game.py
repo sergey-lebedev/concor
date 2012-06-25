@@ -14,7 +14,7 @@ from turn import *
 
 PLAYERS = [{'color': 'red', 'location': (width/2, height - 1), 'target_loc': [], 'owner': 'user'},
            {'color': 'green', 'location': (0, height/2), 'target_loc': [], 'owner': 'simple_bot'},
-           {'color': 'blue', 'location': (width/2, 0), 'target_loc': [], 'owner': 'optimized_bot'},
+           {'color': 'blue', 'location': (width/2, 0), 'target_loc': [], 'owner': 'gamesome_bot'},
            {'color': 'yellow', 'location': (width - 1, height/2), 'target_loc': [], 'owner': 'simple_bot'}]
 
 for i in range(amount_of_players):
@@ -113,7 +113,7 @@ if not challenge:
     p = play(player_list)
     print "Player %d '%s' win"% (p, PLAYERS[p]['owner'])
 else:
-    botlist = ['optimized_bot', 'optimized_bot']
+    botlist = ['optimized_bot', 'gamesome_bot']
     counter = [0] * len(botlist)
     numbers = range(len(botlist))
     rounds = 100
