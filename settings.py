@@ -22,7 +22,7 @@ __builtin__.COLORS = [{'color': 'red'},
                       {'color': 'yellow'}
 ]
 
-__builtin__.AMOUNT_OF_WALLS= 20
+__builtin__.AMOUNT_OF_WALLS = 20
 __builtin__.AMOUNT_OF_PLAYERS = (2, 4)
 
 __builtin__.amount_of_players = AMOUNT_OF_PLAYERS[0]

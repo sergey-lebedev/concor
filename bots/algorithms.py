@@ -129,7 +129,7 @@ def bfs(loc, available_positions, target_loc):
                 break    
 
     if not is_break:
-        step = None  
+        step = None
     else:
         step = 0
 
