@@ -1,6 +1,7 @@
 from algorithms import *
 import random
 import copy
+DEBUG = True
 
 def trace2places(trace):
     places = []
@@ -157,44 +158,30 @@ def negamax(game_tree, depth, amount_of_players):
     #print level_list
     level -= 1
 
-    # sign initiation
-    if (level % amount_of_players) != 0:
-        sign = -1
-    else:
-        sign = 1
-
     while level > 0:
+        #print 'level: ', level
         for sublist in level_list[level]:
-            #print 'level: ', level
             if (sublist != []):
                 cost_list = [] 
                 for child in sublist:
-                    cost = game_tree[child]['action']['cost']
+                    cost = game_tree[child]['action']['cost']   
                     cost_list.append(cost)
-                    #print game_tree[child]['action']
-                #print cost_list
                 max_cost = max(cost_list)
-                #print 'max_cost: ', max_cost
                 parent = game_tree[child]['parent']
-                #print parent
-                #print game_tree[parent]['action']['cost']
-                if ((level % amount_of_players) != (amount_of_players - 1)) and ((level % amount_of_players) != (amount_of_players - 1)):
-                    sign = -sign
-                max_cost = sign*max_cost
-                #print 'max_cost: ', max_cost
+                max_cost = - max_cost
                 game_tree[parent]['action'].update({'cost': max_cost})
-                #print game_tree[parent]['action']['cost']
         level -= 1      
 
     #print 'actions: '
-    for child in game_tree[0]['child']:
+    #print 'level: ', level
+    for child in game_tree[level]['child']:
         action_list.append(game_tree[child]['action'])
         #print game_tree[child]['action']
 
     maximal_cost = None
     equal_actions_list = []
     for actions in action_list:
-        if actions['cost'] > maximal_cost:
+        if (actions['cost'] > maximal_cost):
             equal_actions_list = []
             maximal_cost = actions['cost']
             action = actions
@@ -228,6 +215,7 @@ def turn(player, players, player_list, wall_list, available_positions, adjacency
     level = 0
     sequence = [index]
     while level < depth:
+        #print 'level: ', level 
         new_sequence = []
         #print sequence 
         for element in sequence:
@@ -239,8 +227,7 @@ def turn(player, players, player_list, wall_list, available_positions, adjacency
                 node_game_state = game_tree[element]['game_state']
                 action = game_tree[element]['action']
                 value = action['cost']
-                if ((level % amount_of_players) == 1) or ((level % amount_of_players) == (amount_of_players - 1)):
-                    action['cost'] = -value
+                action['cost'] = - value
                 node = {index: {'parent': element, 'child': [], 'game_state': node_game_state, 'action': action}}
                 game_tree[element]['child'].append(index)
                 game_tree.update(node)
