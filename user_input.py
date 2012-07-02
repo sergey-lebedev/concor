@@ -3,6 +3,12 @@ from draw import *
 from bots.algorithms import *
 import curses
 
+# keyboard arrows
+KEY_UP = 65
+KEY_DOWN = 66
+KEY_LEFT = 68
+KEY_RIGHT = 67
+
 def vector_sort(vectors):
     result = []
     I_quadrant = []
@@ -119,6 +125,7 @@ def user_turn(player_list, player, wall_list, available_positions, players, curs
                 k = curscr.getch()
                 command = curses.keyname(k)
             else:
+                k = 0
                 command = raw_input()
 
             if (command == 'n'):
@@ -136,7 +143,7 @@ def user_turn(player_list, player, wall_list, available_positions, players, curs
                         walls_installed +=1
                         (X, Y) = wall['location']
 
-            elif (command == 'i'):
+            elif (command == 'i') or (k == KEY_UP):
                 if walls_installed != 0:
                     wall = wall_list[len(wall_list) - 1]    
                     Y -= 1
@@ -145,7 +152,7 @@ def user_turn(player_list, player, wall_list, available_positions, players, curs
                         wall['type'] = 'horizontal'
                     wall['location'] = (X, Y)
      
-            elif (command == 'j'):
+            elif (command == 'j') or (k == KEY_LEFT):
                 if walls_installed != 0:
                     wall = wall_list[len(wall_list) - 1]   
                     X -= 1
@@ -154,7 +161,7 @@ def user_turn(player_list, player, wall_list, available_positions, players, curs
                         wall['type'] = 'vertical'
                     wall['location'] = (X, Y)
 
-            elif (command == 'k'):
+            elif (command == 'k') or (k == KEY_DOWN):
                 if walls_installed != 0:
                     wall = wall_list[len(wall_list) - 1]  
                     Y += 1
@@ -163,7 +170,7 @@ def user_turn(player_list, player, wall_list, available_positions, players, curs
                         wall['type'] = 'horizontal'
                     wall['location'] = (X, Y)
 
-            elif (command == 'l'):
+            elif (command == 'l') or (k == KEY_RIGHT):
                 if walls_installed != 0:
                     wall = wall_list[len(wall_list) - 1]  
                     X += 1

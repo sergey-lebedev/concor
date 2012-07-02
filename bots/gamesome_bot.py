@@ -164,7 +164,7 @@ def negamax(game_tree, depth, amount_of_players):
             if (sublist != []):
                 cost_list = [] 
                 for child in sublist:
-                    cost = game_tree[child]['action']['cost']   
+                    cost = game_tree[child]['action']['cost']
                     cost_list.append(cost)
                 max_cost = max(cost_list)
                 parent = game_tree[child]['parent']

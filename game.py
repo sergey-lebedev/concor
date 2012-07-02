@@ -9,7 +9,7 @@ __builtin__.enable_curses = True
 __builtin__.challenge = False
 __builtin__.width = 9
 __builtin__.height = 9
-#__builtin__.AMOUNT_OF_WALLS = 4
+#__builtin__.AMOUNT_OF_WALLS = 12
 
 from turn import *
 
