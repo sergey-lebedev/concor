@@ -5,11 +5,11 @@ import time
 import __builtin__
 from settings import *
 
-__builtin__.enable_curses = False
+__builtin__.enable_curses = True
 __builtin__.challenge = False
-__builtin__.width = 7
-__builtin__.height = 7
-__builtin__.AMOUNT_OF_WALLS = 12
+#__builtin__.width = 7
+#__builtin__.height = 7
+#__builtin__.AMOUNT_OF_WALLS = 12
 
 from turn import *
 
@@ -32,13 +32,17 @@ for i in range(amount_of_players):
 
 # challenge mode
 if challenge:
-    enable_draw = False
+    enable_turn_limit = True
+    enable_draw = True
     turn_time_limit = 0
 else:
+    enable_turn_limit = False
     enable_draw = True
     turn_time_limit = 0.25
 
 def play(player_list):
+    turn_limit = 100
+    counter = 0
     end = False
     win = False
     p = 0
@@ -75,6 +79,7 @@ def play(player_list):
                 #print p
                 tic = time.time()
                 bot_turn(PLAYERS[p], player_list[p*amount_of_players/max(AMOUNT_OF_PLAYERS)], player_list, wall_list, available_positions, players, adjacency_list)
+                counter += 1
                 toc = time.time()
                 turn_time = toc - tic
                 time.sleep(max(0, turn_time_limit - turn_time))
@@ -84,7 +89,11 @@ def play(player_list):
             if player_list[p*amount_of_players/max(AMOUNT_OF_PLAYERS)]['location'] in PLAYERS[p]['target_loc']:
                 end = True
                 win = True
-     
+    
+            if enable_turn_limit and (counter >= turn_limit):
+                end = True
+                win = False
+
             if end:
                 if enable_curses and enable_draw:
                     curses.endwin()
@@ -92,8 +101,10 @@ def play(player_list):
 
             p += max(AMOUNT_OF_PLAYERS)/amount_of_players
             p %= max(AMOUNT_OF_PLAYERS)
-
-    return p
+    if win:
+        return p, counter
+    else:
+        return -1, counter
 
 if not challenge:
     # players setup
@@ -111,8 +122,9 @@ if not challenge:
         })
 
     # play
-    p = play(player_list)
+    [p, counter] = play(player_list)
     print "Player %d '%s' win"% (p, PLAYERS[p]['owner'])
+    print "Number of turns: %d"% (counter)
 else:
     botlist = ['gamesome_bot', 'playful_bot']
     counter = [0] * len(botlist)
@@ -139,11 +151,14 @@ else:
                 player_list[1].update({'owner': opponent}) 
 
                 # play           
-                winner_id = play(player_list)
+                [winner_id, turn_counter] = play(player_list)
                 if winner_id == 0:
                     counter[i] += 1
-                if winner_id == 2:
+                elif winner_id == 2:
                     counter[j] += 1
+                else:
+                    counter[i] += 0.5
+                    counter[j] += 0.5
     toc = time.time()
     challenge_time = toc - tic
     print challenge_time
