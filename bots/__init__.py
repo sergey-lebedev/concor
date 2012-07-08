@@ -4,3 +4,4 @@ import simple_bot
 import complicated_bot
 import optimized_bot
 import gamesome_bot
+import playful_bot

@@ -5,17 +5,17 @@ import time
 import __builtin__
 from settings import *
 
-__builtin__.enable_curses = True
+__builtin__.enable_curses = False
 __builtin__.challenge = False
-__builtin__.width = 9
-__builtin__.height = 9
-#__builtin__.AMOUNT_OF_WALLS = 12
+__builtin__.width = 7
+__builtin__.height = 7
+__builtin__.AMOUNT_OF_WALLS = 12
 
 from turn import *
 
 PLAYERS = [{'color': 'red', 'location': (width/2, height - 1), 'target_loc': [], 'owner': 'user'},
            {'color': 'green', 'location': (0, height/2), 'target_loc': [], 'owner': 'simple_bot'},
-           {'color': 'blue', 'location': (width/2, 0), 'target_loc': [], 'owner': 'gamesome_bot'},
+           {'color': 'blue', 'location': (width/2, 0), 'target_loc': [], 'owner': 'playful_bot'},
            {'color': 'yellow', 'location': (width - 1, height/2), 'target_loc': [], 'owner': 'simple_bot'}]
 
 for i in range(amount_of_players):
@@ -114,10 +114,10 @@ if not challenge:
     p = play(player_list)
     print "Player %d '%s' win"% (p, PLAYERS[p]['owner'])
 else:
-    botlist = ['optimized_bot', 'gamesome_bot']
+    botlist = ['gamesome_bot', 'playful_bot']
     counter = [0] * len(botlist)
     numbers = range(len(botlist))
-    rounds = 100
+    rounds = 10
     tic = time.time()
     for r in range(rounds):
         print '%d / %d' % (r + 1, rounds)
