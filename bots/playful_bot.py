@@ -289,7 +289,17 @@ def turn(player, players, player_list, wall_list, available_positions, adjacency
                             game_tree[grandparent]['alpha'] = beta
 
         if DEBUG:
-            
+            sequence = []
+            sequence.append(0)
+            while (sequence != []):
+                node = sequence.pop(0)
+                parent = game_tree[node]['parent']
+                child_list = game_tree[node]['child']
+                alpha = game_tree[node]['alpha']
+                beta = game_tree[node]['beta']
+                print "node: %s; parent: %s; child: %s; alpha: %s; beta: %s;"% (node, parent, child_list, alpha, beta)
+                sequence.extend(child_list)
+
     level = 0
     # action select
     action_list = []
