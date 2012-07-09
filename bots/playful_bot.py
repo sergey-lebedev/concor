@@ -210,7 +210,7 @@ def turn(player, players, player_list, wall_list, available_positions, adjacency
             elif owner == 'min':
                 if game_tree[parent]['owner'] == 'max':
                     if alpha != None:
-                        estimation = alpha
+                        estimation = - alpha
                     else:
                         estimation = None
             branch = branch_generator(current_game_state, adjacency_list, estimation)
@@ -223,7 +223,7 @@ def turn(player, players, player_list, wall_list, available_positions, adjacency
                 value = action['cost']      
                 #print action
                 node_game_state = state['game_state']
-                node = {index: {'parent': parent, 'child': [], 'game_state': node_game_state, 'action': action, 'expanded': False, 'alpha': alpha, 'beta': None, 'owner': owner}}
+                node = {index: {'parent': parent, 'child': [], 'game_state': node_game_state, 'action': action, 'expanded': False, 'alpha': None, 'beta': None, 'owner': owner}}
                 game_tree.update(node)
                 #print node
                 child_list.append(index)
@@ -270,7 +270,7 @@ def turn(player, players, player_list, wall_list, available_positions, adjacency
             # beta is final estimate
             alpha = game_tree[parent]['alpha']
             beta = alpha
-           #print 'beta: ', beta
+            #print 'beta: ', beta
             game_tree[parent]['beta'] = beta
             grandparent = game_tree[parent]['parent']
             if parent != 0:
@@ -287,6 +287,9 @@ def turn(player, players, player_list, wall_list, available_positions, adjacency
                     if game_tree[grandparent]['owner'] == 'max':
                         if (alpha < beta):
                             game_tree[grandparent]['alpha'] = beta
+
+        if DEBUG:
+            
     level = 0
     # action select
     action_list = []

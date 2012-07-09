@@ -33,7 +33,7 @@ for i in range(amount_of_players):
 # challenge mode
 if challenge:
     enable_turn_limit = True
-    enable_draw = True
+    enable_draw = False
     turn_time_limit = 0
 else:
     enable_turn_limit = False
@@ -79,10 +79,11 @@ def play(player_list):
                 #print p
                 tic = time.time()
                 bot_turn(PLAYERS[p], player_list[p*amount_of_players/max(AMOUNT_OF_PLAYERS)], player_list, wall_list, available_positions, players, adjacency_list)
-                counter += 1
                 toc = time.time()
                 turn_time = toc - tic
                 time.sleep(max(0, turn_time_limit - turn_time))
+            counter += 1
+
             if enable_draw:
                 draw(player_list, wall_list, curscr)
 
@@ -129,7 +130,7 @@ else:
     botlist = ['gamesome_bot', 'playful_bot']
     counter = [0] * len(botlist)
     numbers = range(len(botlist))
-    rounds = 10
+    rounds = 100
     tic = time.time()
     for r in range(rounds):
         print '%d / %d' % (r + 1, rounds)
