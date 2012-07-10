@@ -19,8 +19,7 @@ def trace2places(trace):
                 places.append(place)
     return places
 
-def branch_generator(game_state, adjacency_list, estimate, owner):
-    pruning = False
+def branch_generator(game_state, adjacency_list):
     # branch init
     branch = {}
     branch.update({'nodes': []})
@@ -86,13 +85,6 @@ def branch_generator(game_state, adjacency_list, estimate, owner):
         current_game_state['player_list'][current_player].update({'location': neighbor}) 
         current_game_state.update({'player': player_list[next_player]})
         branch['nodes'].append({'action': action, 'game_state': current_game_state})           
-        if (owner == 'max' and value <= estimate) or (owner == 'min' and value > estimate):
-            pruning = True
-            if DEBUG:
-                print 'owner: ', owner
-                print 'value', value, 'pruned with estimate', estimate
-        if pruning:
-            break
     # cost evaluation
     # win move
     intersection = set(neighbors).intersection(set(target_loc)) 
@@ -108,12 +100,10 @@ def branch_generator(game_state, adjacency_list, estimate, owner):
         current_game_state.update({'player': player_list[next_player]})
         branch['nodes'].append({'action': action, 'game_state': current_game_state})
     # building
-    if (player['amount_of_walls'] > 0) and not pruning:
+    if (player['amount_of_walls'] > 0):
         places = trace2places(trace)
         for location in places:
-            if pruning:
-                break  
-            if p[location] != set([]) and not pruning:
+            if p[location] != set([]):
                 for wall_type in p[location]:
                     current_game_state = copy.deepcopy(game_state)
                     projected_wall_list = list(wall_list)
@@ -152,16 +142,6 @@ def branch_generator(game_state, adjacency_list, estimate, owner):
                         current_game_state.update({'player': player_list[next_player]})
                         branch['nodes'].append({'action': action, 'game_state': current_game_state})           
                         action_list.append(action)            
-                        if (owner == 'max' and value <= estimate) or (owner == 'min' and value > estimate):
-                            pruning = True
-                            if DEBUG:
-                                print 'owner: ', owner
-                                print 'value', value, 'pruned with estimate', estimate 
-                    if pruning:
-                        break  
-        #print action_list
-    #if DEBUG and pruning:
-    #   print 'pruning'
     return branch
 
 def turn(player, players, player_list, wall_list, available_positions, adjacency_list):
@@ -201,23 +181,13 @@ def turn(player, players, player_list, wall_list, available_positions, adjacency
             owner = 'min'
         if not game_tree[parent]['expanded']:
             # brach generator
-            # alpha is perliminary estimate
-            if parent != 0:
-                grandparent = game_tree[parent]['parent']
-                alpha = game_tree[grandparent]['alpha']
-            else:
-                alpha = inf
-            if DEBUG:
-                print 'alpha: ', alpha
             if owner == 'max':
                 if game_tree[parent]['owner'] == 'min':
-                    estimate = alpha #-inf #
                     alpha = beta = -inf
             elif owner == 'min':
                 if game_tree[parent]['owner'] == 'max':
-                    estimate = inf #alpha #
                     alpha = beta = inf
-            branch = branch_generator(current_game_state, adjacency_list, estimate, owner)
+            branch = branch_generator(current_game_state, adjacency_list)
             #print branch['nodes']
             child_list = []
             subbranches = []
