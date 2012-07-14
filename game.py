@@ -127,7 +127,7 @@ if not challenge:
     print "Player %d '%s' win"% (p, PLAYERS[p]['owner'])
     print "Number of turns: %d"% (counter)
 else:
-    botlist = ['gamesome_bot', 'medium_bot']
+    botlist = ['playful_bot', 'medium_bot']
     counter = [0] * len(botlist)
     numbers = range(len(botlist))
     rounds = 100

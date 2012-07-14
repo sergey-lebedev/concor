@@ -155,7 +155,7 @@ def turn(player, players, player_list, wall_list, available_positions, adjacency
     depth = 2
     index = 0
     game_tree = {}
-    root = {index: {'parent': None, 'child': [], 'game_state': game_state, 'expanded': False, 'alpha': -inf, 'beta': -inf, 'owner': 'max', 'action': None}}
+    root = {index: {'parent': None, 'child': [], 'game_state': game_state, 'expanded': False, 'alpha': -inf, 'beta': -inf, 'owner': 'max', 'action': None, 'is_node': False}}
     game_tree.update(root)
     # game tree bfs
     level = 0
@@ -197,13 +197,14 @@ def turn(player, players, player_list, wall_list, available_positions, adjacency
                 value = action['cost']      
                 #print action
                 node_game_state = state['game_state']
-                node = {index: {'parent': parent, 'child': [], 'game_state': node_game_state, 'action': action, 'expanded': False, 'alpha': alpha, 'beta': beta, 'owner': owner}}
+                node = {index: {'parent': parent, 'child': [], 'game_state': node_game_state, 'action': action, 'expanded': False, 'alpha': alpha, 'beta': beta, 'owner': owner, 'is_node': False}}
                 game_tree.update(node)
                 #print node
                 child_list.append(index)         
                 if (level < depth) and (abs(value) != inf):
                     subbranches.append(index)
                 else:
+                    game_tree[index]['is_node'] = True
                     if DEBUG: 
                         print 'node:', index, ' termination'
                     if owner == 'max':
@@ -268,8 +269,9 @@ def turn(player, players, player_list, wall_list, available_positions, adjacency
                 alpha = game_tree[node]['alpha']
                 beta = game_tree[node]['beta']
                 owner = game_tree[node]['owner']
-                print "node: %s; parent: %s; child: %s; alpha: %s; beta: %s; owner: %s;"\
-                        %(node, parent, child_list, alpha, beta, owner)
+                is_node = game_tree[node]['is_node']
+                print "node: %s; is_node: %s; parent: %s; child: %s; alpha: %s; beta: %s; owner: %s;"\
+                        %(node, is_node, parent, child_list, alpha, beta, owner)
                 #print 'action: ', game_tree[node]['action']
                 sequence.extend(child_list)
 
