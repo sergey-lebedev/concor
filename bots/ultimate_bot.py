@@ -37,7 +37,6 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final):
     action_list = []
     #movement
     distances = []
-    subtrace = set([])
     for opponent in opponent_list:
         #print opponent
         opponent_available_positions =\
@@ -48,11 +47,9 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final):
         [step, trace] = bfs(opponent['location'], 
                             opponent_available_positions, 
                             opponent['target_loc'])
-        subtrace |= set(trace)
         #print step
         distances.append(step)
     distance = min(distances)
-    trace = list(subtrace)
     #print distanceif DEBUG:
     for neighbor in neighbors:
         current_game_state = copy.deepcopy(game_state)
