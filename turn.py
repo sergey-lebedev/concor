@@ -21,5 +21,7 @@ def bot_turn(PLAYER, player, player_list, wall_list, available_positions,
         playful_bot.turn(player, players, player_list, wall_list, available_positions, adjacency_list)
     elif bot_type == 'medium_bot':
         medium_bot.turn(player, players, player_list, wall_list, available_positions, adjacency_list)
+    elif bot_type == 'ultimate_bot':
+        ultimate_bot.turn(player, players, player_list, wall_list, available_positions, adjacency_list)
     else:
         pass

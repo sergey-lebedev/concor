@@ -6,3 +6,4 @@ import optimized_bot
 import gamesome_bot
 import playful_bot
 import medium_bot
+import ultimate_bot
