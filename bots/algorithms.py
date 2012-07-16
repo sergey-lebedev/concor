@@ -176,3 +176,43 @@ def dijkstra(loc, available_positions, target_loc):
         step = None      
 
     return step, neighbor
+
+inf = float("infinity")
+
+def trace2places(trace):
+    places = []
+    offsets = [(0, 0), (1, 0), (0, 1), (1, 1)]
+    for location in trace:
+        (col, row) = location
+        for offset in offsets:
+            (offset_col, offset_row) = offset
+            (place_col, place_row) = (col + offset_col, row + offset_row)
+            place = (place_col, place_row)
+            if (place_col > 0) and (place_col < width) and\
+                (place_row > 0) and (place_row < height) and\
+                place not in places:
+                places.append(place)
+    return places
+
+def alpha_beta_pruning(alpha, beta, value, owner):
+    pruning = False
+    if DEBUG:
+        print "alpha-beta pruning"
+        print "alpha:", alpha
+        print "beta:", beta
+        print "value:", value   
+    if (owner == 'max' and alpha != None):
+        if (value >= alpha):
+            if DEBUG: 
+                print "alpha pruning node"
+                print "alpha:", alpha
+                print "value:", value
+            pruning = True
+    if (owner == 'min' and beta != None):
+        if (- value < beta):
+            if DEBUG: 
+                print "beta pruning node"
+                print "beta:", beta
+                print "value:", value
+            pruning = True        
+    return pruning
