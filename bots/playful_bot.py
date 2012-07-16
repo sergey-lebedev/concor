@@ -19,8 +19,7 @@ def trace2places(trace):
                 places.append(place)
     return places
 
-def branch_generator(game_state, adjacency_list, estimate, owner):
-    pruning = False
+def branch_generator(game_state, adjacency_list):
     # branch init
     branch = {}
     branch.update({'nodes': []})
@@ -68,7 +67,7 @@ def branch_generator(game_state, adjacency_list, estimate, owner):
         distances.append(step)
     distance = min(distances)
     trace = list(subtrace)
-    #print distance
+    #print distanceif DEBUG:
     for neighbor in neighbors:
         current_game_state = copy.deepcopy(game_state)
         [step, dummy] = bfs(neighbor, available_positions, target_loc)
@@ -86,13 +85,6 @@ def branch_generator(game_state, adjacency_list, estimate, owner):
         current_game_state['player_list'][current_player].update({'location': neighbor}) 
         current_game_state.update({'player': player_list[next_player]})
         branch['nodes'].append({'action': action, 'game_state': current_game_state})           
-        if (owner == 'max' and value <= estimate) or (owner == 'min' and value > estimate):
-            pruning = True
-            if DEBUG:
-                print 'owner: ', owner
-                print 'value', value, 'pruned with estimate', estimate
-        if pruning:
-            break
     # cost evaluation
     # win move
     intersection = set(neighbors).intersection(set(target_loc)) 
@@ -108,12 +100,10 @@ def branch_generator(game_state, adjacency_list, estimate, owner):
         current_game_state.update({'player': player_list[next_player]})
         branch['nodes'].append({'action': action, 'game_state': current_game_state})
     # building
-    if (player['amount_of_walls'] > 0) and not pruning:
+    if (player['amount_of_walls'] > 0):
         places = trace2places(trace)
         for location in places:
-            if pruning:
-                break  
-            if p[location] != set([]) and not pruning:
+            if p[location] != set([]):
                 for wall_type in p[location]:
                     current_game_state = copy.deepcopy(game_state)
                     projected_wall_list = list(wall_list)
@@ -152,16 +142,6 @@ def branch_generator(game_state, adjacency_list, estimate, owner):
                         current_game_state.update({'player': player_list[next_player]})
                         branch['nodes'].append({'action': action, 'game_state': current_game_state})           
                         action_list.append(action)            
-                        if (owner == 'max' and value <= estimate) or (owner == 'min' and value > estimate):
-                            pruning = True
-                            if DEBUG:
-                                print 'owner: ', owner
-                                print 'value', value, 'pruned with estimate', estimate 
-                    if pruning:
-                        break  
-        #print action_list
-    #if DEBUG and pruning:
-    #   print 'pruning'
     return branch
 
 def turn(player, players, player_list, wall_list, available_positions, adjacency_list):
@@ -172,10 +152,10 @@ def turn(player, players, player_list, wall_list, available_positions, adjacency
     game_state.update({'wall_list': wall_list})
     game_state.update({'player_list': player_list})
     # game tree
-    depth = 2
+    depth = 3
     index = 0
     game_tree = {}
-    root = {index: {'parent': None, 'child': [], 'game_state': game_state, 'expanded': False, 'alpha': -inf, 'beta': -inf, 'owner': 'max', 'action': None}}
+    root = {index: {'parent': None, 'child': [], 'game_state': game_state, 'expanded': False, 'initial': -inf, 'final': -inf, 'alpha': None, 'beta': None, 'owner': 'max', 'action': None, 'is_node': False}}
     game_tree.update(root)
     # game tree bfs
     level = 0
@@ -183,15 +163,17 @@ def turn(player, players, player_list, wall_list, available_positions, adjacency
     while (stack != []):
         # get ancestor
         parent = stack[-1]
-        #print 'parent: '
-        #print parent
+        if DEBUG:        
+            print 'parent: '
+            print parent
         if game_tree[parent]['expanded']:
             stack.pop(-1)
             level -= 1
         else:
             level += 1
-        #print 'stack:'
-        #print stack
+        if DEBUG:
+            print 'stack:'
+            print stack
         current_game_state = game_tree[parent]['game_state']
         #print current_game_state
         # owner detector
@@ -200,92 +182,183 @@ def turn(player, players, player_list, wall_list, available_positions, adjacency
         else:
             owner = 'min'
         if not game_tree[parent]['expanded']:
-            # brach generator
-            # alpha is perliminary estimate
+            if DEBUG:
+                print owner
+                print game_tree[parent]['owner']
+
+            # in depth params transition
             if parent != 0:
                 grandparent = game_tree[parent]['parent']
                 alpha = game_tree[grandparent]['alpha']
-            else:
-                alpha = inf
-            if DEBUG:
-                print 'alpha: ', alpha
+                beta = game_tree[grandparent]['beta']
+                game_tree[parent]['alpha'] = alpha
+                game_tree[parent]['beta'] = beta
+                if DEBUG:
+                    print "in depth params transition"
+                    print "from", grandparent, "to", parent
+                    print game_tree[grandparent]['owner']               
+                    print game_tree[parent]['owner']
+                    print "alpha:", alpha, "beta:", beta
+
             if owner == 'max':
                 if game_tree[parent]['owner'] == 'min':
-                    estimate = alpha #-inf #
-                    alpha = beta = -inf
+                    alpha = None
+                    beta = game_tree[parent]['initial']
             elif owner == 'min':
                 if game_tree[parent]['owner'] == 'max':
-                    estimate = inf #alpha #
-                    alpha = beta = inf
-            branch = branch_generator(current_game_state, adjacency_list, estimate, owner)
+                    alpha = game_tree[parent]['initial']
+                    beta = None
+
+            # brach generator
+            if owner == 'max':
+                if game_tree[parent]['owner'] == 'min':
+                    initial = final = -inf
+            elif owner == 'min':
+                if game_tree[parent]['owner'] == 'max':
+                    initial = final = inf
+            branch = branch_generator(current_game_state, adjacency_list)
             #print branch['nodes']
             child_list = []
-            subbranches = []
+            weighted_subbranches = []
             for state in branch['nodes']:
                 index += 1
                 action = state['action']
                 value = action['cost']      
                 #print action
                 node_game_state = state['game_state']
-                node = {index: {'parent': parent, 'child': [], 'game_state': node_game_state, 'action': action, 'expanded': False, 'alpha': alpha, 'beta': beta, 'owner': owner}}
+                node = {index: {'parent': parent, 'child': [], 'game_state': node_game_state, 'action': action, 'expanded': False, 'initial': initial, 'final': final, 'alpha': alpha, 'beta': beta, 'owner': owner, 'is_node': False}}
                 game_tree.update(node)
                 #print node
                 child_list.append(index)         
                 if (level < depth) and (abs(value) != inf):
-                    subbranches.append(index)
+                    weighted_subbranches.append((index, value))
                 else:
+                    game_tree[index]['is_node'] = True
                     if DEBUG: 
                         print 'node:', index, ' termination'
                     if owner == 'max':
-                        alpha = beta = - value
-                        #print alpha
-                        game_tree[index]['alpha'] = alpha
-                        game_tree[index]['beta'] = beta
+                        initial = final = - value
+                        #print initial
+                        game_tree[index]['initial'] = initial
+                        game_tree[index]['final'] = final
                         if game_tree[parent]['owner'] == 'min':
-                            if game_tree[parent]['alpha'] > beta:
-                                game_tree[parent]['alpha'] = beta
+                            if game_tree[parent]['initial'] > final:
+                                game_tree[parent]['initial'] = final
+
                     elif owner == 'min':
-                        alpha = beta = value
-                        #print alpha
-                        game_tree[index]['alpha'] = alpha 
-                        game_tree[index]['beta'] = beta
+                        initial = final = value
+                        #print initial
+                        game_tree[index]['initial'] = initial 
+                        game_tree[index]['final'] = final
                         if game_tree[parent]['owner'] == 'max':
-                            if game_tree[parent]['alpha'] < beta:
-                                game_tree[parent]['alpha'] = beta
-                       
-            # stack forming
-           #print 'child list: '
-           #print child_list
-           #print 'subbranches: '
-           #print subbranches   
+                            if game_tree[parent]['initial'] < final:
+                                game_tree[parent]['initial'] = final
+
             game_tree[parent]['child'].extend(child_list)
+            game_tree[parent]['expanded'] = True
+            if DEBUG:
+                print 'subbranches: '
+                print weighted_subbranches
+
+            # ordering subbranches by preliminary evaluation
+            weighted_subbranches = sorted(weighted_subbranches, key=lambda subbranch: subbranch[1], reverse=True)
+            
+            if DEBUG: print weighted_subbranches
+
+            subbranches = []
+            for (subbranch, weight) in weighted_subbranches:
+                subbranches.append(subbranch)
+    
+            # stack forming
             subbranches.reverse()
             stack.extend(subbranches)
-           #print stack
-            #print 'level: '
-            #print level
-            game_tree[parent]['expanded'] = True
+
         else:
-            # beta is final estimate
-            alpha = game_tree[parent]['alpha']
-            beta = alpha
-            #print 'beta: ', beta
-            game_tree[parent]['beta'] = beta
+            initial = game_tree[parent]['initial']
+            final = initial
+            #print 'final: ', final
+            game_tree[parent]['final'] = final
             grandparent = game_tree[parent]['parent']
             if parent != 0:
-                game_tree[parent]['action'].update({'cost': beta}) 
+                if DEBUG:
+                    print game_tree[parent]['owner']
+                    print game_tree[grandparent]['owner']
+                game_tree[parent]['action'].update({'cost': final}) 
                 grandparent = game_tree[parent]['parent']
-                alpha = game_tree[grandparent]['alpha']        
+                initial = game_tree[grandparent]['initial']   
+                # from depth params transition     
                 if owner == 'max':
-                    #print game_tree[parent]['beta']
+                    #print game_tree[parent]['final']
                     if game_tree[grandparent]['owner'] == 'min':
-                        if (alpha > beta):
-                            game_tree[grandparent]['alpha'] = beta
+                        if (initial >= final):
+                            game_tree[grandparent]['initial'] = final
+                            if final != inf:
+                                game_tree[grandparent]['alpha'] = final
+                            else:
+                                game_tree[grandparent]['alpha'] = None
                 elif owner == 'min':
-                    #print game_tree[parent]['beta']
+                    #print game_tree[parent]['final']
                     if game_tree[grandparent]['owner'] == 'max':
-                        if (alpha < beta):
-                            game_tree[grandparent]['alpha'] = beta
+                        if (initial < final):
+                            game_tree[grandparent]['initial'] = final
+                            if final != -inf:
+                                game_tree[grandparent]['beta'] = final
+                            else:
+                                game_tree[grandparent]['beta'] = None
+
+            # branch pruning
+            if parent != 0:
+                grandparent = game_tree[parent]['parent']
+                value = game_tree[parent]['initial']
+                alpha = game_tree[parent]['alpha']
+                beta = game_tree[parent]['beta']
+                if DEBUG:
+                    print 'owner:', owner
+                    print 'grandparent owner:', game_tree[grandparent]['owner']
+                    print 'parent owner:', game_tree[parent]['owner']
+                    print 'value:', value
+                    print 'alpha:', alpha
+                    print 'beta:', beta
+                if game_tree[grandparent]['owner'] == 'min':
+                    #print game_tree[parent]['final']
+                    if game_tree[parent]['owner'] == 'max':
+                        if beta != None: 
+                            if (value < beta):
+                                if DEBUG:
+                                    print "pruning"
+                                    print parent
+                                    print game_tree[parent]['child']
+                                    print game_tree[grandparent]['child']
+                                    print stack
+                                for child in game_tree[grandparent]['child']:
+                                    if DEBUG:
+                                        print child, game_tree[child]['expanded']
+                                    if not game_tree[child]['expanded'] and child in stack:
+                                        if DEBUG:
+                                            print "pruning node", child  
+                                        stack.remove(child)
+                                        game_tree[grandparent]['child'].remove(child)
+
+                if game_tree[grandparent]['owner'] == 'max':
+                    #print game_tree[parent]['final']
+                    if game_tree[parent]['owner'] == 'min':
+                        # branch pruning
+                        if alpha != None: 
+                            if (value > alpha):
+                                if DEBUG:
+                                    print "pruning"
+                                    print parent
+                                    print game_tree[parent]['child']
+                                    print game_tree[grandparent]['child']
+                                    print stack
+                                for child in game_tree[grandparent]['child']:
+                                    if DEBUG:
+                                        print child, game_tree[child]['expanded']
+                                    if not game_tree[child]['expanded'] and child in stack:
+                                        if DEBUG:
+                                            print "pruning node", child  
+                                        stack.remove(child)
+                                        game_tree[grandparent]['child'].remove(child)
 
         if DEBUG:
             print "debug output. game tree structure."
@@ -295,11 +368,15 @@ def turn(player, players, player_list, wall_list, available_positions, adjacency
                 node = sequence.pop(0)
                 parent = game_tree[node]['parent']
                 child_list = game_tree[node]['child']
+                initial = game_tree[node]['initial']
+                final = game_tree[node]['final']
                 alpha = game_tree[node]['alpha']
                 beta = game_tree[node]['beta']
                 owner = game_tree[node]['owner']
-                print "node: %s; parent: %s; child: %s; alpha: %s; beta: %s; owner: %s;"\
-                        %(node, parent, child_list, alpha, beta, owner)
+                is_node = game_tree[node]['is_node']
+                expanded = game_tree[node]['expanded']
+                print "node: %s; expanded: %s, is_node: %s; parent: %s; child: %s; initial: %s; final: %s; alpha: %s; beta: %s; owner: %s;"\
+                        %(node, expanded, is_node, parent, child_list, initial, final, alpha, beta, owner)
                 #print 'action: ', game_tree[node]['action']
                 sequence.extend(child_list)
 
