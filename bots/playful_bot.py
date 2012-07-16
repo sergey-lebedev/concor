@@ -1,7 +1,8 @@
 from algorithms import *
 import random
 import copy
-DEBUG = False
+import __builtin__
+__builtin__.DEBUG = False
 
 def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final):
     pruning = False    
