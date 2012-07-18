@@ -61,7 +61,11 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final):
   
     #print distanceif DEBUG:
     for neighbor in neighbors:
-        current_game_state = copy.deepcopy(game_state)
+        # leafs don't need game state copy
+        if is_final:
+            current_game_state = {}
+        else:
+            current_game_state = copy.deepcopy(game_state)
         [step, dummy] = bfs(neighbor, available_positions, target_loc)
         #print step
         if (step != None) and (distance != None):
@@ -76,9 +80,11 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final):
         action = {'action_type': 'movement', 'location': neighbor, 'cost': value}
         ##print action        
         (x, y) = neighbor
-        current_game_state['players'][x][y] = 1 
-        current_game_state['player_list'][current_player].update({'location': neighbor}) 
-        current_game_state.update({'player': player_list[next_player]})
+        # leafs don't need game state copy
+        if not is_final:         
+            current_game_state['players'][x][y] = 1 
+            current_game_state['player_list'][current_player].update({'location': neighbor}) 
+            current_game_state.update({'player': player_list[next_player]})
         branch['nodes'].append({'action': action, 'game_state': current_game_state})
         # node pruning
         if is_final:
@@ -96,7 +102,11 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final):
                 for wall_type in p[location]:
                     if pruning:
                         break
-                    current_game_state = copy.deepcopy(game_state)
+                    # leafs don't need game state copy  
+                    if is_final:
+                        current_game_state = {}
+                    else:
+                        current_game_state = copy.deepcopy(game_state)
                     projected_wall_list = list(wall_list)
                     wall = {'type': wall_type, 
                             'location': location, 
@@ -127,10 +137,12 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final):
                         #print 'cost: ', value
                         #print 'estimate: ', estimate
                         action = {'action_type': 'building', 'wall': wall, 'cost': value}
-                        #print action          
-                        current_game_state['wall_list'].append(wall)
-                        current_game_state['player_list'][current_player]['amount_of_walls'] -= 1  
-                        current_game_state.update({'player': player_list[next_player]})
+                        #print action
+                        # leafs don't need game state copy
+                        if not is_final: 
+                            current_game_state['wall_list'].append(wall)
+                            current_game_state['player_list'][current_player]['amount_of_walls'] -= 1  
+                            current_game_state.update({'player': player_list[next_player]})
                         branch['nodes'].append({'action': action, 'game_state': current_game_state})           
                         action_list.append(action) 
                     # node pruning
