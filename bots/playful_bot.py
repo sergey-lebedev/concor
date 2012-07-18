@@ -168,8 +168,6 @@ def turn(player, players, player_list, wall_list, available_positions, adjacency
     # depth definition
     default_depth = 3
     players_without_walls = 0
-    print player_list
-    print player
     for player in player_list:
         if player['amount_of_walls'] == 0:
             players_without_walls += 1
