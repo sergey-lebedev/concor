@@ -160,12 +160,22 @@ def turn(player, players, player_list, wall_list, available_positions, adjacency
     game_state.update({'wall_list': wall_list})
     game_state.update({'player_list': player_list})
     # game tree
-    depth = 3
     index = 0
     game_tree = {}
     root = {index: {'parent': None, 'child': [], 'game_state': game_state, 'expanded': False, 'initial': -inf, 'final': -inf, 'alpha': None, 'beta': None, 'owner': 'max', 'action': None, 'is_node': False}}
-    game_tree.update(root)
-    # game tree bfs
+    game_tree.update(root)    
+    
+    # depth definition
+    default_depth = 3
+    players_without_walls = 0
+    print player_list
+    print player
+    for player in player_list:
+        if player['amount_of_walls'] == 0:
+            players_without_walls += 1
+    depth = default_depth + default_depth * players_without_walls / len(player_list) 
+
+    # game tree dfs
     level = 0
     stack = [index]
     while (stack != []):
