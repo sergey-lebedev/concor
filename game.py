@@ -7,9 +7,9 @@ from settings import *
 
 __builtin__.enable_curses = True
 __builtin__.challenge = False
-#__builtin__.width = 7
-#__builtin__.height = 7
-#__builtin__.AMOUNT_OF_WALLS = 12
+__builtin__.width = 7
+__builtin__.height = 7
+__builtin__.AMOUNT_OF_WALLS = 12
 
 from turn import *
 
@@ -127,7 +127,7 @@ if not challenge:
     print "Player %d '%s' win"% (p, PLAYERS[p]['owner'])
     print "Number of turns: %d"% (counter)
 else:
-    botlist = ['playful_bot', 'simple_bot']
+    botlist = ['playful_bot', 'medium_bot']
     counter = [0] * len(botlist)
     numbers = range(len(botlist))
     rounds = 100
