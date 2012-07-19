@@ -1,11 +1,11 @@
 from algorithms import *
 import random
 import copy
-import __builtin__
-__builtin__.DEBUG = False
+DEBUG = False
+inf = float("infinity")
 
 def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final):
-    pruning = False    
+    pruning = False
     # branch init
     branch = {}
     branch.update({'nodes': []})
@@ -37,6 +37,7 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final):
     action_list = []
     #movement
     distances = []
+    subtrace = set([])
     for opponent in opponent_list:
         #print opponent
         opponent_available_positions =\
@@ -47,91 +48,128 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final):
         [step, trace] = bfs(opponent['location'], 
                             opponent_available_positions, 
                             opponent['target_loc'])
+        subtrace |= set(trace)
         #print step
         distances.append(step)
     distance = min(distances)
-    #print distanceif DEBUG:
+
+    # self trace | defend mode
+    [step, trace] = bfs(loc, available_positions, target_loc)
+    subtrace |= set(trace)
+
+    trace = list(subtrace)
+    #print distance
     for neighbor in neighbors:
-        current_game_state = copy.deepcopy(game_state)
+        # leafs don't need game state copy
+        if is_final:
+            current_game_state = {}
+        else:
+            current_game_state = copy.deepcopy(game_state)
+
         [step, dummy] = bfs(neighbor, available_positions, target_loc)
         #print step
         if (step != None) and (distance != None):
             value = distance - step
         else:
             value = 0
-        # win move
-        if neighbor in target_loc:
-            value = inf
         #print 'cost: ', value
         #print 'estimate: ', estimate
         action = {'action_type': 'movement', 'location': neighbor, 'cost': value}
         ##print action        
         (x, y) = neighbor
-        current_game_state['players'][x][y] = 1 
-        current_game_state['player_list'][current_player].update({'location': neighbor}) 
-        current_game_state.update({'player': player_list[next_player]})
+        if not is_final:
+            current_game_state['players'][x][y] = 1 
+            current_game_state['player_list'][current_player].update({'location': neighbor}) 
+            current_game_state.update({'player': player_list[next_player]})
         branch['nodes'].append({'action': action, 'game_state': current_game_state})
         # node pruning
         if is_final:
             pruning = alpha_beta_pruning(alpha, beta, value, owner)
         if pruning:
-            break     
+            break
+         
     # cost evaluation
+    # win move
+    intersection = set(neighbors).intersection(set(target_loc)) 
+    if intersection != set([]):
+        # leafs don't need game state copy
+        if is_final:
+            current_game_state = {}
+        else:
+            current_game_state = copy.deepcopy(game_state)
+
+        location = list(intersection)[0]
+        value = inf
+        action = {'action_type': 'movement', 'location': location, 'cost': value}
+        action_list.append(action)
+        (x, y) = location
+        if not is_final:
+            current_game_state['players'][x][y] = 1 
+            current_game_state['player_list'][current_player].update({'location': location}) 
+            current_game_state.update({'player': player_list[next_player]})
+        branch['nodes'].append({'action': action, 'game_state': current_game_state})
+        # node pruning
+        if is_final:
+            pruning = alpha_beta_pruning(alpha, beta, value, owner)
+
     # building
     if (player['amount_of_walls'] > 0) and not pruning:
-        for i in range(1, width):
+        places = trace2places(trace)
+        for location in places:
             if pruning:
                 break
-            for j in range(1, height):
-                if pruning:
-                    break
-                location = (i, j)
-                if p[location] != set([]) and not pruning:
-                    for wall_type in p[location]:
-                        if pruning:
-                            break
+            if p[location] != set([]) and not pruning:
+                for wall_type in p[location]:
+                    if pruning:
+                        break
+                    # leafs don't need game state copy
+                    if is_final:
+                        current_game_state = {}
+                    else:
                         current_game_state = copy.deepcopy(game_state)
-                        projected_wall_list = list(wall_list)
-                        wall = {'type': wall_type, 
-                                'location': location, 
-                                'player_id': player['id']
-                        }
-                        projected_wall_list.append(wall)
-                        distances = []
-                        for opponent in opponent_list:
-                            projected_available_positions =\
-                                available_positions_generator(opponent['location'],                                                     projected_wall_list,
-                                                              player_list,
-                                                              adjacency_list)
-                            [step, dummy] = bfs(opponent['location'], 
-                                                projected_available_positions, 
-                                                opponent['target_loc'])
-                            distances.append(step)
-                        distance = min(distances)
+
+                    projected_wall_list = list(wall_list)
+                    wall = {'type': wall_type, 
+                            'location': location, 
+                            'player_id': player['id']
+                    }
+                    projected_wall_list.append(wall)
+                    distances = []
+                    for opponent in opponent_list:
                         projected_available_positions =\
-                            available_positions_generator(loc, 
-                                                          projected_wall_list,
+                            available_positions_generator(opponent['location'],                                                     projected_wall_list,
                                                           player_list,
                                                           adjacency_list)
-                        [step, dummy] = bfs(loc, 
+                        [step, dummy] = bfs(opponent['location'], 
                                             projected_available_positions, 
-                                            target_loc)
-                        if (step != None) and (distance != None):
-                            value = distance - step
-                            #print 'cost: ', value
-                            #print 'estimate: ', estimate
-                            action = {'action_type': 'building', 'wall': wall, 'cost': value}
-                            #print action          
+                                            opponent['target_loc'])
+                        distances.append(step)
+                    distance = min(distances)
+                    projected_available_positions =\
+                        available_positions_generator(loc, 
+                                                      projected_wall_list,
+                                                      player_list,
+                                                      adjacency_list)
+                    [step, dummy] = bfs(loc, 
+                                        projected_available_positions, 
+                                        target_loc)
+                    if (step != None) and (distance != None):
+                        value = distance - step
+                        #print 'cost: ', value
+                        #print 'estimate: ', estimate
+                        action = {'action_type': 'building', 'wall': wall, 'cost': value}
+                        #print action 
+                        if not is_final:
                             current_game_state['wall_list'].append(wall)
                             current_game_state['player_list'][current_player]['amount_of_walls'] -= 1  
                             current_game_state.update({'player': player_list[next_player]})
-                            branch['nodes'].append({'action': action, 'game_state': current_game_state})           
-                            action_list.append(action) 
-                        # node pruning
-                        if is_final:
-                            pruning = alpha_beta_pruning(alpha, beta, value, owner)
-                        if pruning:
-                            break           
+                        branch['nodes'].append({'action': action, 'game_state': current_game_state})           
+                        action_list.append(action)
+                    # node pruning
+                    if is_final:
+                        pruning = alpha_beta_pruning(alpha, beta, value, owner)
+                    if pruning:
+                        break        
     return branch
 
 def turn(player, players, player_list, wall_list, available_positions, adjacency_list):
@@ -142,28 +180,27 @@ def turn(player, players, player_list, wall_list, available_positions, adjacency
     game_state.update({'wall_list': wall_list})
     game_state.update({'player_list': player_list})
     # game tree
-    depth = 2
+    depth = 3
     index = 0
     game_tree = {}
     root = {index: {'parent': None, 'child': [], 'game_state': game_state, 'expanded': False, 'initial': -inf, 'final': -inf, 'alpha': None, 'beta': None, 'owner': 'max', 'action': None, 'is_node': False}}
     game_tree.update(root)
-    # game tree bfs
+
+    # game tree dfs
     level = 0
     stack = [index]
     while (stack != []):
         # get ancestor
         parent = stack[-1]
-        if DEBUG:        
-            print 'parent: '
-            print parent
+        #print 'parent: '
+        #print parent
         if game_tree[parent]['expanded']:
             stack.pop(-1)
             level -= 1
         else:
             level += 1
-        if DEBUG:
-            print 'stack:'
-            print stack
+        #print 'stack:'
+        #print stack
         current_game_state = game_tree[parent]['game_state']
         #print current_game_state
         # owner detector
@@ -171,7 +208,21 @@ def turn(player, players, player_list, wall_list, available_positions, adjacency
             owner = 'max'
         else:
             owner = 'min'
+
+        # final branches detection 
+        if (level < depth):
+            is_final = False
+        else:
+            is_final = True
+
         if not game_tree[parent]['expanded']:
+            # brach generator
+            if owner == 'max':
+                if game_tree[parent]['owner'] == 'min':
+                    initial = final = -inf
+            elif owner == 'min':
+                if game_tree[parent]['owner'] == 'max':
+                    initial = final = inf
             if DEBUG:
                 print owner
                 print game_tree[parent]['owner']
@@ -198,20 +249,6 @@ def turn(player, players, player_list, wall_list, available_positions, adjacency
                     if game_tree[parent]['owner'] == 'max':
                         alpha = game_tree[parent]['initial']
                         beta = None
-
-            # brach generator
-            if owner == 'max':
-                if game_tree[parent]['owner'] == 'min':
-                    initial = final = -inf
-            elif owner == 'min':
-                if game_tree[parent]['owner'] == 'max':
-                    initial = final = inf
-
-            # final branches detection 
-            if (level < depth):
-                is_final = False
-            else:
-                is_final = True
 
             branch = branch_generator(current_game_state, adjacency_list, game_tree[parent]['owner'], game_tree[parent]['alpha'], game_tree[parent]['beta'], is_final)
             #print branch['nodes']

@@ -4,21 +4,6 @@ import copy
 DEBUG = False
 inf = float("infinity")
 
-def trace2places(trace):
-    places = []
-    offsets = [(0, 0), (1, 0), (0, 1), (1, 1)]
-    for location in trace:
-        (col, row) = location
-        for offset in offsets:
-            (offset_col, offset_row) = offset
-            (place_col, place_row) = (col + offset_col, row + offset_row)
-            place = (place_col, place_row)
-            if (place_col > 0) and (place_col < width) and\
-                (place_row > 0) and (place_row < height) and\
-                place not in places:
-                places.append(place)
-    return places
-
 def branch_generator(game_state, adjacency_list, is_final):
     # branch init
     branch = {}
@@ -100,15 +85,21 @@ def branch_generator(game_state, adjacency_list, is_final):
     # win move
     intersection = set(neighbors).intersection(set(target_loc)) 
     if intersection != set([]):
-        current_game_state = copy.deepcopy(game_state)
+        # leafs don't need game state copy
+        if is_final:
+            current_game_state = {}
+        else:
+            current_game_state = copy.deepcopy(game_state)
+
         location = list(intersection)[0]
         value = inf
         action = {'action_type': 'movement', 'location': location, 'cost': value}
         action_list.append(action)
         (x, y) = location
-        current_game_state['players'][x][y] = 1 
-        current_game_state['player_list'][current_player].update({'location': location}) 
-        current_game_state.update({'player': player_list[next_player]})
+        if not is_final:
+            current_game_state['players'][x][y] = 1 
+            current_game_state['player_list'][current_player].update({'location': location}) 
+            current_game_state.update({'player': player_list[next_player]})
         branch['nodes'].append({'action': action, 'game_state': current_game_state})
     # building
     if (player['amount_of_walls'] > 0):

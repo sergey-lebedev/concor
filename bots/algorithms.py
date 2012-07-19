@@ -1,3 +1,5 @@
+DEBUG = False
+
 def adjacency_list_generator():
     #adjacency_list
     adjacency_list = {}
