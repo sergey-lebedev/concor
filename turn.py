@@ -23,5 +23,7 @@ def bot_turn(PLAYER, player, player_list, wall_list, available_positions,
         medium_bot.turn(player, players, player_list, wall_list, available_positions, adjacency_list)
     elif bot_type == 'ultimate_bot':
         ultimate_bot.turn(player, players, player_list, wall_list, available_positions, adjacency_list)
+    elif bot_type == 'hard_bot':
+        hard_bot.turn(player, players, player_list, wall_list, available_positions, adjacency_list)
     else:
         pass

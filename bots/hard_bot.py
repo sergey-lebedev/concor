@@ -114,62 +114,65 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final):
 
     # building
     if (player['amount_of_walls'] > 0) and not pruning:
-        places = trace2places(trace)
-        for location in places:
+        for i in range(1, width):
             if pruning:
                 break
-            if p[location] != set([]) and not pruning:
-                for wall_type in p[location]:
-                    if pruning:
-                        break
-                    # leafs don't need game state copy
-                    if is_final:
-                        current_game_state = {}
-                    else:
-                        current_game_state = copy.deepcopy(game_state)
+            for j in range(1, height):
+                if pruning:
+                    break
+                location = (i, j)
+                if p[location] != set([]) and not pruning:
+                    for wall_type in p[location]:
+                        if pruning:
+                            break
+                        # leafs don't need game state copy
+                        if is_final:
+                            current_game_state = {}
+                        else:
+                            current_game_state = copy.deepcopy(game_state)
 
-                    projected_wall_list = list(wall_list)
-                    wall = {'type': wall_type, 
-                            'location': location, 
-                            'player_id': player['id']
-                    }
-                    projected_wall_list.append(wall)
-                    distances = []
-                    for opponent in opponent_list:
+                        projected_wall_list = list(wall_list)
+                        wall = {'type': wall_type, 
+                                'location': location, 
+                                'player_id': player['id']
+                        }
+                        projected_wall_list.append(wall)
+                        distances = []
+                        for opponent in opponent_list:
+                            projected_available_positions =\
+                                available_positions_generator(opponent['location'],                                                     projected_wall_list,
+                                                              player_list,
+                                                              adjacency_list)
+                            [step, dummy] = bfs(opponent['location'], 
+                                                projected_available_positions, 
+                                                opponent['target_loc'])
+                            distances.append(step)
+                        distance = min(distances)
                         projected_available_positions =\
-                            available_positions_generator(opponent['location'],                                                     projected_wall_list,
+                            available_positions_generator(loc, 
+                                                          projected_wall_list,
                                                           player_list,
                                                           adjacency_list)
-                        [step, dummy] = bfs(opponent['location'], 
+                        [step, dummy] = bfs(loc, 
                                             projected_available_positions, 
-                                            opponent['target_loc'])
-                        distances.append(step)
-                    distance = min(distances)
-                    projected_available_positions =\
-                        available_positions_generator(loc, 
-                                                      projected_wall_list,
-                                                      player_list,
-                                                      adjacency_list)
-                    [step, dummy] = bfs(loc, 
-                                        projected_available_positions, 
-                                        target_loc)
-                    if (step != None) and (distance != None):
-                        value = distance - step
-                        #print 'cost: ', value
-                        #print 'estimate: ', estimate
-                        action = {'action_type': 'building', 'wall': wall, 'cost': value}
-                        #print action 
-                        if not is_final:
-                            current_game_state['wall_list'].append(wall)
-                            current_game_state['player_list'][current_player]['amount_of_walls'] -= 1  
-                            current_game_state.update({'player': player_list[next_player]})
-                        branch['nodes'].append({'action': action, 'game_state': current_game_state})           
-                        action_list.append(action)
-                    # node pruning
-                    if is_final:
-                        pruning = alpha_beta_pruning(alpha, beta, value, owner)
-                    if pruning:
-                        break        
+                                            target_loc)
+                        if (step != None) and (distance != None):
+                            value = distance - step
+                            #print 'cost: ', value
+                            #print 'estimate: ', estimate
+                            action = {'action_type': 'building', 'wall': wall, 'cost': value}
+                            #print action 
+                            if not is_final:
+                                current_game_state['wall_list'].append(wall)
+                                current_game_state['player_list'][current_player]['amount_of_walls'] -= 1  
+                                current_game_state.update({'player': player_list[next_player]})
+                            branch['nodes'].append({'action': action, 'game_state': current_game_state})           
+                            action_list.append(action)
+                        # node pruning
+                        if is_final:
+                            pruning = alpha_beta_pruning(alpha, beta, value, owner)
+                        if pruning:
+                            break        
     return branch
 
 def turn(player, players, player_list, wall_list, available_positions, adjacency_list):
@@ -180,7 +183,7 @@ def turn(player, players, player_list, wall_list, available_positions, adjacency
     game_state.update({'wall_list': wall_list})
     game_state.update({'player_list': player_list})
     # game tree
-    depth = 3
+    depth = 2
 
     # breakthrough
     if player['amount_of_walls'] == 0:
