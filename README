@@ -1,5 +1,14 @@
 CONsole CORridors game
 
+Sergey Lebedev sergey_lebedev@mail.ru
+
+python game.py
+
+Linux and Windows (with disabled curses) supported
+2 or 4 players board
+AI presented (see bots folder)
+customized view (see patterns)
+
 Shortkeys:
 nn - add a new wall
 r - rotate wall
