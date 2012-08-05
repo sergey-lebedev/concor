@@ -22,10 +22,7 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final):
     loc = player['location']
     target_loc = player['target_loc']
     #opponent_list
-    opponent_list = []
-    for item in player_list:
-        if item != player:
-            opponent_list.append(item)
+    opponent_list = [item for item in player_list if item != player]
     #neigbors
     available_positions = available_positions_generator(loc, wall_list, player_list, adjacency_list)
     neighbors = (location for location in available_positions[loc])

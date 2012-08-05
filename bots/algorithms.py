@@ -5,13 +5,13 @@ def adjacency_list_generator():
     adjacency_list = {}
     for i in range(width):
         for j in range(height):
-            link_list = set([])
+            link_list = []
             for direction in DIRECTIONS:
                 (dx, dy) = DIRECTIONS[direction]
                 if ((dy + j) >= 0) & ((dy + j) < height) &\
                    ((dx + i) >= 0) & ((dx + i) < width): 
-                    link_list.add((dx + i, dy + j))
-            adjacency_list.update({(i, j): link_list})    
+                    link_list.append((dx + i, dy + j))
+            adjacency_list.update({(i, j): set(link_list)})    
 
     return adjacency_list
 
@@ -43,9 +43,11 @@ def available_positions_generator(loc, wall_list, player_list, adjacency_list):
             available_positions[right_bottom].difference_update(set([left_bottom]))
 
     #occupied cells
-    (col, row) = loc        
+    (col, row) = loc
 
-    player_locations = (player['location'] for player in player_list)
+    player_locations = []
+    for player in player_list:
+        player_locations.append(player['location'])
 
     for direction in DIRECTIONS:
         (dx, dy) = DIRECTIONS[direction]                    
