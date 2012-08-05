@@ -3,15 +3,15 @@ DEBUG = False
 def adjacency_list_generator():
     #adjacency_list
     adjacency_list = {}
-    for i in range(width):
-        for j in range(height):
-            link_list = []
-            for direction in DIRECTIONS:
-                (dx, dy) = DIRECTIONS[direction]
-                if ((dy + j) >= 0) & ((dy + j) < height) &\
-                   ((dx + i) >= 0) & ((dx + i) < width): 
-                    link_list.append((dx + i, dy + j))
-            adjacency_list.update({(i, j): set(link_list)})    
+    ij_list = ((i, j) for i in range(width) for j in range(height))
+    for (i, j) in ij_list:
+        link_list = []
+        for direction in DIRECTIONS:
+            (dx, dy) = DIRECTIONS[direction]
+            if ((dy + j) >= 0) & ((dy + j) < height) &\
+               ((dx + i) >= 0) & ((dx + i) < width): 
+                link_list.append((dx + i, dy + j))
+        adjacency_list.update({(i, j): set(link_list)})    
 
     return adjacency_list
 
