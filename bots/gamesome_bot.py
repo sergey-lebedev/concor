@@ -5,7 +5,7 @@ DEBUG = True
 
 def trace2places(trace):
     places = []
-    offsets = [(0, 0), (1, 0), (0, 1), (1, 1)]
+    offsets = ((0, 0), (1, 0), (0, 1), (1, 1))
     for location in trace:
         (col, row) = location
         for offset in offsets:

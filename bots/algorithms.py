@@ -45,9 +45,7 @@ def available_positions_generator(loc, wall_list, player_list, adjacency_list):
     #occupied cells
     (col, row) = loc        
 
-    player_locations = []
-    for player in player_list:
-        player_locations.append(player['location'])
+    player_locations = (player['location'] for player in player_list)
 
     for direction in DIRECTIONS:
         (dx, dy) = DIRECTIONS[direction]                    
@@ -92,13 +90,13 @@ def w2p(wall_list):
         (x, y) = wall['location']
         p[(x, y)] = set([])
         if wall['type'] == 'horizontal':
-            for direction in ['w', 'e']:
+            for direction in ('w', 'e'):
                 (dx, dy) = DIRECTIONS[direction]
                 location = (x + dx, y + dy)
                 if location in p:
                     p[location].difference_update(set(['horizontal']))
         elif wall['type'] == 'vertical':
-            for direction in ['n', 's']:
+            for direction in ('n', 's'):
                 (dx, dy) = DIRECTIONS[direction]
                 location = (x + dx, y + dy)
                 if location in p:
@@ -183,7 +181,7 @@ inf = float("infinity")
 
 def trace2places(trace):
     places = []
-    offsets = [(0, 0), (1, 0), (0, 1), (1, 1)]
+    offsets = ((0, 0), (1, 0), (0, 1), (1, 1))
     for location in trace:
         (col, row) = location
         for offset in offsets:
