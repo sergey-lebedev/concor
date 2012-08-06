@@ -84,10 +84,9 @@ def available_positions_generator(loc, wall_list, player_list, adjacency_list):
 
 def w2p(wall_list):
     #print wall_list
-    p = {}
-    for i in range(1, width):
-        for j in range(1, height):
-            p.update({(i, j): set(['horizontal', 'vertical'])})
+    ij_list = ((i, j) for i in range(1, width) for j in range(1, height))
+    p = dict([(ij, set(['horizontal', 'vertical'])) for ij in ij_list])    
+
     for wall in wall_list:
         (x, y) = wall['location']
         p[(x, y)] = set([])
