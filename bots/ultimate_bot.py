@@ -25,7 +25,7 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final):
     opponent_list = [item for item in player_list if item != player]
     #neigbors
     available_positions = available_positions_generator(loc, wall_list, player_list, adjacency_list)
-    neighbors = (location for location in available_positions[loc])
+    neighbors = [location for location in available_positions[loc]]
     #possibility matrix
     p = w2p(wall_list)
     #actions
@@ -85,7 +85,12 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final):
          
     # cost evaluation
     # win move
-    intersection = set(neighbors).intersection(set(target_loc)) 
+    intersection = set(neighbors).intersection(set(target_loc))
+    if DEBUG:
+        for neighbor in neighbors:
+            print 'neighbor:', neighbor
+        print 'target_loc:', target_loc
+        print 'intersection:', intersection
     if intersection != set([]):
         # leafs don't need game state copy
         if is_final:
@@ -422,7 +427,7 @@ def turn(player, players, player_list, wall_list, available_positions, adjacency
                 expanded = game_tree[node]['expanded']
                 print "node: %s; expanded: %s, is_node: %s; parent: %s; child: %s; initial: %s; final: %s; alpha: %s; beta: %s; owner: %s;"\
                         %(node, expanded, is_node, parent, child_list, initial, final, alpha, beta, owner)
-                #print 'action: ', game_tree[node]['action']
+                print 'action: ', game_tree[node]['action']
                 sequence.extend(child_list)
 
     level = 0
