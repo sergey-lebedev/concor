@@ -190,7 +190,7 @@ def turn(player, players, player_list, wall_list, available_positions, adjacency
             if opponent != player:
                 opponents_walls_counter += opponent['amount_of_walls']
         if opponents_walls_counter == 0:
-            depth = 0
+            depth = 4
 
     index = 0
     game_tree = {}
