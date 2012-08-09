@@ -7,9 +7,9 @@ from settings import *
 
 __builtin__.enable_curses = True
 __builtin__.challenge = False
-#__builtin__.width = 7
-#__builtin__.height = 7
-#__builtin__.AMOUNT_OF_WALLS = 12
+#__builtin__.width = 3
+#__builtin__.height = 3
+#__builtin__.AMOUNT_OF_WALLS = 2
 
 from turn import *
 

@@ -11,7 +11,7 @@ def adjacency_list_generator():
             if ((dy + j) >= 0) & ((dy + j) < height) &\
                ((dx + i) >= 0) & ((dx + i) < width): 
                 link_list.append((dx + i, dy + j))
-        adjacency_list.update({(i, j): set(link_list)})    
+        adjacency_list[(i, j)] = set(link_list)    
 
     return adjacency_list
 
@@ -20,7 +20,7 @@ def available_positions_generator(loc, wall_list, player_list, adjacency_list):
     available_positions = {}
     for positions in adjacency_list:
         #print positions
-        available_positions.update({positions: adjacency_list[positions].copy()})
+        available_positions[positions] = adjacency_list[positions].copy()
     #available_positions = adjacency_list.copy()
 
     for wall in wall_list:
@@ -78,14 +78,14 @@ def available_positions_generator(loc, wall_list, player_list, adjacency_list):
                        (d_loc not in player_locations):
                         available_positions[d_loc].update(set([loc]))
                         available_positions[loc].update(set([d_loc]))        
-                available_positions.update({a_loc: set([])})
+                available_positions[a_loc] = set([])
     #print available_positions[loc]
     return available_positions
 
 def w2p(wall_list):
     #print wall_list
     ij_list = ((i, j) for i in range(1, width) for j in range(1, height))
-    p = dict([(ij, set(['horizontal', 'vertical'])) for ij in ij_list])    
+    p = dict((ij, set(['horizontal', 'vertical'])) for ij in ij_list)
 
     for wall in wall_list:
         (x, y) = wall['location']
@@ -113,15 +113,15 @@ def bfs(loc, available_positions, target_loc):
     queue = []
     queue.append(loc)   
     visited = {}
-    visited.update({loc: True})
+    visited[loc] = True
     is_break = False
     path = {}
     while (queue != []) and (not is_break):
         node = queue.pop(0)
         for neighbor in available_positions[node]:
             if not (visited.has_key(neighbor) or is_break):
-                path.update({neighbor: node})
-                visited.update({neighbor: True})
+                path[neighbor] = node
+                visited[neighbor] = True
                 if neighbor in target_loc:
                     is_break = True
                     #print neighbor
@@ -160,11 +160,11 @@ def dijkstra(loc, available_positions, target_loc):
                     distance = min(distances[neighbor], distances[node] + 1)
                 else:
                     distance = distances[node] + 1
-                distances.update({neighbor: distance})
+                distances[neighbor] = distance
                 estimation = (distance, neighbor)
                 if estimation not in queue:
                     queue.append(estimation)               
-        visited.update({node: True})
+        visited[node] = True
         if node in target_loc:
             is_break = True
             break
