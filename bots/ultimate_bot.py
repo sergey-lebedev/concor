@@ -67,6 +67,11 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final):
             value = distance - step
         else:
             value = 0
+
+        # win move
+        #if neighbor in target_loc:
+        #    value = inf
+           
         #print 'cost: ', value
         #print 'estimate: ', estimate
         action = {'action_type': 'movement', 'location': neighbor, 'cost': value}
@@ -374,7 +379,7 @@ def turn(player, players, player_list, wall_list, available_positions, adjacency
                 if game_tree[parent]['owner'] == 'min':
                     # branch pruning
                     if alpha != None: 
-                        if (value > alpha) or (alpha == -inf):
+                        if (value > alpha):
                             if DEBUG:
                                 print "alpha pruning"
                                 print parent

@@ -148,11 +148,12 @@ else:
                                         'amount_of_walls': AMOUNT_OF_WALLS/amount_of_players,
                                         'target_loc': PLAYERS[k]['target_loc']
                     })
-                player_list[0].update({'owner': challenger})               
-                player_list[1].update({'owner': opponent}) 
+                player_list[0]['owner'] = challenger               
+                player_list[1]['owner'] = opponent 
 
                 # play           
                 [winner_id, turn_counter] = play(player_list)
+                print "Player %d '%s' win"% (winner_id, player_list[winner_id/amount_of_players]['owner'])
                 if winner_id == 0:
                     counter[i] += 1
                 elif winner_id == 2:

@@ -8,7 +8,7 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final):
     pruning = False
     # branch init
     branch = {}
-    branch.update({'nodes': []})
+    branch['nodes'] = []
     # data gathering from game state
     player = game_state['player']
     players = game_state['players']
@@ -79,8 +79,8 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final):
         (x, y) = neighbor
         if not is_final:
             current_game_state['players'][x][y] = 1 
-            current_game_state['player_list'][current_player].update({'location': neighbor}) 
-            current_game_state.update({'player': player_list[next_player]})
+            current_game_state['player_list'][current_player]['location'] = neighbor 
+            current_game_state['player'] = player_list[next_player]
         branch['nodes'].append({'action': action, 'game_state': current_game_state})
         # node pruning
         if is_final:
@@ -105,8 +105,8 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final):
         (x, y) = location
         if not is_final:
             current_game_state['players'][x][y] = 1 
-            current_game_state['player_list'][current_player].update({'location': location}) 
-            current_game_state.update({'player': player_list[next_player]})
+            current_game_state['player_list'][current_player]['location'] = location 
+            current_game_state['player'] = player_list[next_player]
         branch['nodes'].append({'action': action, 'game_state': current_game_state})
         # node pruning
         if is_final:
@@ -165,7 +165,7 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final):
                             if not is_final:
                                 current_game_state['wall_list'].append(wall)
                                 current_game_state['player_list'][current_player]['amount_of_walls'] -= 1  
-                                current_game_state.update({'player': player_list[next_player]})
+                                current_game_state['player'] = player_list[next_player]
                             branch['nodes'].append({'action': action, 'game_state': current_game_state})           
                             action_list.append(action)
                         # node pruning
@@ -178,16 +178,22 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final):
 def turn(player, players, player_list, wall_list, available_positions, adjacency_list):
     # current game state 
     game_state = {}
-    game_state.update({'player': player})
-    game_state.update({'players': players})
-    game_state.update({'wall_list': wall_list})
-    game_state.update({'player_list': player_list})
+    game_state['player'] = player
+    game_state['players'] = players
+    game_state['wall_list'] = wall_list
+    game_state['player_list'] = player_list
     # game tree
-    depth = 2
+    depth = 3
 
-    # breakthrough
+    # bot stupefying
     if player['amount_of_walls'] == 0:
         depth = 0
+        opponents_walls_counter = 0
+        for opponent in player_list:
+            if opponent != player:
+                opponents_walls_counter += opponent['amount_of_walls']
+        if opponents_walls_counter == 0:
+            depth = 4
 
     index = 0
     game_tree = {}
@@ -329,7 +335,7 @@ def turn(player, players, player_list, wall_list, available_positions, adjacency
                 if DEBUG:
                     print game_tree[parent]['owner']
                     print game_tree[grandparent]['owner']
-                game_tree[parent]['action'].update({'cost': final}) 
+                game_tree[parent]['action']['cost'] = final 
                 grandparent = game_tree[parent]['parent']
                 initial = game_tree[grandparent]['initial']   
                 # from depth params transition     
@@ -371,7 +377,7 @@ def turn(player, players, player_list, wall_list, available_positions, adjacency
                 if game_tree[parent]['owner'] == 'min':
                     # branch pruning
                     if alpha != None: 
-                        if (value > alpha) or (alpha == -inf):
+                        if (value > alpha):
                             if DEBUG:
                                 print "alpha pruning"
                                 print parent
