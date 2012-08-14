@@ -8,3 +8,4 @@ import playful_bot
 import medium_bot
 import ultimate_bot
 import hard_bot
+import greedy_bot
