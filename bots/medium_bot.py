@@ -297,7 +297,7 @@ def turn(player, players, player_list, wall_list, available_positions, adjacency
             equal_actions_list.append(action)
     variants = len(equal_actions_list)
     if variants != 0:
-        action = equal_actions_list[random.randint(0, variants - 1)]
+        action = random.choice(equal_actions_list)
     else:
         action = {'action_type': None}
     #print action
