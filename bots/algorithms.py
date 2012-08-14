@@ -145,6 +145,41 @@ def bfs(loc, available_positions, target_loc):
 
     return step, backtrace
 
+def bfs_light(loc, available_positions, target_loc):
+    # breadth-first search
+    neighbor = loc
+    queue = []
+    queue.append(loc)   
+    visited = {}
+    visited[loc] = True
+    is_break = False
+    path = {}
+    while (queue != []) and (not is_break):
+        node = queue.pop(0)
+        for neighbor in available_positions[node]:
+            if not (visited.has_key(neighbor) or is_break):
+                path[neighbor] = node
+                visited[neighbor] = True
+                if neighbor in target_loc:
+                    is_break = True
+                    #print neighbor
+                queue.append(neighbor)
+            if is_break: 
+                break    
+
+    if not is_break:
+        step = None
+    else:
+        step = 0
+
+    node = neighbor
+    while (node != loc) and is_break:
+        step += 1
+        neighbor = node
+        node = path[neighbor]
+
+    return step
+
 def dijkstra(loc, available_positions, target_loc):
     # dijkstra algorithm
     neighbor = loc
