@@ -445,22 +445,40 @@ def turn(player, players, player_list, wall_list, available_positions, adjacency
         action_list.append(game_tree[child]['action'])
         #print game_tree[child]['action']
 
-    maximal_cost = None
-    equal_actions_list = []
-    for actions in action_list:
-        if (actions['cost'] > maximal_cost):
-            equal_actions_list = []
-            maximal_cost = actions['cost']
-            action = actions
-            equal_actions_list.append(action)
-        elif actions['cost'] == maximal_cost:
-            action = actions
-            equal_actions_list.append(action)
-    variants = len(equal_actions_list)
-    if variants != 0:
-        action = random.choice(equal_actions_list)
+    maximal_movement_cost = None
+    maximal_building_cost = None
+    equal_movement_actions_list = []
+    equal_building_actions_list = []
+    for action in action_list:
+        if action['action_type'] == 'movement':
+            if (action['cost'] > maximal_movement_cost):
+                equal_movement_actions_list = []
+                maximal_movement_cost = action['cost']
+                equal_movement_actions_list.append(action)
+            elif action['cost'] == maximal_movement_cost:
+                equal_movement_actions_list.append(action)
+        elif action['action_type'] == 'building':
+            if (action['cost'] > maximal_building_cost):
+                equal_building_actions_list = []
+                maximal_building_cost = action['cost']
+                equal_building_actions_list.append(action)
+            elif action['cost'] == maximal_building_cost:
+                equal_building_actions_list.append(action)
+    #print maximal_movement_cost
+    #print maximal_building_cost
+
+    if (maximal_movement_cost >= maximal_building_cost):
+        variants = len(equal_movement_actions_list)
+        if variants != 0:
+            action = random.choice(equal_movement_actions_list)
+        else:
+            action = {'action_type': None}
     else:
-        action = {'action_type': None}
+        variants = len(equal_building_actions_list)
+        if variants != 0:
+            action = random.choice(equal_building_actions_list)
+        else:
+            action = {'action_type': None}      
     #print action
 
     if action['action_type'] == 'movement':

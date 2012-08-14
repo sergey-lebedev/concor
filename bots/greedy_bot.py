@@ -464,7 +464,6 @@ def turn(player, players, player_list, wall_list, available_positions, adjacency
                 equal_building_actions_list.append(action)
     #print maximal_movement_cost
     #print maximal_building_cost
-    #print equal_movement_actions_list
 
     if (maximal_movement_cost >= maximal_building_cost):
         variants = len(equal_movement_actions_list)

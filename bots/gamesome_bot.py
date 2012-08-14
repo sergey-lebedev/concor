@@ -191,7 +191,7 @@ def negamax(game_tree, depth, amount_of_players):
             equal_actions_list.append(action)
     variants = len(equal_actions_list)
     if variants != 0:
-        action = equal_actions_list[random.randint(0, variants - 1)]
+        action = random.choice(equal_building_actions_list)
     else:
         action = {'action_type': None}
     #print action
