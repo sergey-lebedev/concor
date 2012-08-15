@@ -11,7 +11,7 @@ def adjacency_list_generator():
             dyj = dy + j
             dxi = dx + i
             if (dyj >= 0) & (dyj < height) & (dxi >= 0) & (dxi < width): 
-                link_list.append((dx + i, dy + j))
+                link_list.append((dxi, dyj))
         adjacency_list[(i, j)] = set(link_list)    
 
     return adjacency_list
@@ -112,7 +112,7 @@ def bfs(loc, available_positions, target_loc):
     # breadth-first search
     neighbor = loc
     queue = [loc]   
-    visited = {loc: False}
+    visited = {loc: True}
     is_break = False
     path = {}
     while (queue != []) and not is_break:
@@ -148,7 +148,7 @@ def bfs_light(loc, available_positions, target_loc):
     # breadth-first search
     neighbor = loc
     queue = [loc]   
-    visited = {loc: False}
+    visited = {loc: True}
     is_break = False
     path = {}
     while (queue != []) and not is_break:
@@ -209,8 +209,6 @@ def dijkstra(loc, available_positions, target_loc):
         step = None      
 
     return step
-
-inf = float("infinity")
 
 def trace2places(trace):
     places = []

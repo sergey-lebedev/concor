@@ -26,7 +26,7 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final):
     #neigbors
     available_positions = available_positions_generator(loc, wall_list, player_list, adjacency_list)
     neighbors = [location for location in available_positions[loc]]
-    #possibility matrix   
+    #possibility matrix
     p = w2p(wall_list)
     #actions
     action_list = []
@@ -104,10 +104,8 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final):
     # building
     if (player['amount_of_walls'] > 0) and not pruning:
         for location in p:
-            if p[location] != set([]) and not pruning:
+            if (p[location] != set([])) and not pruning:
                 for wall_type in p[location]:
-                    if pruning:
-                        break
                     # leafs don't need game state copy
                     if is_final:
                         current_game_state = {}
@@ -155,7 +153,7 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final):
                     if is_final:
                         pruning = alpha_beta_pruning(alpha, beta, value, owner)
                     if pruning:
-                        break        
+                        break    
     return branch
 
 def turn(player, players, player_list, wall_list, available_positions, adjacency_list):
