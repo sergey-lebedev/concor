@@ -27,5 +27,7 @@ def bot_turn(PLAYER, player, player_list, wall_list, available_positions,
         hard_bot.turn(player, players, player_list, wall_list, available_positions, adjacency_list)
     elif bot_type == 'greedy_bot':
         greedy_bot.turn(player, players, player_list, wall_list, available_positions, adjacency_list)
+    elif bot_type == 'multiplayer_bot':
+        multiplayer_bot.turn(player, players, player_list, wall_list, available_positions, adjacency_list)
     else:
         pass
