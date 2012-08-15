@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 from draw import *
 from bots.algorithms import *
-import curses
+if enable_curses:
+    import curses
 
 # keyboard arrows
 KEY_UP = 65
