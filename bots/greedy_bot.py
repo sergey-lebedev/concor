@@ -26,7 +26,7 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final):
     #neigbors
     available_positions = available_positions_generator(loc, wall_list, player_list, adjacency_list)
     neighbors = [location for location in available_positions[loc]]
-    #possibility matrix
+    #possibility matrix   
     p = w2p(wall_list)
     #actions
     action_list = []

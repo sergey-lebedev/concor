@@ -3,13 +3,14 @@ DEBUG = False
 def adjacency_list_generator():
     #adjacency_list
     adjacency_list = {}
-    ij_list = ((i, j) for i in range(width) for j in range(height))
+    ij_list = [(i, j) for i in range(width) for j in range(height)]
     for (i, j) in ij_list:
         link_list = []
         for direction in DIRECTIONS:
             (dx, dy) = DIRECTIONS[direction]
-            if ((dy + j) >= 0) & ((dy + j) < height) &\
-               ((dx + i) >= 0) & ((dx + i) < width): 
+            dyj = dy + j
+            dxi = dx + i
+            if (dyj >= 0) & (dyj < height) & (dxi >= 0) & (dxi < width): 
                 link_list.append((dx + i, dy + j))
         adjacency_list[(i, j)] = set(link_list)    
 
@@ -18,9 +19,9 @@ def adjacency_list_generator():
 def available_positions_generator(loc, wall_list, player_list, adjacency_list):
     # calculate available positions
     available_positions = {}
-    for positions in adjacency_list:
+    for position in adjacency_list:
         #print positions
-        available_positions[positions] = adjacency_list[positions].copy()
+        available_positions[position] = adjacency_list[position].copy()
     #available_positions = adjacency_list.copy()
 
     for wall in wall_list:
@@ -85,7 +86,7 @@ def available_positions_generator(loc, wall_list, player_list, adjacency_list):
 def w2p(wall_list):
     #print wall_list
     ij_list = ((i, j) for i in range(1, width) for j in range(1, height))
-    p = dict((ij, set(['horizontal', 'vertical'])) for ij in ij_list)
+    p = dict([(ij, set(['horizontal', 'vertical'])) for ij in ij_list])
 
     for wall in wall_list:
         (x, y) = wall['location']
@@ -94,13 +95,13 @@ def w2p(wall_list):
             for direction in ('w', 'e'):
                 (dx, dy) = DIRECTIONS[direction]
                 location = (x + dx, y + dy)
-                if location in p:
+                if p.has_key(location):
                     p[location].difference_update(set(['horizontal']))
         elif wall['type'] == 'vertical':
             for direction in ('n', 's'):
                 (dx, dy) = DIRECTIONS[direction]
                 location = (x + dx, y + dy)
-                if location in p:
+                if p.has_key(location):
                     p[location].difference_update(set(['vertical']))
         else:
             pass
@@ -110,16 +111,14 @@ def w2p(wall_list):
 def bfs(loc, available_positions, target_loc):
     # breadth-first search
     neighbor = loc
-    queue = []
-    queue.append(loc)   
-    visited = {}
-    visited[loc] = True
+    queue = [loc]   
+    visited = {loc: False}
     is_break = False
     path = {}
-    while (queue != []) and (not is_break):
+    while (queue != []) and not is_break:
         node = queue.pop(0)
         for neighbor in available_positions[node]:
-            if not (visited.has_key(neighbor) or is_break):
+            if not visited.has_key(neighbor):
                 path[neighbor] = node
                 visited[neighbor] = True
                 if neighbor in target_loc:
@@ -127,7 +126,7 @@ def bfs(loc, available_positions, target_loc):
                     #print neighbor
                 queue.append(neighbor)
             if is_break: 
-                break    
+                break  
 
     if not is_break:
         step = None
@@ -148,16 +147,14 @@ def bfs(loc, available_positions, target_loc):
 def bfs_light(loc, available_positions, target_loc):
     # breadth-first search
     neighbor = loc
-    queue = []
-    queue.append(loc)   
-    visited = {}
-    visited[loc] = True
+    queue = [loc]   
+    visited = {loc: False}
     is_break = False
     path = {}
-    while (queue != []) and (not is_break):
+    while (queue != []) and not is_break:
         node = queue.pop(0)
         for neighbor in available_positions[node]:
-            if not (visited.has_key(neighbor) or is_break):
+            if not visited.has_key(neighbor):
                 path[neighbor] = node
                 visited[neighbor] = True
                 if neighbor in target_loc:
@@ -211,7 +208,7 @@ def dijkstra(loc, available_positions, target_loc):
     else:
         step = None      
 
-    return step, neighbor
+    return step
 
 inf = float("infinity")
 
