@@ -184,29 +184,28 @@ def dijkstra(loc, available_positions, target_loc):
     queue = [(0, loc)]   
     visited = {}
     is_break = False
-    while (queue != []) and (not is_break):
+    while (queue != []) and not is_break:
         (dummy, node) = queue.pop(0)
         for neighbor in available_positions[node]:
-            if not (visited.has_key(neighbor)):
+            if not visited.has_key(neighbor):
+                visited[neighbor] = True
                 if distances.has_key(neighbor):
                     distance = min(distances[neighbor], distances[node] + 1)
                 else:
                     distance = distances[node] + 1
                 distances[neighbor] = distance
                 estimation = (distance, neighbor)
-                if estimation not in queue:
-                    queue.append(estimation)               
-        visited[node] = True
-        if node in target_loc:
-            is_break = True
-            break
-   
+                queue.append(estimation)               
+                if neighbor in target_loc:
+                    is_break = True
+                    break
+
         queue = sorted(queue)
-   
+
     if is_break:
-        step = distances[node]  
+        step = distances[node]
     else:
-        step = None      
+        step = None
 
     return step
 
