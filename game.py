@@ -81,7 +81,7 @@ def play(player_list):
                 bot_turn(PLAYERS[p], player_list[p*amount_of_players/max(AMOUNT_OF_PLAYERS)], player_list, wall_list, available_positions, players, adjacency_list)
                 toc = time.time()
                 turn_time = toc - tic
-                print turn_time
+                #print turn_time
                 time.sleep(max(0, turn_time_limit - turn_time))
             counter += 1
 
