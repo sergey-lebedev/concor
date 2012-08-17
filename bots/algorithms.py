@@ -122,7 +122,7 @@ def bfs(loc, available_positions, target_loc):
             if not visited.has_key(neighbor):
                 path[neighbor] = node
                 visited[neighbor] = True
-                if neighbor in target_loc:
+                if target_loc.has_key(neighbor):
                     is_break = True
                     #print neighbor
                 queue.append(neighbor)
@@ -159,7 +159,7 @@ def bfs_light(loc, available_positions, target_loc):
             if not visited.has_key(neighbor):
                 path[neighbor] = node
                 visited[neighbor] = True
-                if neighbor in target_loc:
+                if target_loc.has_key(neighbor):
                     is_break = True
                     #print neighbor
                 queue.append(neighbor)

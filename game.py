@@ -20,13 +20,13 @@ PLAYERS = [{'color': 'red', 'location': (width/2, height - 1), 'target_loc': [],
 
 for i in range(amount_of_players):
     (x, y) = PLAYERS[i*max(AMOUNT_OF_PLAYERS)/amount_of_players]['location']
-    target_loc = []
+    target_loc = {}
     if (x == 0) or (x == (width - 1)):
         for j in range(height):
-            target_loc.append((width - 1 - x, j))
+            target_loc[(width - 1 - x, j)] = True
     elif (y == 0) or (y == (height - 1)):
         for j in range(width):
-            target_loc.append((j, height - 1 - y))
+            target_loc[(j, height - 1 - y)] = True
     PLAYERS[i*max(AMOUNT_OF_PLAYERS)/amount_of_players]['target_loc'] = target_loc
     #print target_loc
 
@@ -81,7 +81,7 @@ def play(player_list):
                 bot_turn(PLAYERS[p], player_list[p*amount_of_players/max(AMOUNT_OF_PLAYERS)], player_list, wall_list, available_positions, players, adjacency_list)
                 toc = time.time()
                 turn_time = toc - tic
-                #print turn_time
+                print turn_time
                 time.sleep(max(0, turn_time_limit - turn_time))
             counter += 1
 
