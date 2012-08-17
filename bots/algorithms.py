@@ -17,7 +17,7 @@ def adjacency_list_generator():
     return adjacency_list
 
 def available_positions_generator(loc, wall_list, player_list, adjacency_list):
-    # calculate available positions
+    # calculate available positions   
     available_positions = {}
     for position in adjacency_list:
         #print positions
@@ -112,7 +112,8 @@ def bfs(loc, available_positions, target_loc):
     # breadth-first search
     neighbor = loc
     queue = [loc]   
-    visited = {loc: True}
+    visited = {}   
+    visited[loc] = True
     is_break = False
     path = {}
     while (queue != []) and not is_break:
@@ -147,8 +148,9 @@ def bfs(loc, available_positions, target_loc):
 def bfs_light(loc, available_positions, target_loc):
     # breadth-first search
     neighbor = loc
-    queue = [loc]   
-    visited = {loc: True}
+    queue = [loc]
+    visited = {}   
+    visited[loc] = True
     is_break = False
     path = {}
     while (queue != []) and not is_break:
