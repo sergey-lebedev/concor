@@ -164,7 +164,7 @@ def turn(player, players, player_list, wall_list, available_positions, adjacency
     game_state['wall_list'] = wall_list
     game_state['player_list'] = player_list
     # game tree
-    depth = 2
+    depth = 3
 
     # bot stupefying
     if player['amount_of_walls'] == 0:
