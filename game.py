@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import sys
 import getopt
+import copy
 import time
 import __builtin__
 from settings import *
@@ -66,13 +67,22 @@ def play(player_list):
         curscr = init_draw() 
         draw(player_list, wall_list, curscr)
 
+    game_state = []
     while not end:
         while True:
-            # occupied cells
-            loc = player_list[p*amount_of_players/max(AMOUNT_OF_PLAYERS)]['location']
-            available_positions = available_positions_generator(loc, wall_list, player_list, adjacency_list)
+            # user turn rollback
+            current_game_state = (p, copy.deepcopy(player_list), copy.deepcopy(wall_list), copy.deepcopy(players))
+            game_state.append(current_game_state)
+            if __builtin__.rollback:
+                current_game_state = game_state[max(0, len(game_state) - 2 - amount_of_players)]
+                [p, player_list, wall_list, players] = current_game_state
+                __builtin__.rollback = False
 
+            # occupied cells  
+            loc = player_list[p*amount_of_players/max(AMOUNT_OF_PLAYERS)]['location']
             owner = player_list[p*amount_of_players/max(AMOUNT_OF_PLAYERS)]['owner']
+            available_positions = available_positions_generator(loc, wall_list, player_list, adjacency_list)       
+      
             if owner == 'user':
                 end = user_turn(player_list, player_list[p*amount_of_players/max(AMOUNT_OF_PLAYERS)], wall_list, available_positions, players, curscr)
             else:

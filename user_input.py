@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import __builtin__
 from draw import *
 from bots.algorithms import *
 if enable_curses:
@@ -112,6 +113,9 @@ def user_turn(player_list, player, wall_list, available_positions, players, curs
                 new_wall = True
                 ready = False
                 second_stage = True
+            elif (command == 'u'):
+                __builtin__.rollback = True
+                ready = True
             else:
                 ready = False
                 second_stage = False
