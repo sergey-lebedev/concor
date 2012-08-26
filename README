@@ -16,6 +16,7 @@ r - rotate wall
 i,j,k,l or arrows - move wall
 b - build wall
 s - switch between turn phases
+u - rollback user turn
 
 References
 

@@ -72,10 +72,13 @@ def play(player_list):
         while True:
             # user turn rollback
             current_game_state = (p, copy.deepcopy(player_list), copy.deepcopy(wall_list), copy.deepcopy(players))
-            game_state.append(current_game_state)
-            if __builtin__.rollback:
-                current_game_state = game_state[max(0, len(game_state) - 2 - amount_of_players)]
-                [p, player_list, wall_list, players] = current_game_state
+            if not __builtin__.rollback:
+                game_state.append(current_game_state)
+            else:
+                game_state_index = max(1, len(game_state) - amount_of_players)
+                game_state = game_state[:game_state_index]
+                current_game_state = game_state[-1]
+                [p, player_list, wall_list, players] = copy.deepcopy(current_game_state)
                 __builtin__.rollback = False
 
             # occupied cells  
