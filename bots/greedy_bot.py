@@ -163,19 +163,24 @@ def turn(player, players, player_list, wall_list, available_positions, adjacency
     game_state['players'] = players
     game_state['wall_list'] = wall_list
     game_state['player_list'] = player_list
-    # game tree
-    depth = 2
 
     # bot stupefying
-    if player['amount_of_walls'] == 0:
-        depth = 0
-        opponents_walls_counter = 0
-        for opponent in player_list:
-            if opponent != player:
-                opponents_walls_counter += opponent['amount_of_walls']
-        if opponents_walls_counter == 0:
-            depth = 4
-
+    opponents_walls_counter = 0
+    for opponent in player_list:
+        if opponent != player:
+            opponents_walls_counter += opponent['amount_of_walls']
+    if player['amount_of_walls'] != 0:
+        if opponents_walls_counter != 0:
+            depth = 2
+        else:
+            depth = 2
+    else:
+        if opponents_walls_counter != 0:
+            depth = 0
+        else:
+            depth = 6
+    
+    # game tree
     index = 0
     game_tree = {}
     root = {index: {'parent': None, 'child': [], 'game_state': game_state, 'expanded': False, 'initial': -inf, 'final': -inf, 'alpha': None, 'beta': None, 'owner': 'max', 'action': None, 'is_node': False}}
