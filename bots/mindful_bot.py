@@ -1,17 +1,17 @@
 from algorithms import *
+import shelve
 import random
 import copy
 DEBUG = False
 inf = float("infinity")
 
-def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final):
+def branch_generator(game_state, adjacency_list, owner, storage, alpha, beta, is_final):
     pruning = False
     # branch init
     branch = {}
     branch['nodes'] = []
     # data gathering from game state
     player = game_state['player']
-    players = game_state['players']
     player_list = game_state['player_list']
     wall_list = game_state['wall_list']
     # player detection
@@ -55,8 +55,14 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final):
         if is_final:
             current_game_state = {}
         else:
-            current_game_state = copy.deepcopy(game_state)     
-        step = bfs_light(neighbor, available_positions, target_loc)  
+            current_game_state = copy.deepcopy(game_state)
+        gamestate = str(game_state)
+        print gamestate
+        if storage.has_key(gamestate):
+            step = storage[gamestate]
+        else:   
+            step = bfs_light(neighbor, available_positions, target_loc)
+            storage[gamestate] = step   
         #print step
         if (step != None) and (distance != None):
             value = distance - step
@@ -68,7 +74,6 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final):
         ##print action        
         (x, y) = neighbor
         if not is_final:
-            current_game_state['players'][x][y] = 1 
             current_game_state['player_list'][current_player]['location'] = neighbor 
             current_game_state['player'] = player_list[next_player]
         branch['nodes'].append({'action': action, 'game_state': current_game_state})
@@ -156,11 +161,14 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final):
                         break    
     return branch
 
-def turn(player, players, player_list, wall_list, available_positions, adjacency_list):
+def turn(player, player_list, wall_list, available_positions, adjacency_list):
+    # opening storage
+    filename = str(player['id']) + '.mem' 
+    storage = shelve.open(filename)
+
     # current game state 
     game_state = {}
     game_state['player'] = player
-    game_state['players'] = players
     game_state['wall_list'] = wall_list
     game_state['player_list'] = player_list
 
@@ -250,7 +258,7 @@ def turn(player, players, player_list, wall_list, available_positions, adjacency
                         alpha = game_tree[parent]['initial']
                         beta = None
 
-            branch = branch_generator(current_game_state, adjacency_list, game_tree[parent]['owner'], game_tree[parent]['alpha'], game_tree[parent]['beta'], is_final)
+            branch = branch_generator(current_game_state, adjacency_list, game_tree[parent]['owner'], storage, game_tree[parent]['alpha'], game_tree[parent]['beta'], is_final)
             #print branch['nodes']
             child_list = []
             weighted_subbranches = []
@@ -417,6 +425,9 @@ def turn(player, players, player_list, wall_list, available_positions, adjacency
                 #print 'action: ', game_tree[node]['action']
                 sequence.extend(child_list)
 
+    # closing storage
+    storage.close()
+
     level = 0
     # action select
     action_list = []
@@ -466,7 +477,6 @@ def turn(player, players, player_list, wall_list, available_positions, adjacency
     if action['action_type'] == 'movement':
         (x, y) = action['location']
         player['location'] = (x, y)
-        players[x][y] = 1 
     elif action['action_type'] == 'building':
         wall_list.append(action['wall'])
         player['amount_of_walls'] -= 1   

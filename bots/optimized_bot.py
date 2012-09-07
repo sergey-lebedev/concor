@@ -16,7 +16,7 @@ def trace2places(trace):
                    places.append(place)
     return places
 
-def turn(player, players, player_list, wall_list, available_positions, adjacency_list):
+def turn(player, player_list, wall_list, available_positions, adjacency_list):
     loc = player['location']
     target_loc = player['target_loc']
     #opponent_list
@@ -126,7 +126,6 @@ def turn(player, players, player_list, wall_list, available_positions, adjacency
     if action['action_type'] == 'movement':
         (x, y) = action['location']
         player['location'] = (x, y)
-        players[x][y] = 1 
     elif action['action_type'] == 'building':
         wall_list.append(action['wall'])
         player['amount_of_walls'] -= 1   

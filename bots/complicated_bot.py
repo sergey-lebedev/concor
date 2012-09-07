@@ -1,14 +1,11 @@
 from algorithms import *
 import random
 
-def turn(player, players, player_list, wall_list, available_positions, adjacency_list):
+def turn(player, player_list, wall_list, available_positions, adjacency_list):
     loc = player['location']
     target_loc = player['target_loc']
     #opponent_list
-    opponent_list = []
-    for item in player_list:
-        if item != player:
-            opponent_list.append(item)
+    opponent_list = [item for item in player_list if item != player]
     #neigbors
     neighbors = []
     for location in available_positions[loc]:
@@ -26,7 +23,7 @@ def turn(player, players, player_list, wall_list, available_positions, adjacency
                                           wall_list, 
                                           player_list, 
                                           adjacency_list)
-        [step, dummy] = dijkstra(opponent['location'], 
+        step = dijkstra(opponent['location'], 
                             opponent_available_positions, 
                             opponent['target_loc'])
         #print step
@@ -34,7 +31,7 @@ def turn(player, players, player_list, wall_list, available_positions, adjacency
     distance = min(distances)
     #print distance
     for neighbor in neighbors:
-        [step, dummy] = dijkstra(neighbor, available_positions, target_loc)
+        step = dijkstra(neighbor, available_positions, target_loc)
         #print step
         if (step != None) and (distance != None):
             value = distance - step
@@ -69,7 +66,7 @@ def turn(player, players, player_list, wall_list, available_positions, adjacency
                                 available_positions_generator(opponent['location'],                                                     projected_wall_list,
                                                               player_list,
                                                               adjacency_list)
-                            [step, dummy] = dijkstra(opponent['location'], 
+                            step = dijkstra(opponent['location'], 
                                                 projected_available_positions, 
                                                 opponent['target_loc'])
                             distances.append(step)
@@ -83,7 +80,7 @@ def turn(player, players, player_list, wall_list, available_positions, adjacency
                         #toc = time.time()
                         #print 'gen', toc - tic
                         #tic = time.time()
-                        [step, dummy] = dijkstra(loc, 
+                        step = dijkstra(loc, 
                                             projected_available_positions, 
                                             target_loc)
                         #toc = time.time()
@@ -115,7 +112,6 @@ def turn(player, players, player_list, wall_list, available_positions, adjacency
     if action['action_type'] == 'movement':
         (x, y) = action['location']
         player['location'] = (x, y)
-        players[x][y] = 1 
     elif action['action_type'] == 'building':
         wall_list.append(action['wall'])
         player['amount_of_walls'] -= 1   

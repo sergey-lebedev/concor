@@ -46,16 +46,7 @@ def play(player_list):
     counter = 0
     end = False
     win = False
-    p = 0
-    
-    # players setup
-    players = [None] * width
-    for i in range(len(players)):
-        players[i] = [0] * height
-
-    for player in player_list:
-        (x, y) = player['location']
-        players[x][y] =  player['id']      
+    p = 0  
 
     wall_list = []
 
@@ -72,14 +63,14 @@ def play(player_list):
         while True:
             # user turn rollback
             if not challenge:
-                current_game_state = (p, copy.deepcopy(player_list), copy.deepcopy(wall_list), copy.deepcopy(players))
+                current_game_state = (p, copy.deepcopy(player_list), copy.deepcopy(wall_list))
                 if not __builtin__.rollback:
                     game_state.append(current_game_state)
                 else:
                     game_state_index = max(1, len(game_state) - amount_of_players)
                     game_state = game_state[:game_state_index]
                     current_game_state = game_state[-1]
-                    [p, player_list, wall_list, players] = copy.deepcopy(current_game_state)
+                    [p, player_list, wall_list] = copy.deepcopy(current_game_state)
                     __builtin__.rollback = False
 
             # occupied cells  
@@ -88,11 +79,11 @@ def play(player_list):
             available_positions = available_positions_generator(loc, wall_list, player_list, adjacency_list)       
       
             if owner == 'user':
-                end = user_turn(player_list, player_list[p*amount_of_players/max(AMOUNT_OF_PLAYERS)], wall_list, available_positions, players, curscr)
+                end = user_turn(player_list, player_list[p*amount_of_players/max(AMOUNT_OF_PLAYERS)], wall_list, available_positions, curscr)
             else:
                 #print p
                 tic = time.time()
-                bot_turn(PLAYERS[p], player_list[p*amount_of_players/max(AMOUNT_OF_PLAYERS)], player_list, wall_list, available_positions, players, adjacency_list)
+                bot_turn(PLAYERS[p], player_list[p*amount_of_players/max(AMOUNT_OF_PLAYERS)], player_list, wall_list, available_positions, adjacency_list)
                 toc = time.time()
                 turn_time = toc - tic
                 #print turn_time

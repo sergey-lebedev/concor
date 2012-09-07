@@ -59,7 +59,7 @@ def vector_sort(vectors):
     result.extend(I_quadrant)
     return result
 
-def user_turn(player_list, player, wall_list, available_positions, players, curscr):
+def user_turn(player_list, player, wall_list, available_positions, curscr):
     (x, y) = player['location']
     loc = (x, y)
     #print available_positions[loc]
@@ -101,10 +101,8 @@ def user_turn(player_list, player, wall_list, available_positions, players, curs
                 command = raw_input()
 
             if command in command_list:
-                players[x][y] = 0
                 (x, y) = neighbors[command_dict[command]]
                 player['location'] = (x, y)
-                players[x][y] = 1
                 ready = True
             elif (command == 'q'):
                 quit = True

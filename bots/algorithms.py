@@ -141,7 +141,7 @@ def bfs(loc, available_positions, target_loc):
         neighbor = node
         node = path[neighbor]
         backtrace.append(node)
-    #backtrace.reverse()
+    backtrace.reverse()
 
     return step, backtrace
 

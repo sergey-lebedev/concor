@@ -11,7 +11,6 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final):
     branch['nodes'] = []
     # data gathering from game state
     player = game_state['player']
-    players = game_state['players']
     player_list = game_state['player_list']
     wall_list = game_state['wall_list']
     # player detection
@@ -74,7 +73,6 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final):
         ##print action        
         (x, y) = neighbor
         if not is_final:
-            current_game_state['players'][x][y] = 1 
             current_game_state['player_list'][current_player]['location'] = neighbor 
             current_game_state['player'] = player_list[next_player]
         branch['nodes'].append({'action': action, 'game_state': current_game_state})
@@ -100,7 +98,6 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final):
         action_list.append(action)
         (x, y) = location
         if not is_final:
-            current_game_state['players'][x][y] = 1 
             current_game_state['player_list'][current_player]['location'] = location 
             current_game_state['player'] = player_list[next_player]
         branch['nodes'].append({'action': action, 'game_state': current_game_state})
@@ -171,11 +168,10 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final):
                             break        
     return branch
 
-def turn(player, players, player_list, wall_list, available_positions, adjacency_list):
+def turn(player, player_list, wall_list, available_positions, adjacency_list):
     # current game state 
     game_state = {}
     game_state['player'] = player
-    game_state['players'] = players
     game_state['wall_list'] = wall_list
     game_state['player_list'] = player_list
     # game tree
@@ -460,7 +456,6 @@ def turn(player, players, player_list, wall_list, available_positions, adjacency
     if action['action_type'] == 'movement':
         (x, y) = action['location']
         player['location'] = (x, y)
-        players[x][y] = 1 
     elif action['action_type'] == 'building':
         wall_list.append(action['wall'])
         player['amount_of_walls'] -= 1   
