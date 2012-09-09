@@ -422,7 +422,7 @@ def turn(player, player_list, wall_list, available_positions, adjacency_list):
         action_list.append(game_tree[child]['action'])
         #print game_tree[child]['action']
 
-    action = action_choice(action_list)
+    action = action_choice_greedy(action_list)
 
     if action['action_type'] == 'movement':
         (x, y) = action['location']
