@@ -270,8 +270,8 @@ def turn(player, player_list, wall_list, available_positions, adjacency_list):
                 #print 'action: ', game_tree[node]['action']
                 sequence.extend(child_list)
 
-    level = 0
     # action select
+    level = 0
     action_list = []
     #print 'actions: '
     #print 'level: ', level
@@ -280,23 +280,7 @@ def turn(player, player_list, wall_list, available_positions, adjacency_list):
         action_list.append(game_tree[child]['action'])
         #print game_tree[child]['action']
 
-    maximal_cost = None
-    equal_actions_list = []
-    for actions in action_list:
-        if (actions['cost'] > maximal_cost):
-            equal_actions_list = []
-            maximal_cost = actions['cost']
-            action = actions
-            equal_actions_list.append(action)
-        elif actions['cost'] == maximal_cost:
-            action = actions
-            equal_actions_list.append(action)
-    variants = len(equal_actions_list)
-    if variants != 0:
-        action = random.choice(equal_actions_list)
-    else:
-        action = {'action_type': None}
-    #print action
+    action = action_choice(action_list)
 
     if action['action_type'] == 'movement':
         (x, y) = action['location']

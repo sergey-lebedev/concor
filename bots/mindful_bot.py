@@ -16,6 +16,7 @@ def branch_generator(game_state, adjacency_list, owner, storage, alpha, beta, is
     wall_list = game_state['wall_list']
     # player detection
     current_player = player_list.index(player)
+    player_id = player['id']
     #print 'player_number: ', current_player
     next_player = (current_player + 1) % len(player_list)
     # old
@@ -33,6 +34,7 @@ def branch_generator(game_state, adjacency_list, owner, storage, alpha, beta, is
     #movement
     distances = []
     for opponent in opponent_list:
+        opponent_id = player['id']
         #print opponent
         opponent_available_positions =\
             available_positions_generator(opponent['location'], 
@@ -57,9 +59,10 @@ def branch_generator(game_state, adjacency_list, owner, storage, alpha, beta, is
         else:
             current_game_state = copy.deepcopy(game_state)
         gamestate = str(game_state)
-        print gamestate
+        #print gamestate
         if storage.has_key(gamestate):
             step = storage[gamestate]
+            print 'found!'
         else:   
             step = bfs_light(neighbor, available_positions, target_loc)
             storage[gamestate] = step   
@@ -125,6 +128,7 @@ def branch_generator(game_state, adjacency_list, owner, storage, alpha, beta, is
                     projected_wall_list.append(wall)
                     distances = []
                     for opponent in opponent_list:
+                        opponent_id = opponent['id']
                         projected_available_positions =\
                             available_positions_generator(opponent['location'],                                                     projected_wall_list,
                                                           player_list,
@@ -428,8 +432,8 @@ def turn(player, player_list, wall_list, available_positions, adjacency_list):
     # closing storage
     storage.close()
 
-    level = 0
     # action select
+    level = 0
     action_list = []
     #print 'actions: '
     #print 'level: ', level
@@ -438,41 +442,7 @@ def turn(player, player_list, wall_list, available_positions, adjacency_list):
         action_list.append(game_tree[child]['action'])
         #print game_tree[child]['action']
 
-    maximal_movement_cost = None
-    maximal_building_cost = None
-    equal_movement_actions_list = []
-    equal_building_actions_list = []
-    for action in action_list:
-        if action['action_type'] == 'movement':
-            if (action['cost'] > maximal_movement_cost):
-                equal_movement_actions_list = []
-                maximal_movement_cost = action['cost']
-                equal_movement_actions_list.append(action)
-            elif action['cost'] == maximal_movement_cost:
-                equal_movement_actions_list.append(action)
-        elif action['action_type'] == 'building':
-            if (action['cost'] > maximal_building_cost):
-                equal_building_actions_list = []
-                maximal_building_cost = action['cost']
-                equal_building_actions_list.append(action)
-            elif action['cost'] == maximal_building_cost:
-                equal_building_actions_list.append(action)
-    #print maximal_movement_cost
-    #print maximal_building_cost
-
-    if (maximal_movement_cost >= maximal_building_cost):
-        variants = len(equal_movement_actions_list)
-        if variants != 0:
-            action = random.choice(equal_movement_actions_list)
-        else:
-            action = {'action_type': None}
-    else:
-        variants = len(equal_building_actions_list)
-        if variants != 0:
-            action = random.choice(equal_building_actions_list)
-        else:
-            action = {'action_type': None}      
-    #print action
+    action = action_choice(action_list)
 
     if action['action_type'] == 'movement':
         (x, y) = action['location']

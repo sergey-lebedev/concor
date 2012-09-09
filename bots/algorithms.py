@@ -1,3 +1,5 @@
+import random
+
 DEBUG = False
 
 def adjacency_list_generator():
@@ -248,3 +250,63 @@ def alpha_beta_pruning(alpha, beta, value, owner):
                 print "value:", value
             pruning = True        
     return pruning
+
+def action_choice(action_list):
+    # action select
+    maximal_cost = None
+    equal_actions_list = []
+    for actions in action_list:
+        if (actions['cost'] > maximal_cost):
+            equal_actions_list = []
+            maximal_cost = actions['cost']
+            action = actions
+            equal_actions_list.append(action)
+        elif actions['cost'] == maximal_cost:
+            action = actions
+            equal_actions_list.append(action)
+    variants = len(equal_actions_list)
+    if variants != 0:
+        action = random.choice(equal_actions_list)
+    else:
+        action = {'action_type': None}
+    #print action
+    return action
+
+def action_choice_greedy(action_list):
+    # action select
+    maximal_movement_cost = None
+    maximal_building_cost = None
+    equal_movement_actions_list = []
+    equal_building_actions_list = []
+    for action in action_list:
+        if action['action_type'] == 'movement':
+            if (action['cost'] > maximal_movement_cost):
+                equal_movement_actions_list = []
+                maximal_movement_cost = action['cost']
+                equal_movement_actions_list.append(action)
+            elif action['cost'] == maximal_movement_cost:
+                equal_movement_actions_list.append(action)
+        elif action['action_type'] == 'building':
+            if (action['cost'] > maximal_building_cost):
+                equal_building_actions_list = []
+                maximal_building_cost = action['cost']
+                equal_building_actions_list.append(action)
+            elif action['cost'] == maximal_building_cost:
+                equal_building_actions_list.append(action)
+    #print maximal_movement_cost
+    #print maximal_building_cost
+
+    if (maximal_movement_cost >= maximal_building_cost):
+        variants = len(equal_movement_actions_list)
+        if variants != 0:
+            action = random.choice(equal_movement_actions_list)
+        else:
+            action = {'action_type': None}
+    else:
+        variants = len(equal_building_actions_list)
+        if variants != 0:
+            action = random.choice(equal_building_actions_list)
+        else:
+            action = {'action_type': None}      
+    #print action
+    return action
