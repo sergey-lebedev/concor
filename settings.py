@@ -40,3 +40,6 @@ __builtin__.enable_draw = True
 __builtin__.turn_time_limit = 0
 __builtin__.challenge = False
 __builtin__.rollback = False
+
+__builtin__.storage = {}
+__builtin__.storage_struct = {}

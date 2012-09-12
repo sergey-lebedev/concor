@@ -44,8 +44,6 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final):
         distances.append(step)
     distance = min(distances)
 
-    step = bfs_light(loc, available_positions, target_loc)
-
     #trace = list(subtrace)
     #print distance
     for neighbor in neighbors:
@@ -88,7 +86,6 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final):
         value = inf
         action = {'action_type': 'movement', 'location': location, 'cost': value}
         action_list.append(action)
-        (x, y) = location
         if not is_final:
             current_game_state['player_list'][current_player]['location'] = location 
             current_game_state['player'] = player_list[next_player]

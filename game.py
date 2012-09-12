@@ -42,7 +42,7 @@ else:
     turn_time_limit = 0.25
 
 def play(player_list):
-    turn_limit = 100
+    turn_limit = 200
     counter = 0
     end = False
     win = False
@@ -86,6 +86,7 @@ def play(player_list):
                 bot_turn(PLAYERS[p], player_list[p*amount_of_players/max(AMOUNT_OF_PLAYERS)], player_list, wall_list, available_positions, adjacency_list)
                 toc = time.time()
                 turn_time = toc - tic
+                #print owner
                 #print turn_time
                 time.sleep(max(0, turn_time_limit - turn_time))
             counter += 1
@@ -133,7 +134,7 @@ if not challenge:
     print "Player %d '%s' win"% (p, PLAYERS[p]['owner'])
     print "Number of turns: %d"% (counter)
 else:
-    botlist = ['multiplayer_bot', 'greedy_bot']
+    botlist = ['mindful_bot', 'greedy_bot']
     counter = [0] * len(botlist)
     numbers = range(len(botlist))
     rounds = 100

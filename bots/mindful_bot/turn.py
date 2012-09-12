@@ -1,15 +1,23 @@
 from ..algorithms import *
 from branch_generator import *
-import shelve
+#import shelve
+import __builtin__
 import copy
 DEBUG = False
 inf = float("infinity")
 
 def turn(player, player_list, wall_list, available_positions, adjacency_list):
     # opening storage
-    filename = str(player['id']) + '.mem' 
-    storage = shelve.open(filename)
+    #filename = str(player['id']) + '.mem' 
+    #storage = shelve.open(filename)
 
+    # restructing storage
+    #key = cache.keygen(player_list, wall_list)
+    #cache.restruct(key)
+    cache.init()
+
+    #print storage_struct
+    
     # current game state 
     game_state = {}
     game_state['player'] = player
@@ -37,7 +45,6 @@ def turn(player, player_list, wall_list, available_positions, adjacency_list):
     game_tree = {}
     root = {index: {'parent': None, 'child': [], 'game_state': game_state, 'expanded': False, 'initial': -inf, 'final': -inf, 'alpha': None, 'beta': None, 'owner': 'max', 'action': None, 'is_node': False}}
     game_tree.update(root)
-
     # game tree dfs
     level = 0
     stack = [index]
@@ -101,8 +108,8 @@ def turn(player, player_list, wall_list, available_positions, adjacency_list):
                     if game_tree[parent]['owner'] == 'max':
                         alpha = game_tree[parent]['initial']
                         beta = None
-
-            branch = branch_generator(current_game_state, adjacency_list, game_tree[parent]['owner'], storage, game_tree[parent]['alpha'], game_tree[parent]['beta'], is_final)
+            key = cache.keygen(current_game_state['player_list'], current_game_state['wall_list'])
+            branch = branch_generator(current_game_state, adjacency_list, game_tree[parent]['owner'], game_tree[parent]['alpha'], game_tree[parent]['beta'], is_final)
             #print branch['nodes']
             child_list = []
             weighted_subbranches = []
@@ -270,7 +277,7 @@ def turn(player, player_list, wall_list, available_positions, adjacency_list):
                 sequence.extend(child_list)
 
     # closing storage
-    storage.close()
+    #storage.close()
 
     # action select
     level = 0
