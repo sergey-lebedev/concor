@@ -63,13 +63,13 @@ def turn(player, player_list, wall_list, available_positions, adjacency_list):
         current_game_state = game_tree[parent]['game_state']
         #print current_game_state
         # owner detector
-        if (level % len(player_list) == 0):
+        if level % len(player_list) == 0:
             owner = 'max'
         else:
             owner = 'min'
 
         # final branches detection 
-        if (level < depth):
+        if level < depth:
             is_final = False
         else:
             is_final = True
@@ -137,7 +137,7 @@ def turn(player, player_list, wall_list, available_positions, adjacency_list):
                         if game_tree[parent]['owner'] == 'min':
                             if game_tree[parent]['initial'] > final:
                                 game_tree[parent]['initial'] = final
-                                if (final == -inf):
+                                if final == -inf:
                                     game_tree[parent]['alpha'] = -inf
 
                     elif owner == 'min':
@@ -148,7 +148,7 @@ def turn(player, player_list, wall_list, available_positions, adjacency_list):
                         if game_tree[parent]['owner'] == 'max':
                             if game_tree[parent]['initial'] < final:
                                 game_tree[parent]['initial'] = final
-                                if (final == inf):
+                                if final == inf:
                                     game_tree[parent]['beta'] = final
 
             game_tree[parent]['child'].extend(child_list)
@@ -185,7 +185,7 @@ def turn(player, player_list, wall_list, available_positions, adjacency_list):
                 if owner == 'max':
                     #print game_tree[parent]['final']
                     if game_tree[grandparent]['owner'] == 'min':
-                        if (initial >= final):
+                        if initial >= final:
                             game_tree[grandparent]['initial'] = final
                             if final != inf:
                                 game_tree[grandparent]['alpha'] = final
@@ -194,7 +194,7 @@ def turn(player, player_list, wall_list, available_positions, adjacency_list):
                 elif owner == 'min':
                     #print game_tree[parent]['final']
                     if game_tree[grandparent]['owner'] == 'max':
-                        if (initial < final):
+                        if initial < final:
                             game_tree[grandparent]['initial'] = final
                             if final != -inf:
                                 game_tree[grandparent]['beta'] = final
@@ -220,7 +220,7 @@ def turn(player, player_list, wall_list, available_positions, adjacency_list):
                 if game_tree[parent]['owner'] == 'min':
                     # branch pruning
                     if alpha != None: 
-                        if (value > alpha):
+                        if value > alpha:
                             if DEBUG:
                                 print "alpha pruning"
                                 print parent
