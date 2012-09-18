@@ -172,12 +172,11 @@ def bfs_light(loc, available_positions, target_loc):
         step = None
     else:
         step = 0
-
-    node = neighbor
-    while (node != loc) and is_break:
-        step += 1
-        neighbor = node
-        node = path[neighbor]
+        node = neighbor
+        while node != loc:
+            step += 1
+            neighbor = node
+            node = path[neighbor]
 
     return step
 
