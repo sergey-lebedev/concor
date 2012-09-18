@@ -20,15 +20,19 @@ PLAYERS = [{'color': 'red', 'location': (width/2, height - 1), 'target_loc': [],
            {'color': 'yellow', 'location': (width - 1, height/2), 'target_loc': [], 'owner': 'multiplayer_bot'}]
 
 for i in range(amount_of_players):
-    (x, y) = PLAYERS[i*max(AMOUNT_OF_PLAYERS)/amount_of_players]['location']
+    index = i*max(AMOUNT_OF_PLAYERS)/amount_of_players
+    (x, y) = PLAYERS[index]['location']
     target_loc = {}
     if (x == 0) or (x == (width - 1)):
+        PLAYERS[index]['line'] = (width - 1) - x
         for j in range(height):
             target_loc[(width - 1 - x, j)] = True
     elif (y == 0) or (y == (height - 1)):
+        PLAYERS[index]['line'] = (height - 1) - y
         for j in range(width):
             target_loc[(j, height - 1 - y)] = True
-    PLAYERS[i*max(AMOUNT_OF_PLAYERS)/amount_of_players]['target_loc'] = target_loc
+    PLAYERS[index]['target_loc'] = target_loc
+    PLAYERS[index]['axis'] = (index + 1) % 2
     #print target_loc
 
 # challenge mode
@@ -126,7 +130,9 @@ if not challenge:
                             'location': PLAYERS[i]['location'], 
                             'amount_of_walls': AMOUNT_OF_WALLS/amount_of_players,
                             'target_loc': PLAYERS[i]['target_loc'],
-                            'owner': PLAYERS[i]['owner']
+                            'owner': PLAYERS[i]['owner'],
+                            'axis': PLAYERS[i]['axis'],
+                            'line': PLAYERS[i]['line']
         })
 
     # play
@@ -153,7 +159,9 @@ else:
                     player_list.append({'id': k, 
                                         'location': PLAYERS[k]['location'], 
                                         'amount_of_walls': AMOUNT_OF_WALLS/amount_of_players,
-                                        'target_loc': PLAYERS[k]['target_loc']
+                                        'target_loc': PLAYERS[k]['target_loc'],
+                                        'axis': PLAYERS[k]['axis'],
+                                        'line': PLAYERS[k]['line']
                     })
                 player_list[0]['owner'] = challenger               
                 player_list[1]['owner'] = opponent 

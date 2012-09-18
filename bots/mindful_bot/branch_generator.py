@@ -62,9 +62,9 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final):
                                               wall_list, 
                                               player_list, 
                                               adjacency_list)
-            step = bfs_light(opponent['location'], 
+            step = bfs_side(opponent['location'], 
                                 opponent_available_positions, 
-                                opponent['target_loc'])
+                                opponent)
             substorage[opponent_id] = step
             storage[key] = substorage
         #print step
@@ -92,7 +92,7 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final):
             step = storage[key][player_id]
             #print 'found!'
         else:   
-            step = bfs_light(neighbor, available_positions, target_loc)
+            step = bfs_side(neighbor, available_positions, player)
             substorage[player_id] = step
             storage[key] = substorage
         #print step
@@ -112,7 +112,7 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final):
          
     # cost evaluation
     # win move
-    intersection = set(neighbors).intersection(set(target_loc)) 
+    intersection = set(neighbors).intersection(set(player)) 
     if intersection != set([]):
         # leafs don't need game state copy
         if is_final:
@@ -170,9 +170,9 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final):
                                 available_positions_generator(opponent['location'],                                                     projected_wall_list,
                                                           player_list,
                                                           adjacency_list)
-                            step = bfs_light(opponent['location'], 
+                            step = bfs_side(opponent['location'], 
                                             projected_available_positions, 
-                                            opponent['target_loc'])
+                                            opponent)
                             substorage[opponent_id] = step
                             storage[key] = substorage
                         #print step
@@ -192,9 +192,9 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final):
                                                           projected_wall_list,
                                                           player_list,
                                                           adjacency_list)
-                        step = bfs_light(loc, 
+                        step = bfs_side(loc, 
                                             projected_available_positions, 
-                                            target_loc)
+                                            player)
                         substorage[player_id] = step
                         storage[key] = substorage
                     if (step != None) and (distance != None):
