@@ -9,7 +9,7 @@ def keygen(player_list, wall_list):
     second_key = []
     for wall in wall_list:
         second_key.append((wall['type'], wall['location']))
-    second_key.sort()    
+    second_key.sort()
 
     key = str((first_key, second_key))
     return key

@@ -11,3 +11,4 @@ import hard_bot
 import greedy_bot
 import multiplayer_bot
 import mindful_bot
+import experimental_bot

@@ -1,23 +1,10 @@
 from ..algorithms import *
 from branch_generator import *
-#import shelve
-import __builtin__
 import copy
 DEBUG = False
 inf = float("infinity")
 
 def turn(player, player_list, wall_list, available_positions, adjacency_list):
-    # opening storage
-    #filename = str(player['id']) + '.mem' 
-    #storage = shelve.open(filename)
-
-    # restructing storage
-    #key = cache.keygen(player_list, wall_list)
-    #cache.restruct(key)
-    cache.init()
-
-    #print storage_struct
-    
     # current game state 
     game_state = {}
     game_state['player'] = player
@@ -108,8 +95,7 @@ def turn(player, player_list, wall_list, available_positions, adjacency_list):
                     if game_tree[parent]['owner'] == 'max':
                         alpha = game_tree[parent]['initial']
                         beta = None
-            key = cache.keygen(current_game_state['player_list'], current_game_state['wall_list'])
-            branch = branch_generator(current_game_state, adjacency_list, game_tree[parent]['owner'], game_tree[parent]['alpha'], game_tree[parent]['beta'], is_final, level)
+            branch = branch_generator(current_game_state, adjacency_list, game_tree[parent]['owner'], game_tree[parent]['alpha'], game_tree[parent]['beta'], is_final)
             #print branch['nodes']
             child_list = []
             weighted_subbranches = []

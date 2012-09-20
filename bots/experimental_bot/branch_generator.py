@@ -1,10 +1,9 @@
 from ..algorithms import *
-import cache
 import copy
 DEBUG = False
 inf = float("infinity")     
 
-def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final, level):
+def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final):
     pruning = False
     # branch init
     branch = {}
@@ -13,13 +12,6 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final, l
     player = game_state['player']
     player_list = game_state['player_list']
     wall_list = game_state['wall_list']
-
-    # storage struct init
-    key = cache.keygen(player_list, wall_list)
-
-    if not storage_struct.has_key(key):
-        storage_struct[key] = []    
-    storage_key = storage_struct[key]  
 
     #print wall_list
     # player detection
@@ -38,35 +30,21 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final, l
     #possibility matrix
     p = w2p(wall_list)
     #actions
-    action_list = []
-
-    #print 'keys:'
-    #print storage.keys()    
+    action_list = []  
 
     #movement
     distances = {}
     for opponent in opponent_list:
         #print opponent
         opponent_id = opponent['id']
-        #print key
-        if not storage.has_key(key):
-            storage[key] = {}
-            storage_key.append(key)
-        substorage = storage[key]
-        if substorage.has_key(opponent_id):
-            #print 'found!'
-            step = storage[key][opponent_id]
-        else:
-            opponent_available_positions =\
-                available_positions_generator(opponent['location'], 
-                                              wall_list, 
-                                              player_list, 
-                                              adjacency_list)
-            step = bfs_side(opponent['location'], 
-                                opponent_available_positions, 
-                                opponent)
-            substorage[opponent_id] = step
-            storage[key] = substorage
+        opponent_available_positions =\
+            available_positions_generator(opponent['location'], 
+                                          wall_list, 
+                                          player_list, 
+                                          adjacency_list)
+        step = bfs_side(opponent['location'], 
+                            opponent_available_positions, 
+                            opponent)
         #print step
         distances[opponent_id] = step
     distance = min(distances.values())
@@ -82,19 +60,7 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final, l
         current_game_state['player_list'][current_player]['location'] = neighbor 
         current_game_state['player'] = player_list[next_player]
 
-        key = cache.keygen(current_game_state['player_list'], wall_list)
-        #print key
-        if not storage.has_key(key):
-            storage[key] = {}
-            storage_key.append(key)
-        substorage = storage[key]
-        if substorage.has_key(player_id):
-            step = storage[key][player_id]
-            #print 'found!'
-        else:   
-            step = bfs_side(neighbor, available_positions, player)
-            substorage[player_id] = step
-            storage[key] = substorage
+        step = bfs_side(neighbor, available_positions, player)
         #print step
         if (step != None) and (distance != None):
             value = distance - step
@@ -154,49 +120,28 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final, l
                     current_game_state['player'] = player_list[next_player]
 
                     distances = {}
-                    key = cache.keygen(current_game_state['player_list'], current_game_state['wall_list'])
-                    #print key
                     for opponent in opponent_list:
                         opponent_id = opponent['id']
-                        if not storage.has_key(key):
-                            storage[key] = {}
-                            storage_key.append(key)
-                        substorage = storage[key]
-                        if substorage.has_key(opponent_id):
-                            #print 'found!'
-                            step = storage[key][opponent_id]
-                        else:
-                            projected_available_positions =\
-                                available_positions_generator(opponent['location'],                                                     projected_wall_list,
-                                                          player_list,
-                                                          adjacency_list)
-                            step = bfs_side(opponent['location'], 
-                                            projected_available_positions, 
-                                            opponent)
-                            substorage[opponent_id] = step
-                            storage[key] = substorage
+                        projected_available_positions =\
+                            available_positions_generator(opponent['location'],                                                     projected_wall_list,
+                                                      player_list,
+                                                      adjacency_list)
+                        step = bfs_side(opponent['location'], 
+                                        projected_available_positions, 
+                                        opponent)
                         #print step
                         distances[opponent_id] = step
                     distance = min(distances.values())
 
-                    if not storage.has_key(key):
-                        storage[key] = {}
-                        storage_key.append(key)
-                    substorage = storage[key]
-                    if substorage.has_key(player_id):
-                        #print 'found!'
-                        step = storage[key][player_id]
-                    else:
-                        projected_available_positions =\
-                            available_positions_generator(loc, 
-                                                          projected_wall_list,
-                                                          player_list,
-                                                          adjacency_list)
-                        step = bfs_side(loc, 
-                                            projected_available_positions, 
-                                            player)
-                        substorage[player_id] = step
-                        storage[key] = substorage
+                    projected_available_positions =\
+                        available_positions_generator(loc, 
+                                                      projected_wall_list,
+                                                      player_list,
+                                                      adjacency_list)
+                    step = bfs_side(loc, 
+                                        projected_available_positions, 
+                                        player)
+
                     if (step != None) and (distance != None):
                         value = distance - step
                         #print 'cost: ', value
