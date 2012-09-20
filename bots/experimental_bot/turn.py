@@ -262,9 +262,6 @@ def turn(player, player_list, wall_list, available_positions, adjacency_list):
                 #print 'action: ', game_tree[node]['action']
                 sequence.extend(child_list)
 
-    # closing storage
-    #storage.close()
-
     # action select
     level = 0
     action_list = []

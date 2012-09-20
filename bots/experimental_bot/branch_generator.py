@@ -12,7 +12,6 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final):
     player = game_state['player']
     player_list = game_state['player_list']
     wall_list = game_state['wall_list']
-
     #print wall_list
     # player detection
     current_player = player_list.index(player)
@@ -42,9 +41,9 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final):
                                           wall_list, 
                                           player_list, 
                                           adjacency_list)
-        step = bfs_side(opponent['location'], 
+        step = bfs_light(opponent['location'], 
                             opponent_available_positions, 
-                            opponent)
+                            opponent['target_loc'])
         #print step
         distances[opponent_id] = step
     distance = min(distances.values())
@@ -53,14 +52,14 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final):
     #print distance
     for neighbor in neighbors:
         # leafs don't need game state copy
-        #if is_final:
-        #    current_game_state = {}
-        #else:
-        current_game_state = copy.deepcopy(game_state)
-        current_game_state['player_list'][current_player]['location'] = neighbor 
-        current_game_state['player'] = player_list[next_player]
+        if is_final:
+            current_game_state = {}
+        else:
+            current_game_state = copy.deepcopy(game_state)
+            current_game_state['player_list'][current_player]['location'] = neighbor 
+            current_game_state['player'] = player_list[next_player]
 
-        step = bfs_side(neighbor, available_positions, player)
+        step = bfs_light(neighbor, available_positions, target_loc)
         #print step
         if (step != None) and (distance != None):
             value = distance - step
@@ -78,8 +77,10 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final):
          
     # cost evaluation
     # win move
-    intersection = set(neighbors).intersection(set(player)) 
+    intersection = set(neighbors).intersection(set(target_loc)) 
     if intersection != set([]):
+        location = list(intersection)[0]
+
         # leafs don't need game state copy
         if is_final:
             current_game_state = {}
@@ -88,7 +89,6 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final):
             current_game_state['player_list'][current_player]['location'] = location 
             current_game_state['player'] = player_list[next_player]
 
-        location = list(intersection)[0]
         value = inf
         action = {'action_type': 'movement', 'location': location, 'cost': value}
         action_list.append(action)
@@ -111,13 +111,13 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final):
                     projected_wall_list.append(wall)
 
                     # leafs don't need game state copy
-                    #if is_final:
-                    #    current_game_state = {}
-                    #else:
-                    current_game_state = copy.deepcopy(game_state)
-                    current_game_state['wall_list'].append(wall)
-                    current_game_state['player_list'][current_player]['amount_of_walls'] -= 1  
-                    current_game_state['player'] = player_list[next_player]
+                    if is_final:
+                        current_game_state = {}
+                    else:
+                        current_game_state = copy.deepcopy(game_state)
+                        current_game_state['wall_list'].append(wall)
+                        current_game_state['player_list'][current_player]['amount_of_walls'] -= 1  
+                        current_game_state['player'] = player_list[next_player]
 
                     distances = {}
                     for opponent in opponent_list:
@@ -126,9 +126,9 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final):
                             available_positions_generator(opponent['location'],                                                     projected_wall_list,
                                                       player_list,
                                                       adjacency_list)
-                        step = bfs_side(opponent['location'], 
+                        step = bfs_light(opponent['location'], 
                                         projected_available_positions, 
-                                        opponent)
+                                        opponent['target_loc'])
                         #print step
                         distances[opponent_id] = step
                     distance = min(distances.values())
@@ -138,9 +138,9 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final):
                                                       projected_wall_list,
                                                       player_list,
                                                       adjacency_list)
-                    step = bfs_side(loc, 
+                    step = bfs_light(loc, 
                                         projected_available_positions, 
-                                        player)
+                                        target_loc)
 
                     if (step != None) and (distance != None):
                         value = distance - step

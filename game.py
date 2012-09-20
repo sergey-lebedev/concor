@@ -16,7 +16,7 @@ from turn import *
 
 PLAYERS = [{'color': 'red', 'location': (width/2, height - 1), 'owner': 'user'},
            {'color': 'green', 'location': (0, height/2), 'owner': 'multiplayer_bot'},
-           {'color': 'blue', 'location': (width/2, 0), 'owner': 'greedy_bot'},
+           {'color': 'blue', 'location': (width/2, 0), 'owner': 'experimental_bot'},
            {'color': 'yellow', 'location': (width - 1, height/2), 'owner': 'multiplayer_bot'}]
 
 for i in range(amount_of_players):
