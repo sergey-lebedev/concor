@@ -1,6 +1,7 @@
 import random
 
 DEBUG = False
+inf = float("infinity")
 
 def adjacency_list_generator():
     #adjacency_list
@@ -170,6 +171,42 @@ def bfs_light(loc, available_positions, target_loc):
 
     if not is_break:
         step = None
+    else:
+        step = 0
+        node = neighbor
+        while node != loc:
+            step += 1
+            neighbor = node
+            node = path[neighbor]
+
+    return step
+
+def spwi(loc, available_positions, target_loc):
+    # breadth-first search
+    neighbor = loc
+    queue = [loc]
+    visited = {}   
+    visited[loc] = True
+    is_break = False
+    if target_loc.has_key(neighbor):
+        is_break = True
+    path = {}
+    while (queue != []) and not is_break:
+        node = queue.pop(0)
+        for neighbor in available_positions[node]:
+            if not visited.has_key(neighbor):
+                path[neighbor] = node
+                visited[neighbor] = True
+                if target_loc.has_key(neighbor):
+                    is_break = True
+                    break
+                    #print neighbor
+                queue.append(neighbor)
+            #if is_break: 
+            #    break    
+
+    if not is_break:
+        step = inf
     else:
         step = 0
         node = neighbor
