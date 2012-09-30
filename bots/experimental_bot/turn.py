@@ -205,7 +205,6 @@ def turn(player, player_list, wall_list, available_positions, adjacency_list):
             if game_tree[grandparent]['owner'] == 'max':
                 #print game_tree[parent]['final']
                 if game_tree[parent]['owner'] == 'min':
-                    # branch pruning
                     if alpha != None: 
                         if value > alpha:
                             if DEBUG:
