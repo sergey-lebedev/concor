@@ -41,13 +41,13 @@ def init_draw():
     if enable_curses: #and enable_colors:
         pair_number = 15
         for color in ('red', 'yellow', 'blue', 'green', 'default'):
-            if (color == 'red'):
+            if color == 'red':
                 fg = curses.COLOR_RED
-            elif (color == 'yellow'):
+            elif color == 'yellow':
                 fg = curses.COLOR_YELLOW
-            elif (color == 'blue'):
+            elif color == 'blue':
                 fg = curses.COLOR_BLUE
-            elif (color == 'green'):
+            elif color == 'green':
                 fg = curses.COLOR_GREEN
             else:
                 fg = -1
@@ -60,13 +60,13 @@ field = []
 for i in range(height_aspect * height + 1):
     field.append([])
     for j in range(width_aspect * width + 1):
-        if (i % height_aspect):
-            if (j % width_aspect):
+        if i % height_aspect:
+            if j % width_aspect:
                 char = 'blank' 
             else:
                 char = 'light_vertical'                    
         else:
-            if (j % width_aspect):
+            if j % width_aspect:
                 char = 'light_horizontal'
             else:
                 char = 'light_vertical_and_horizontal'
@@ -89,7 +89,7 @@ for i in range(amount_of_players):
     player_element =  {'char': player_template, 'color': color_template, 'modificators': modificators}  
     for j in range(player_positions):
         cutoff = (player_positions - 1) / 2
-        if (j >= cutoff) and (j < (player_positions - cutoff)):
+        if cutoff <= j < (player_positions - cutoff):
             player_pic[i].append(player_element)
         else:
             player_pic[i].append(dummy)
@@ -122,7 +122,7 @@ def corner_polish(field):
             horizontal_max = len(field[i]) - 1
             horizontal_minimax = [horizontal_min, horizontal_max]
             char = field[i][j]['char']
-            if (char == 'light_vertical_and_horizontal'):
+            if char == 'light_vertical_and_horizontal':
                 if (i == vertical_min) and (j not in horizontal_minimax):                    
                     field[i][j]['char'] = 'light_down_and_horizontal'
                 if (i == vertical_max) and (j not in horizontal_minimax):
@@ -169,9 +169,9 @@ def render_for_print(element):
     if enable_colors and (color != 'default'):
         left_modificator = pattern[color]
         for modificator in element['modificators']:
-            if (modificator == 'bold'):
+            if modificator == 'bold':
                 left_modificator += u'\033[01m'
-            elif (modificator == 'inverted'):
+            elif modificator == 'inverted':
                 left_modificator += u'\033[07m'
         right_modificator = u'\033[0m'
     else:
@@ -183,21 +183,21 @@ def render_for_print(element):
 def render_for_curses(element):
     char = element['char']
     color = element['color']
-    if (color == 'red'):
+    if color == 'red':
         pair_number = 16
-    elif (color == 'yellow'):
+    elif color == 'yellow':
         pair_number = 17
-    elif (color == 'blue'):
+    elif color == 'blue':
         pair_number = 18
-    elif (color == 'green'):
+    elif color == 'green':
         pair_number = 19
     else:
         pair_number = 20
     attr = curses.color_pair(pair_number)
     for modificator in element['modificators']:
-        if (modificator == 'bold'):
+        if modificator == 'bold':
             attr += curses.A_BOLD
-        elif (modificator == 'inverted'):
+        elif modificator == 'inverted':
             attr += curses.A_REVERSE
 
     string = pattern[char]

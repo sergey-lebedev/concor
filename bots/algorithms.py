@@ -13,7 +13,7 @@ def adjacency_list_generator():
             (dx, dy) = DIRECTIONS[direction]
             dyj = dy + j
             dxi = dx + i
-            if (dyj >= 0) & (dyj < height) & (dxi >= 0) & (dxi < width): 
+            if (0 <= dyj < height) and (0 <= dxi < width): 
                 link_list.append((dxi, dyj))
         adjacency_list[(i, j)] = set(link_list)    
 
@@ -35,12 +35,12 @@ def available_positions_generator(loc, wall_list, player_list, adjacency_list):
         right_bottom = (col, row) 
 
         #print left_top, right_top,left_bottom, right_bottom
-        if (wall['type'] == 'horizontal'):
+        if wall['type'] == 'horizontal':
             available_positions[left_top].difference_update(set([left_bottom]))
             available_positions[left_bottom].difference_update(set([left_top])) 
             available_positions[right_top].difference_update(set([right_bottom]))    
             available_positions[right_bottom].difference_update(set([right_top]))         
-        elif (wall['type'] == 'vertical'):        
+        elif wall['type'] == 'vertical':        
             available_positions[left_top].difference_update(set([right_top]))
             available_positions[left_bottom].difference_update(set([right_bottom])) 
             available_positions[right_top].difference_update(set([left_top]))    
@@ -294,8 +294,7 @@ def trace2places(trace):
             (offset_col, offset_row) = offset
             (place_col, place_row) = (col + offset_col, row + offset_row)
             place = (place_col, place_row)
-            if (place_col > 0) and (place_col < width) and\
-                (place_row > 0) and (place_row < height) and\
+            if (0 < place_col < width) and (0 < place_row < height) and\
                 place not in places:
                 places.append(place)
     return places
@@ -307,15 +306,15 @@ def alpha_beta_pruning(alpha, beta, value, owner):
         print "alpha:", alpha
         print "beta:", beta
         print "value:", value   
-    if (owner == 'max' and alpha != None):
-        if (value >= alpha):
+    if owner == 'max' and alpha != None:
+        if value >= alpha:
             if DEBUG: 
                 print "alpha pruning node"
                 print "alpha:", alpha
                 print "value:", value
             pruning = True
-    if (owner == 'min' and beta != None):
-        if (- value < beta):
+    if owner == 'min' and beta != None:
+        if -value < beta:
             if DEBUG: 
                 print "beta pruning node"
                 print "beta:", beta
@@ -328,7 +327,7 @@ def action_choice(action_list):
     maximal_cost = None
     equal_actions_list = []
     for actions in action_list:
-        if (actions['cost'] > maximal_cost):
+        if actions['cost'] > maximal_cost:
             equal_actions_list = []
             maximal_cost = actions['cost']
             action = actions
@@ -352,14 +351,14 @@ def action_choice_greedy(action_list):
     equal_building_actions_list = []
     for action in action_list:
         if action['action_type'] == 'movement':
-            if (action['cost'] > maximal_movement_cost):
+            if action['cost'] > maximal_movement_cost:
                 equal_movement_actions_list = []
                 maximal_movement_cost = action['cost']
                 equal_movement_actions_list.append(action)
             elif action['cost'] == maximal_movement_cost:
                 equal_movement_actions_list.append(action)
         elif action['action_type'] == 'building':
-            if (action['cost'] > maximal_building_cost):
+            if action['cost'] > maximal_building_cost:
                 equal_building_actions_list = []
                 maximal_building_cost = action['cost']
                 equal_building_actions_list.append(action)
@@ -368,7 +367,7 @@ def action_choice_greedy(action_list):
     #print maximal_movement_cost
     #print maximal_building_cost
 
-    if (maximal_movement_cost >= maximal_building_cost):
+    if maximal_movement_cost >= maximal_building_cost:
         variants = len(equal_movement_actions_list)
         if variants != 0:
             action = random.choice(equal_movement_actions_list)

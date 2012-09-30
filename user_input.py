@@ -104,14 +104,14 @@ def user_turn(player_list, player, wall_list, available_positions, curscr):
                 (x, y) = neighbors[command_dict[command]]
                 player['location'] = (x, y)
                 ready = True
-            elif (command == 'q'):
+            elif command == 'q':
                 quit = True
                 ready = True
-            elif (command == 'n'):
+            elif command == 'n':
                 new_wall = True
                 ready = False
                 second_stage = True
-            elif (command == 'u'):
+            elif command == 'u':
                 __builtin__.rollback = True
                 ready = True
             else:
@@ -131,7 +131,7 @@ def user_turn(player_list, player, wall_list, available_positions, curscr):
                 k = 0
                 command = raw_input()
 
-            if (command == 'n'):
+            if command == 'n':
                 new_wall = False
                 if (walls_installed == 0) and (player['amount_of_walls'] != 0):
                     wall = None
@@ -182,7 +182,7 @@ def user_turn(player_list, player, wall_list, available_positions, curscr):
                         wall['type'] = 'vertical'
                     wall['location'] = (X, Y)
 
-            elif (command == 'r'):
+            elif command == 'r':
                 if walls_installed != 0:
                     wall = wall_list[len(wall_list) - 1]
                     if (wall['type'] == 'horizontal'):
@@ -190,26 +190,26 @@ def user_turn(player_list, player, wall_list, available_positions, curscr):
                     elif (wall['type'] == 'vertical'):
                         wall['type'] = 'horizontal'   
 
-            elif (command == 'd'):
+            elif command == 'd':
                 if walls_installed != 0:
                     removed_wall = wall_list.pop()
                     (X, Y) = removed_wall['location']
                     walls_installed -=1
-            elif (command == 'b'):
+            elif command == 'b':
                 if walls_installed != 0:
                     if wall['type'] in p[(X, Y)]:
                         player['amount_of_walls'] -= walls_installed                      
                         ready = True
                 else:
                     ready = False
-            elif (command == 's'):
+            elif command == 's':
                 if walls_installed != 0:
                     removed_wall = wall_list.pop()
                     (X, Y) = removed_wall['location']
                     walls_installed -=1
                 ready = False
                 second_stage = False
-            elif (command == 'q'):
+            elif command == 'q':
                 quit = True
                 ready = True
             else:
