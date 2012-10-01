@@ -57,7 +57,7 @@ def available_positions_generator(loc, wall_list, player_list, adjacency_list):
         (dx, dy) = DIRECTIONS[direction]                    
         for a_loc in player_locations:
             if (a_loc == (col + dx, row + dy) and
-               a_loc in available_positions[loc]):
+                a_loc in available_positions[loc]):
                 #print a_loc
                 (a_col, a_row) = a_loc
                 for neighbors in available_positions[a_loc]:

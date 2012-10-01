@@ -19,7 +19,7 @@ def vector_sort(vectors):
     IV_quadrant = []
     for vector in vectors:
         (x, y) = vector
-        if (x >= 0) and (y > 0):
+        if x >= 0 and y > 0:
             #I_quadrant
             counter = 0
             for items in I_quadrant:
@@ -27,7 +27,7 @@ def vector_sort(vectors):
                 if (a / b) > (x / y):
                     counter += 1    
             I_quadrant.insert(counter, vector)                
-        elif (x < 0) and (y >= 0):
+        elif x < 0 and y >= 0:
             #II_quadrant
             counter = 0
             for items in II_quadrant:
@@ -35,7 +35,7 @@ def vector_sort(vectors):
                 if (b / a) < (y / x):
                     counter += 1    
             II_quadrant.insert(counter, vector)  
-        elif (x <= 0) and (y < 0):
+        elif x <= 0 and y < 0:
             #III_quadrant
             counter = 0
             for items in III_quadrant:
@@ -43,7 +43,7 @@ def vector_sort(vectors):
                 if (a / b) > (x / y):
                     counter += 1    
             III_quadrant.insert(counter, vector)  
-        elif (x > 0) and (y <= 0):
+        elif x > 0 and y <= 0:
             #IV_quadrant
             counter = 0
             for items in IV_quadrant:
@@ -133,7 +133,7 @@ def user_turn(player_list, player, wall_list, available_positions, curscr):
 
             if command == 'n':
                 new_wall = False
-                if (walls_installed == 0) and (player['amount_of_walls'] != 0):
+                if walls_installed == 0 and player['amount_of_walls'] != 0:
                     wall = None
                     for i in range(1, width):
                         for j in range(1, height):
@@ -146,55 +146,50 @@ def user_turn(player_list, player, wall_list, available_positions, curscr):
                         walls_installed +=1
                         (X, Y) = wall['location']
 
-            elif (command == 'i') or (k == KEY_UP):
+            elif command == 'i' or k == KEY_UP:
                 if walls_installed != 0:
                     wall = wall_list[len(wall_list) - 1]    
                     Y -= 1
                     Y = max(1, Y)
-                    if (wall['type'] == 'vertical') & (Y <= 1):
+                    if wall['type'] == 'vertical' and Y <= 1:
                         wall['type'] = 'horizontal'
                     wall['location'] = (X, Y)
      
-            elif (command == 'j') or (k == KEY_LEFT):
+            elif command == 'j' or k == KEY_LEFT:
                 if walls_installed != 0:
                     wall = wall_list[len(wall_list) - 1]   
                     X -= 1
                     X = max(1, X)
-                    if (wall['type'] == 'horizontal') & (X <= 1):
+                    if wall['type'] == 'horizontal' and X <= 1:
                         wall['type'] = 'vertical'
                     wall['location'] = (X, Y)
 
-            elif (command == 'k') or (k == KEY_DOWN):
+            elif command == 'k' or k == KEY_DOWN:
                 if walls_installed != 0:
                     wall = wall_list[len(wall_list) - 1]  
                     Y += 1
                     Y = min(height - wall_length + 1, Y)
-                    if (wall['type'] == 'vertical') & (Y > height - wall_length):
+                    if wall['type'] == 'vertical' and Y > (height - wall_length):
                         wall['type'] = 'horizontal'
                     wall['location'] = (X, Y)
 
-            elif (command == 'l') or (k == KEY_RIGHT):
+            elif command == 'l' or k == KEY_RIGHT:
                 if walls_installed != 0:
                     wall = wall_list[len(wall_list) - 1]  
                     X += 1
                     X = min(width - wall_length + 1, X)
-                    if (wall['type'] == 'horizontal') & (X > width - wall_length):
+                    if wall['type'] == 'horizontal' and X > (width - wall_length):
                         wall['type'] = 'vertical'
                     wall['location'] = (X, Y)
 
             elif command == 'r':
                 if walls_installed != 0:
                     wall = wall_list[len(wall_list) - 1]
-                    if (wall['type'] == 'horizontal'):
+                    if wall['type'] == 'horizontal':
                         wall['type'] = 'vertical'   
-                    elif (wall['type'] == 'vertical'):
+                    elif wall['type'] == 'vertical':
                         wall['type'] = 'horizontal'   
 
-            elif command == 'd':
-                if walls_installed != 0:
-                    removed_wall = wall_list.pop()
-                    (X, Y) = removed_wall['location']
-                    walls_installed -=1
             elif command == 'b':
                 if walls_installed != 0:
                     if wall['type'] in p[(X, Y)]:
@@ -202,6 +197,7 @@ def user_turn(player_list, player, wall_list, available_positions, curscr):
                         ready = True
                 else:
                     ready = False
+
             elif command == 's':
                 if walls_installed != 0:
                     removed_wall = wall_list.pop()
@@ -209,6 +205,7 @@ def user_turn(player_list, player, wall_list, available_positions, curscr):
                     walls_installed -=1
                 ready = False
                 second_stage = False
+
             elif command == 'q':
                 quit = True
                 ready = True
