@@ -56,30 +56,30 @@ def available_positions_generator(loc, wall_list, player_list, adjacency_list):
     for direction in DIRECTIONS:
         (dx, dy) = DIRECTIONS[direction]                    
         for a_loc in player_locations:
-            if (a_loc == (col + dx, row + dy)) and\
-               (a_loc in available_positions[loc]):
+            if (a_loc == (col + dx, row + dy) and
+               a_loc in available_positions[loc]):
                 #print a_loc
                 (a_col, a_row) = a_loc
                 for neighbors in available_positions[a_loc]:
                     available_positions[neighbors].difference_update(set([a_loc]))
                 
                 b_loc = (a_col + dx, a_row + dy) 
-                if (b_loc in available_positions[a_loc]) and\
-                   (b_loc not in player_locations):                            
+                if (b_loc in available_positions[a_loc] and
+                    b_loc not in player_locations):                            
                     available_positions[b_loc].update(set([loc]))
                     available_positions[loc].update(set([b_loc]))
                 else:
                     #sideway jump
                     (ldx, ldy) = DIRECTIONS[LEFT[direction]]
                     c_loc = (a_col + ldx, a_row + ldy)
-                    if (c_loc in available_positions[a_loc]) and\
-                       (c_loc not in player_locations):
+                    if (c_loc in available_positions[a_loc] and
+                        c_loc not in player_locations):
                         available_positions[c_loc].update(set([loc]))
                         available_positions[loc].update(set([c_loc]))
                     (rdx, rdy) = DIRECTIONS[RIGHT[direction]]
                     d_loc = (a_col + rdx, a_row + rdy)
-                    if (d_loc in available_positions[a_loc]) and\
-                       (d_loc not in player_locations):
+                    if (d_loc in available_positions[a_loc] and
+                        d_loc not in player_locations):
                         available_positions[d_loc].update(set([loc]))
                         available_positions[loc].update(set([d_loc]))        
                 available_positions[a_loc] = set([])
@@ -294,8 +294,9 @@ def trace2places(trace):
             (offset_col, offset_row) = offset
             (place_col, place_row) = (col + offset_col, row + offset_row)
             place = (place_col, place_row)
-            if (0 < place_col < width) and (0 < place_row < height) and\
-                place not in places:
+            if ((0 < place_col < width) and 
+                (0 < place_row < height) and
+                place not in places):
                 places.append(place)
     return places
 
