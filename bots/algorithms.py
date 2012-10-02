@@ -15,7 +15,7 @@ def adjacency_list_generator():
             dxi = dx + i
             if (0 <= dyj < height) and (0 <= dxi < width): 
                 link_list.append((dxi, dyj))
-        adjacency_list[(i, j)] = set(link_list)    
+        adjacency_list[(i, j)] = set(link_list)
 
     return adjacency_list
 
@@ -119,7 +119,7 @@ def bfs(loc, available_positions, target_loc):
     visited[loc] = True
     is_break = False
     path = {}
-    while (queue != []) and not is_break:
+    while queue and not is_break:
         node = queue.pop(0)
         for neighbor in available_positions[node]:
             if not visited.has_key(neighbor):
@@ -156,7 +156,7 @@ def bfs_light(loc, available_positions, target_loc):
     visited[loc] = True
     is_break = False
     path = {}
-    while (queue != []) and not is_break:
+    while queue and not is_break:
         node = queue.pop(0)
         for neighbor in available_positions[node]:
             if not visited.has_key(neighbor):
@@ -191,7 +191,7 @@ def spwi(loc, available_positions, target_loc):
     if target_loc.has_key(neighbor):
         is_break = True
     path = {}
-    while (queue != []) and not is_break:
+    while queue and not is_break:
         node = queue.pop(0)
         for neighbor in available_positions[node]:
             if not visited.has_key(neighbor):
@@ -202,8 +202,6 @@ def spwi(loc, available_positions, target_loc):
                     break
                     #print neighbor
                 queue.append(neighbor)
-            #if is_break: 
-            #    break    
 
     if not is_break:
         step = inf
@@ -228,7 +226,7 @@ def bfs_side(loc, available_positions, player):
     visited[loc] = True
     is_break = False
     path = {}
-    while (queue != []) and not is_break:
+    while queue and not is_break:
         node = queue.pop(0)
         for neighbor in available_positions[node]:
             if not visited.has_key(neighbor):
@@ -260,7 +258,7 @@ def dijkstra(loc, available_positions, target_loc):
     queue = [(0, loc)]   
     visited = {}
     is_break = False
-    while (queue != []) and not is_break:
+    while queue and not is_break:
         (dummy, node) = queue.pop(0)
         for neighbor in available_positions[node]:
             if not visited.has_key(neighbor):

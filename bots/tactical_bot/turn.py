@@ -35,7 +35,7 @@ def turn(player, player_list, wall_list, available_positions, adjacency_list):
     # game tree dfs
     level = 0
     stack = [index]
-    while (stack != []):
+    while stack:
         # get ancestor
         parent = stack[-1]
         #print 'parent: '
@@ -101,7 +101,7 @@ def turn(player, player_list, wall_list, available_positions, adjacency_list):
                 game_tree.update(node)
                 #print node
                 child_list.append(index)         
-                if (level < depth) and (abs(value) != inf):
+                if level < depth and abs(value) != inf:
                     weighted_subbranches.append((index, value))
                 else:
                     game_tree[index]['is_node'] = True
