@@ -91,6 +91,9 @@ def w2p(wall_list):
     ij_list = ((i, j) for i in range(1, width) for j in range(1, height))
     p = dict([(ij, set(['horizontal', 'vertical'])) for ij in ij_list])
 
+    set_vertical = set(['vertical'])
+    set_horizontal = set(['horizontal'])
+
     for wall in wall_list:
         (x, y) = wall['location']
         p[(x, y)] = set([])
@@ -99,13 +102,13 @@ def w2p(wall_list):
                 (dx, dy) = DIRECTIONS[direction]
                 location = (x + dx, y + dy)
                 if p.has_key(location):
-                    p[location].difference_update(set(['horizontal']))
+                    p[location].difference_update(set_horizontal)
         elif wall['type'] == 'vertical':
             for direction in ('n', 's'):
                 (dx, dy) = DIRECTIONS[direction]
                 location = (x + dx, y + dy)
                 if p.has_key(location):
-                    p[location].difference_update(set(['vertical']))
+                    p[location].difference_update(set_vertical)
         else:
             pass
     #print p
