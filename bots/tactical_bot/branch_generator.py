@@ -125,7 +125,7 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final, d
     # building
     if player['amount_of_walls'] > 0 and not pruning:
         for location in p:
-            if p[location] != set([]) and not pruning:
+            if p[location] and not pruning:
                 for wall_type in p[location]:
                     projected_wall_list = list(wall_list)
                     wall = {'type': wall_type, 

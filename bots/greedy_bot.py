@@ -97,7 +97,7 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final):
     # building
     if (player['amount_of_walls'] > 0) and not pruning:
         for location in p:
-            if (p[location] != set([])) and not pruning:
+            if p[location] and not pruning:
                 for wall_type in p[location]:
                     # leafs don't need game state copy
                     if is_final:

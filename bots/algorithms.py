@@ -62,7 +62,7 @@ def available_positions_generator(loc, wall_list, player_list, adjacency_list):
                 (a_col, a_row) = a_loc
                 for neighbors in available_positions[a_loc]:
                     available_positions[neighbors].difference_update(set([a_loc]))
-                
+
                 b_loc = (a_col + dx, a_row + dy) 
                 if (b_loc in available_positions[a_loc] and
                     b_loc not in player_locations):                            
@@ -89,26 +89,32 @@ def available_positions_generator(loc, wall_list, player_list, adjacency_list):
 def w2p(wall_list):
     #print wall_list
     ij_list = ((i, j) for i in range(1, width) for j in range(1, height))
-    p = dict([(ij, set(['horizontal', 'vertical'])) for ij in ij_list])
+    #p = dict([(ij, set(['horizontal', 'vertical'])) for ij in ij_list])
+    p = dict([(ij, ['horizontal', 'vertical']) for ij in ij_list])
 
-    set_vertical = set(['vertical'])
-    set_horizontal = set(['horizontal'])
+    #set_vertical = set(['vertical'])
+    #set_horizontal = set(['horizontal'])
 
     for wall in wall_list:
         (x, y) = wall['location']
-        p[(x, y)] = set([])
+        #p[(x, y)] = set([])
+        p[(x, y)] = []
         if wall['type'] == 'horizontal':
             for direction in ('w', 'e'):
                 (dx, dy) = DIRECTIONS[direction]
                 location = (x + dx, y + dy)
                 if p.has_key(location):
-                    p[location].difference_update(set_horizontal)
+                    #p[location].difference_update(set_horizontal)
+                    if 'horizontal' in p[location]: p[location].remove('horizontal')
+                    #if p[location].has_key('horizontal'): del p[location]['horizontal']
         elif wall['type'] == 'vertical':
             for direction in ('n', 's'):
                 (dx, dy) = DIRECTIONS[direction]
                 location = (x + dx, y + dy)
                 if p.has_key(location):
-                    p[location].difference_update(set_vertical)
+                    #p[location].difference_update(set_vertical)
+                    if 'vertical' in p[location]: p[location].remove('vertical')
+                    #if p[location].has_key('vertical'): del p[location]['vertical']
         else:
             pass
     #print p
