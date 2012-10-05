@@ -63,7 +63,7 @@ def turn(player, player_list, wall_list, available_positions, adjacency_list):
         action_list.append(action)
     # win move
     intersection = set(neighbors).intersection(set(target_loc)) 
-    if intersection != set([]):
+    if intersection:
         location = list(intersection)[0]
         value = width * height
         action = {'action_type': 'movement', 'location': location, 'cost': value}
@@ -72,7 +72,7 @@ def turn(player, player_list, wall_list, available_positions, adjacency_list):
     if player['amount_of_walls'] > 0:
         places = trace2places(trace)
         for location in places:
-            if p[location] != set([]):
+            if p[location]:
                 for wall_type in p[location]:
                     projected_wall_list = list(wall_list)
                     wall = {'type': wall_type, 

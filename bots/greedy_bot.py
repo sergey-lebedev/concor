@@ -75,7 +75,7 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final):
     # cost evaluation
     # win move
     intersection = set(neighbors).intersection(set(target_loc)) 
-    if intersection != set([]):
+    if intersection:
         # leafs don't need game state copy
         if is_final:
             current_game_state = {}

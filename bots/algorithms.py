@@ -115,8 +115,6 @@ def w2p(wall_list):
                     #p[location].difference_update(set_vertical)
                     if 'vertical' in p[location]: p[location].remove('vertical')
                     #if p[location].has_key('vertical'): del p[location]['vertical']
-        else:
-            pass
     #print p
     return p
 

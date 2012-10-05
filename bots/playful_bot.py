@@ -82,7 +82,7 @@ def branch_generator(game_state, adjacency_list, is_final):
     # cost evaluation
     # win move
     intersection = set(neighbors).intersection(set(target_loc)) 
-    if intersection != set([]):
+    if intersection:
         # leafs don't need game state copy
         if is_final:
             current_game_state = {}
@@ -102,7 +102,7 @@ def branch_generator(game_state, adjacency_list, is_final):
     if (player['amount_of_walls'] > 0):
         places = trace2places(trace)
         for location in places:
-            if p[location] != set([]):
+            if p[location]:
                 for wall_type in p[location]:
                     # leafs don't need game state copy
                     if is_final:

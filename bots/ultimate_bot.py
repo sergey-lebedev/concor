@@ -94,7 +94,7 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final):
             print 'neighbor:', neighbor
         print 'target_loc:', target_loc
         print 'intersection:', intersection
-    if intersection != set([]):
+    if intersection:
         # leafs don't need game state copy
         if is_final:
             current_game_state = {}
@@ -107,7 +107,6 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final):
         action_list.append(action)
         (x, y) = location
         if not is_final:
-            current_game_state['players'][x][y] = 1 
             current_game_state['player_list'][current_player]['location'] = location 
             current_game_state['player'] = player_list[next_player]
         branch['nodes'].append({'action': action, 'game_state': current_game_state})
@@ -121,7 +120,7 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final):
         for location in places:
             if pruning:
                 break
-            if p[location] != set([]) and not pruning:
+            if p[location] and not pruning:
                 for wall_type in p[location]:
                     if pruning:
                         break
