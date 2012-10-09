@@ -16,18 +16,18 @@ from turn import *
 
 PLAYERS = [{'color': 'red', 'location': (width/2, height - 1), 'owner': 'user'},
            {'color': 'green', 'location': (0, height/2), 'owner': 'multiplayer_bot'},
-           {'color': 'blue', 'location': (width/2, 0), 'owner': 'tactical_bot'},
+           {'color': 'blue', 'location': (width/2, 0), 'owner': 'experimental_bot'},
            {'color': 'yellow', 'location': (width - 1, height/2), 'owner': 'multiplayer_bot'}]
 
 for i in range(amount_of_players):
     index = i*max(AMOUNT_OF_PLAYERS)/amount_of_players
     (x, y) = PLAYERS[index]['location']
     target_loc = {}
-    if (x == 0) or (x == (width - 1)):
+    if x == 0 or x == (width - 1):
         PLAYERS[index]['line'] = (width - 1) - x
         for j in range(height):
             target_loc[(width - 1 - x, j)] = True
-    elif (y == 0) or (y == (height - 1)):
+    elif y == 0 or y == (height - 1):
         PLAYERS[index]['line'] = (height - 1) - y
         for j in range(width):
             target_loc[(j, height - 1 - y)] = True
@@ -140,10 +140,10 @@ if not challenge:
     print "Player %d '%s' win"% (p, PLAYERS[p]['owner'])
     print "Number of turns: %d"% (counter)
 else:
-    botlist = ['tactical_bot', 'greedy_bot']
+    botlist = ['experimental_bot', 'tactical_bot']
     counter = [0] * len(botlist)
     numbers = range(len(botlist))
-    rounds = 100
+    rounds = 400
     tic = time.time()
     for r in range(rounds):
         print '%d / %d' % (r + 1, rounds)

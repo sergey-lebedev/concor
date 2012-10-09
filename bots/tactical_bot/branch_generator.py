@@ -160,67 +160,68 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final, d
 
                     if player_free_distance == inf:
                         is_reachable = False
+                        continue
 
                     # step meter
-                    if is_reachable:
-                        projected_available_positions =\
-                            available_positions_generator(loc, 
-                                                          projected_wall_list,
-                                                          player_list,
-                                                          adjacency_list)
-                        player_distance = spwi(loc, 
-                                                projected_available_positions, 
-                                                target_loc)
+                    projected_available_positions =\
+                        available_positions_generator(loc, 
+                                                      projected_wall_list,
+                                                      player_list,
+                                                      adjacency_list)
+                    player_distance = spwi(loc, 
+                                            projected_available_positions, 
+                                            target_loc)
 
-                    if is_reachable:
-                        free_distances = {}
-                        distances = {}
-                        for opponent in opponent_list:
-                            opponent_id = opponent['id']
-                            # reachability detection
+                    free_distances = {}
+                    distances = {}
+                    for opponent in opponent_list:
+                        opponent_id = opponent['id']
+                        # reachability detection
+                        projected_available_positions =\
+                            available_positions_generator(opponent['location'],
+                                                            projected_wall_list,
+                                                            [],
+                                                            adjacency_list)
+                        step = spwi(opponent['location'], 
+                                    projected_available_positions, 
+                                    opponent['target_loc'])
+
+                        free_distances[opponent_id] = step
+                        if step == inf:
+                            is_reachable = False
+                            break
+
+                        # step meter
+                        if is_reachable:
                             projected_available_positions =\
                                 available_positions_generator(opponent['location'],
                                                                 projected_wall_list,
-                                                                [],
+                                                                player_list,
                                                                 adjacency_list)
                             step = spwi(opponent['location'], 
                                         projected_available_positions, 
                                         opponent['target_loc'])
+                            #print step
+                            distances[opponent_id] = step
 
-                            free_distances[opponent_id] = step
-                            if step == inf:
-                                is_reachable = False
-                                break
-
-                            # step meter
-                            if is_reachable:
-                                projected_available_positions =\
-                                    available_positions_generator(opponent['location'],
-                                                                    projected_wall_list,
-                                                                    player_list,
-                                                                    adjacency_list)
-                                step = spwi(opponent['location'], 
-                                            projected_available_positions, 
-                                            opponent['target_loc'])
-                                #print step
-                                distances[opponent_id] = step
-                        if is_reachable:
-                            opponent_distance = min(distances.values())
+                    if is_reachable:
+                        opponent_distance = min(distances.values())
+                    else:
+                        continue
 
                     value = None
-                    if is_reachable:
-                        if opponent_distance == inf:
-                            opponent_distance = min(free_distances.values()) + player['amount_of_walls'] - 1
-                        if player_distance == inf:
-                            player_distance = player_free_distance + opponents_walls_counter
+                    if opponent_distance == inf:
+                        opponent_distance = min(free_distances.values()) + player['amount_of_walls'] - 1
+                    if player_distance == inf:
+                        player_distance = player_free_distance + opponents_walls_counter
 
-                        value = opponent_distance - player_distance
-                        #print 'cost: ', value
-                        #print 'estimate: ', estimate
-                        action = {'action_type': 'building', 'wall': wall, 'cost': value}
-                        #print action 
-                        branch['nodes'].append({'action': action, 'game_state': current_game_state})           
-                        action_list.append(action)
+                    value = opponent_distance - player_distance
+                    #print 'cost: ', value
+                    #print 'estimate: ', estimate
+                    action = {'action_type': 'building', 'wall': wall, 'cost': value}
+                    #print action 
+                    branch['nodes'].append({'action': action, 'game_state': current_game_state})           
+                    action_list.append(action)
                     # node pruning
                     if is_final and value != None:
                         pruning = alpha_beta_pruning(alpha, beta, value, owner)

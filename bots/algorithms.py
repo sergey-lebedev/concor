@@ -188,7 +188,8 @@ def bfs_light(loc, available_positions, target_loc):
 
     return step
 
-def spwi(loc, available_positions, target_loc):
+
+def spwi_old(loc, available_positions, target_loc):
     # breadth-first search
     neighbor = loc
     queue = [loc]
@@ -219,6 +220,32 @@ def spwi(loc, available_positions, target_loc):
             step += 1
             neighbor = node
             node = path[neighbor]
+
+    return step
+
+def spwi(loc, available_positions, target_loc):
+    # breadth-first search
+    queue = [loc]
+    visited = {}   
+    visited[loc] = True
+    is_break = False
+    if target_loc.has_key(loc): is_break = True
+    step = 0
+    while queue and not is_break:
+        step += 1
+        subqueue = []
+        for node in queue:
+            for neighbor in available_positions[node]:
+                if not visited.has_key(neighbor):
+                    visited[neighbor] = True
+                    subqueue.append(neighbor)
+                    if target_loc.has_key(neighbor):
+                        is_break = True
+                        break
+            if is_break: break
+        queue = subqueue
+
+    if not is_break: step = inf
 
     return step
 
