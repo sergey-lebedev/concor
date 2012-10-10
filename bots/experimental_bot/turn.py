@@ -1,6 +1,5 @@
 from ..algorithms import *
 from branch_generator import *
-import copy
 DEBUG = False
 inf = float("infinity")
 

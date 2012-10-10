@@ -1,6 +1,5 @@
 from ..algorithms import *
 from branch_generator import *
-import copy
 inf = float("infinity")
 
 def turn(player, player_list, wall_list, available_positions, adjacency_list):

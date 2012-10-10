@@ -57,6 +57,12 @@ def play(player_list):
     # adjacency_list pre-calculation
     adjacency_list = adjacency_list_generator()
 
+    # template for visited cells
+    __builtin__.visited_template = dict([(location, False) for location in adjacency_list])
+
+    # blank for possibilities list
+    __builtin__.ij_list_for_p = [(i, j) for i in range(1, width) for j in range(1, height)]
+
     # init draw
     if enable_draw:
         curscr = init_draw() 
@@ -140,10 +146,10 @@ if not challenge:
     print "Player %d '%s' win"% (p, PLAYERS[p]['owner'])
     print "Number of turns: %d"% (counter)
 else:
-    botlist = ['experimental_bot', 'tactical_bot']
+    botlist = ['experimental_bot', 'greedy_bot']
     counter = [0] * len(botlist)
     numbers = range(len(botlist))
-    rounds = 400
+    rounds = 100
     tic = time.time()
     for r in range(rounds):
         print '%d / %d' % (r + 1, rounds)

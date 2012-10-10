@@ -1,3 +1,4 @@
+import copy
 import random
 
 DEBUG = False
@@ -88,9 +89,7 @@ def available_positions_generator(loc, wall_list, player_list, adjacency_list):
 
 def w2p(wall_list):
     #print wall_list
-    ij_list = ((i, j) for i in range(1, width) for j in range(1, height))
-    #p = dict([(ij, set(['horizontal', 'vertical'])) for ij in ij_list])
-    p = dict([(ij, ['horizontal', 'vertical']) for ij in ij_list])
+    p = dict([(ij, ['horizontal', 'vertical']) for ij in ij_list_for_p])
 
     #set_vertical = set(['vertical'])
     #set_horizontal = set(['horizontal'])
@@ -188,7 +187,6 @@ def bfs_light(loc, available_positions, target_loc):
 
     return step
 
-
 def spwi_old(loc, available_positions, target_loc):
     # breadth-first search
     neighbor = loc
@@ -225,18 +223,20 @@ def spwi_old(loc, available_positions, target_loc):
 
 def spwi(loc, available_positions, target_loc):
     # breadth-first search
+    if target_loc.has_key(loc): return 0
+
     queue = [loc]
-    visited = {}   
+    visited = visited_template.copy()
     visited[loc] = True
     is_break = False
-    if target_loc.has_key(loc): is_break = True
+
     step = 0
     while queue and not is_break:
         step += 1
         subqueue = []
         for node in queue:
             for neighbor in available_positions[node]:
-                if not visited.has_key(neighbor):
+                if not visited[neighbor]:
                     visited[neighbor] = True
                     subqueue.append(neighbor)
                     if target_loc.has_key(neighbor):
