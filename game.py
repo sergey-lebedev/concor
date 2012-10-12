@@ -146,10 +146,10 @@ if not challenge:
     print "Player %d '%s' win"% (p, PLAYERS[p]['owner'])
     print "Number of turns: %d"% (counter)
 else:
-    botlist = ['experimental_bot', 'greedy_bot']
+    botlist = ['experimental_bot', 'experimental_bot']
     counter = [0] * len(botlist)
     numbers = range(len(botlist))
-    rounds = 100
+    rounds = 10
     tic = time.time()
     for r in range(rounds):
         print '%d / %d' % (r + 1, rounds)

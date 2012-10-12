@@ -24,7 +24,7 @@ def available_positions_generator(loc, wall_list, player_list, adjacency_list):
     # calculate available positions   
     available_positions = {}
     for position in adjacency_list:
-        #print positions
+    #    #print positions
         available_positions[position] = adjacency_list[position].copy()
     #available_positions = adjacency_list.copy()
 
@@ -33,7 +33,7 @@ def available_positions_generator(loc, wall_list, player_list, adjacency_list):
         left_top = (col - 1, row - 1)  
         right_top = (col, row - 1) 
         left_bottom = (col - 1, row) 
-        right_bottom = (col, row) 
+        right_bottom = (col, row)
 
         #print left_top, right_top,left_bottom, right_bottom
         if wall['type'] == 'horizontal':
@@ -49,6 +49,7 @@ def available_positions_generator(loc, wall_list, player_list, adjacency_list):
 
     #occupied cells
     (col, row) = loc
+    set_loc = set([loc])
 
     player_locations = []
     for player in player_list:
@@ -67,7 +68,7 @@ def available_positions_generator(loc, wall_list, player_list, adjacency_list):
                 b_loc = (a_col + dx, a_row + dy) 
                 if (b_loc in available_positions[a_loc] and
                     b_loc not in player_locations):                            
-                    available_positions[b_loc].update(set([loc]))
+                    available_positions[b_loc].update(set_loc)
                     available_positions[loc].update(set([b_loc]))
                 else:
                     #sideway jump
@@ -75,13 +76,13 @@ def available_positions_generator(loc, wall_list, player_list, adjacency_list):
                     c_loc = (a_col + ldx, a_row + ldy)
                     if (c_loc in available_positions[a_loc] and
                         c_loc not in player_locations):
-                        available_positions[c_loc].update(set([loc]))
+                        available_positions[c_loc].update(set_loc)
                         available_positions[loc].update(set([c_loc]))
                     (rdx, rdy) = DIRECTIONS[RIGHT[direction]]
                     d_loc = (a_col + rdx, a_row + rdy)
                     if (d_loc in available_positions[a_loc] and
                         d_loc not in player_locations):
-                        available_positions[d_loc].update(set([loc]))
+                        available_positions[d_loc].update(set_loc)
                         available_positions[loc].update(set([d_loc]))        
                 available_positions[a_loc] = set([])
     #print available_positions[loc]
@@ -90,6 +91,7 @@ def available_positions_generator(loc, wall_list, player_list, adjacency_list):
 def w2p(wall_list):
     #print wall_list
     p = dict([(ij, ['horizontal', 'vertical']) for ij in ij_list_for_p])
+    p_has_key = p.has_key
 
     #set_vertical = set(['vertical'])
     #set_horizontal = set(['horizontal'])
@@ -102,7 +104,7 @@ def w2p(wall_list):
             for direction in ('w', 'e'):
                 (dx, dy) = DIRECTIONS[direction]
                 location = (x + dx, y + dy)
-                if p.has_key(location):
+                if p_has_key(location):
                     #p[location].difference_update(set_horizontal)
                     if 'horizontal' in p[location]: p[location].remove('horizontal')
                     #if p[location].has_key('horizontal'): del p[location]['horizontal']
@@ -110,7 +112,7 @@ def w2p(wall_list):
             for direction in ('n', 's'):
                 (dx, dy) = DIRECTIONS[direction]
                 location = (x + dx, y + dy)
-                if p.has_key(location):
+                if p_has_key(location):
                     #p[location].difference_update(set_vertical)
                     if 'vertical' in p[location]: p[location].remove('vertical')
                     #if p[location].has_key('vertical'): del p[location]['vertical']
@@ -187,43 +189,10 @@ def bfs_light(loc, available_positions, target_loc):
 
     return step
 
-def spwi_old(loc, available_positions, target_loc):
-    # breadth-first search
-    neighbor = loc
-    queue = [loc]
-    visited = {}   
-    visited[loc] = True
-    is_break = False
-    if target_loc.has_key(neighbor):
-        is_break = True
-    path = {}
-    while queue and not is_break:
-        node = queue.pop(0)
-        for neighbor in available_positions[node]:
-            if not visited.has_key(neighbor):
-                path[neighbor] = node
-                visited[neighbor] = True
-                if target_loc.has_key(neighbor):
-                    is_break = True
-                    break
-                    #print neighbor
-                queue.append(neighbor)
-
-    if not is_break:
-        step = inf
-    else:
-        step = 0
-        node = neighbor
-        while node != loc:
-            step += 1
-            neighbor = node
-            node = path[neighbor]
-
-    return step
-
 def spwi(loc, available_positions, target_loc):
     # breadth-first search
-    if target_loc.has_key(loc): return 0
+    target_loc_has_key = target_loc.has_key 
+    if target_loc_has_key(loc): return 0
 
     queue = [loc]
     visited = visited_template.copy()
@@ -234,12 +203,13 @@ def spwi(loc, available_positions, target_loc):
     while queue and not is_break:
         step += 1
         subqueue = []
+        subqueue_append = subqueue.append
         for node in queue:
             for neighbor in available_positions[node]:
                 if not visited[neighbor]:
                     visited[neighbor] = True
-                    subqueue.append(neighbor)
-                    if target_loc.has_key(neighbor):
+                    subqueue_append(neighbor)
+                    if target_loc_has_key(neighbor):
                         is_break = True
                         break
             if is_break: break
