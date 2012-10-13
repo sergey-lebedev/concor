@@ -85,7 +85,6 @@ def user_turn(player_list, player, wall_list, available_positions, curscr):
         command_list.append(char)
         command_dict[char] = i
 
-    numbers[char] = char     
     quit = False 
     ready = False
     new_wall = False

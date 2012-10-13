@@ -10,13 +10,16 @@ def adjacency_list_generator():
     ij_list = [(i, j) for i in range(width) for j in range(height)]
     for (i, j) in ij_list:
         link_list = []
+        #link_list = {}
         for direction in DIRECTIONS:
             (dx, dy) = DIRECTIONS[direction]
             dyj = dy + j
             dxi = dx + i
             if (0 <= dyj < height) and (0 <= dxi < width): 
                 link_list.append((dxi, dyj))
+                #link_list[(dxi, dyj)] = True
         adjacency_list[(i, j)] = set(link_list)
+        #adjacency_list[(i, j)] = link_list
 
     return adjacency_list
 
@@ -24,7 +27,7 @@ def available_positions_generator(loc, wall_list, player_list, adjacency_list):
     # calculate available positions   
     available_positions = {}
     for position in adjacency_list:
-    #    #print positions
+        #print positions
         available_positions[position] = adjacency_list[position].copy()
     #available_positions = adjacency_list.copy()
 
@@ -56,7 +59,7 @@ def available_positions_generator(loc, wall_list, player_list, adjacency_list):
         player_locations.append(player['location'])
 
     for direction in DIRECTIONS:
-        (dx, dy) = DIRECTIONS[direction]                    
+        (dx, dy) = DIRECTIONS[direction]
         for a_loc in player_locations:
             if (a_loc == (col + dx, row + dy) and
                 a_loc in available_positions[loc]):
@@ -87,7 +90,83 @@ def available_positions_generator(loc, wall_list, player_list, adjacency_list):
                 available_positions[a_loc] = set([])
     #print available_positions[loc]
     return available_positions
+"""
+def available_positions_generator(loc, wall_list, player_list, adjacency_list):
+    # calculate available positions   
+    available_positions = {}
+    for position in adjacency_list:
+        #print positions
+        available_positions[position] = adjacency_list[position].copy()
+    #available_positions = copy.deepcopy(adjacency_list)
 
+    for wall in wall_list:
+        (col, row) = wall['location']
+        left_top = (col - 1, row - 1)  
+        right_top = (col, row - 1) 
+        left_bottom = (col - 1, row) 
+        right_bottom = (col, row)
+
+        #print left_top, right_top,left_bottom, right_bottom
+        if wall['type'] == 'horizontal':
+            if available_positions[left_top].has_key(left_bottom):
+                del available_positions[left_top][left_bottom]
+            if available_positions[left_bottom].has_key(left_top):
+                del available_positions[left_bottom][left_top]
+            if available_positions[right_top].has_key(right_bottom):
+                del available_positions[right_top][right_bottom]
+            if available_positions[right_bottom].has_key(right_top):
+                del available_positions[right_bottom][right_top]
+        elif wall['type'] == 'vertical':
+            if available_positions[left_top].has_key(right_top):
+                del available_positions[left_top][right_top]      
+            if available_positions[left_bottom].has_key(right_bottom):
+                del available_positions[left_bottom][right_bottom]
+            if available_positions[right_top].has_key(left_top):
+                del available_positions[right_top][left_top]
+            if available_positions[right_bottom].has_key(left_bottom):
+                del available_positions[right_bottom][left_bottom]
+
+    #occupied cells
+    (col, row) = loc
+
+    player_locations = []
+    for player in player_list:
+        player_locations.append(player['location'])
+
+    for direction in DIRECTIONS:
+        (dx, dy) = DIRECTIONS[direction]
+        for a_loc in player_locations:
+            if (a_loc == (col + dx, row + dy) and
+                available_positions[loc].has_key(a_loc)):
+                #print a_loc
+                (a_col, a_row) = a_loc
+                for neighbors in available_positions[a_loc]:
+                    if available_positions[neighbors].has_key(a_loc):
+                        del available_positions[neighbors][a_loc]            
+
+                b_loc = (a_col + dx, a_row + dy) 
+                if (available_positions[a_loc].has_key(b_loc) and
+                    b_loc not in player_locations):                            
+                    available_positions[b_loc][loc] = True
+                    available_positions[loc][b_loc] = True
+                else:
+                    #sideway jump
+                    (ldx, ldy) = DIRECTIONS[LEFT[direction]]
+                    c_loc = (a_col + ldx, a_row + ldy)
+                    if (available_positions[a_loc].has_key(c_loc) and
+                        c_loc not in player_locations):
+                        available_positions[c_loc][loc] = True
+                        available_positions[loc][c_loc] = True
+                    (rdx, rdy) = DIRECTIONS[RIGHT[direction]]
+                    d_loc = (a_col + rdx, a_row + rdy)
+                    if (available_positions[a_loc].has_key(d_loc) and
+                        d_loc not in player_locations):
+                        available_positions[d_loc][loc] = True
+                        available_positions[loc][d_loc] = True        
+                available_positions[a_loc] = {}
+    #print available_positions[loc]
+    return available_positions
+"""
 def w2p(wall_list):
     #print wall_list
     p = dict([(ij, ['horizontal', 'vertical']) for ij in ij_list_for_p])
