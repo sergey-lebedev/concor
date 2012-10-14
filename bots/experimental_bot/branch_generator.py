@@ -64,12 +64,12 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final, d
         current_game_state = {}
         if not is_final:
             current_game_state['wall_list'] = []
-            for wall in wall_list:
-                current_game_state['wall_list'].append(wall.copy())
+            for element in wall_list:
+                current_game_state['wall_list'].append(element.copy())
             current_game_state['player_list'] = []
-            for player in player_list:
-                current_game_state['player_list'].append(player.copy())   
-            current_game_state['player'] = current_game_state['player_list'][current_player]
+            for element in player_list:
+                current_game_state['player_list'].append(element.copy())   
+            current_game_state['player'] = player.copy()
             current_game_state['player_list'][current_player]['location'] = neighbor 
             current_game_state['player'] = player_list[next_player]
             current_game_state['turn'] = turn + 1
@@ -149,7 +149,7 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final, d
                         current_game_state['player_list'] = []
                         for element in player_list:
                             current_game_state['player_list'].append(element.copy())
-                        current_game_state['player'] = current_game_state['player_list'][current_player]
+                        current_game_state['player'] = player.copy()
                         current_game_state['wall_list'].append(wall)
                         current_game_state['player_list'][current_player]['amount_of_walls'] -= 1  
                         current_game_state['player'] = player_list[next_player]
