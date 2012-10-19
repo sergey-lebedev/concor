@@ -90,14 +90,14 @@ def available_positions_generator(loc, wall_list, player_list, adjacency_list):
                 available_positions[a_loc] = set([])
     #print available_positions[loc]
     return available_positions
-"""
-def available_positions_generator(loc, wall_list, player_list, adjacency_list):
+
+def iapg(player, wall_list, player_list, adjacency_list):
     # calculate available positions   
     available_positions = {}
     for position in adjacency_list:
         #print positions
         available_positions[position] = adjacency_list[position].copy()
-    #available_positions = copy.deepcopy(adjacency_list)
+    #available_positions = adjacency_list.copy()
 
     for wall in wall_list:
         (col, row) = wall['location']
@@ -108,68 +108,61 @@ def available_positions_generator(loc, wall_list, player_list, adjacency_list):
 
         #print left_top, right_top,left_bottom, right_bottom
         if wall['type'] == 'horizontal':
-            if available_positions[left_top].has_key(left_bottom):
-                del available_positions[left_top][left_bottom]
-            if available_positions[left_bottom].has_key(left_top):
-                del available_positions[left_bottom][left_top]
-            if available_positions[right_top].has_key(right_bottom):
-                del available_positions[right_top][right_bottom]
-            if available_positions[right_bottom].has_key(right_top):
-                del available_positions[right_bottom][right_top]
-        elif wall['type'] == 'vertical':
-            if available_positions[left_top].has_key(right_top):
-                del available_positions[left_top][right_top]      
-            if available_positions[left_bottom].has_key(right_bottom):
-                del available_positions[left_bottom][right_bottom]
-            if available_positions[right_top].has_key(left_top):
-                del available_positions[right_top][left_top]
-            if available_positions[right_bottom].has_key(left_bottom):
-                del available_positions[right_bottom][left_bottom]
+            available_positions[left_top].difference_update(set([left_bottom]))
+            available_positions[left_bottom].difference_update(set([left_top])) 
+            available_positions[right_top].difference_update(set([right_bottom]))    
+            available_positions[right_bottom].difference_update(set([right_top]))         
+        elif wall['type'] == 'vertical':        
+            available_positions[left_top].difference_update(set([right_top]))
+            available_positions[left_bottom].difference_update(set([right_bottom])) 
+            available_positions[right_top].difference_update(set([left_top]))    
+            available_positions[right_bottom].difference_update(set([left_bottom]))
 
-    #occupied cells
-    (col, row) = loc
+    if player:
+        # occupied cells
+        loc = player['location']
+        (col, row) = loc
+        set_loc = set([loc])
 
-    player_locations = []
-    for player in player_list:
-        player_locations.append(player['location'])
+        # opponent's locations
+        opponent_locations = [item['location'] for item in player_list if item != player]
 
-    for direction in DIRECTIONS:
-        (dx, dy) = DIRECTIONS[direction]
-        for a_loc in player_locations:
-            if (a_loc == (col + dx, row + dy) and
-                available_positions[loc].has_key(a_loc)):
-                #print a_loc
-                (a_col, a_row) = a_loc
-                for neighbors in available_positions[a_loc]:
-                    if available_positions[neighbors].has_key(a_loc):
-                        del available_positions[neighbors][a_loc]            
+        for direction in DIRECTIONS:
+            (dx, dy) = DIRECTIONS[direction]
+            for a_loc in opponent_locations:
+                if (a_loc == (col + dx, row + dy) and
+                    a_loc in available_positions[loc]):
+                    #print a_loc
+                    (a_col, a_row) = a_loc
+                    for neighbors in available_positions[a_loc]:
+                        available_positions[neighbors].difference_update(set([a_loc]))
 
-                b_loc = (a_col + dx, a_row + dy) 
-                if (available_positions[a_loc].has_key(b_loc) and
-                    b_loc not in player_locations):                            
-                    available_positions[b_loc][loc] = True
-                    available_positions[loc][b_loc] = True
-                else:
-                    #sideway jump
-                    (ldx, ldy) = DIRECTIONS[LEFT[direction]]
-                    c_loc = (a_col + ldx, a_row + ldy)
-                    if (available_positions[a_loc].has_key(c_loc) and
-                        c_loc not in player_locations):
-                        available_positions[c_loc][loc] = True
-                        available_positions[loc][c_loc] = True
-                    (rdx, rdy) = DIRECTIONS[RIGHT[direction]]
-                    d_loc = (a_col + rdx, a_row + rdy)
-                    if (available_positions[a_loc].has_key(d_loc) and
-                        d_loc not in player_locations):
-                        available_positions[d_loc][loc] = True
-                        available_positions[loc][d_loc] = True        
-                available_positions[a_loc] = {}
+                    b_loc = (a_col + dx, a_row + dy) 
+                    if (b_loc in available_positions[a_loc] and
+                        b_loc not in opponent_locations):                            
+                        available_positions[b_loc].update(set_loc)
+                        available_positions[loc].update(set([b_loc]))
+                    else:
+                        #sideway jump
+                        (ldx, ldy) = DIRECTIONS[LEFT[direction]]
+                        c_loc = (a_col + ldx, a_row + ldy)
+                        if (c_loc in available_positions[a_loc] and
+                            c_loc not in opponent_locations):
+                            available_positions[c_loc].update(set_loc)
+                            available_positions[loc].update(set([c_loc]))
+                        (rdx, rdy) = DIRECTIONS[RIGHT[direction]]
+                        d_loc = (a_col + rdx, a_row + rdy)
+                        if (d_loc in available_positions[a_loc] and
+                            d_loc not in opponent_locations):
+                            available_positions[d_loc].update(set_loc)
+                            available_positions[loc].update(set([d_loc]))       
+                    available_positions[a_loc] = set([])
     #print available_positions[loc]
     return available_positions
-"""
+
 def w2p(wall_list):
     #print wall_list
-    p = dict([(ij, ['horizontal', 'vertical']) for ij in ij_list_for_p])
+    p = dict(((ij, ['horizontal', 'vertical']) for ij in ij_list_for_p))
     p_has_key = p.has_key
 
     #set_vertical = set(['vertical'])
@@ -293,6 +286,45 @@ def spwi(loc, available_positions, target_loc):
                         break
             if is_break: break
         queue = subqueue
+
+    if not is_break: step = inf
+
+    return step
+
+def improved_dijkstra(loc, available_positions, target_loc):
+    # dijkstra algorithm
+    target_loc_has_key = target_loc.has_key 
+    if target_loc_has_key(loc): return 0
+
+    distances = distances_template.copy()
+    distances_has_key = distances.has_key
+    queue = [(0, loc)]   
+    visited = visited_template.copy()
+    visited[loc] = True
+    is_break = False   
+ 
+    step = 0
+    while queue and not is_break:
+        step += 1
+        subqueue = []
+        subqueue_append = subqueue.append
+        for (dummy, node) in queue:
+            for neighbor in available_positions[node]:
+                if not visited[neighbor]:
+                    visited[neighbor] = True
+                    if distances_has_key(neighbor):
+                        distance = min(distances[neighbor], distances[node] + 1)
+                    else:
+                        distance = distances[node] + 1
+                    distances[neighbor] = distance
+                    estimation = (distance, neighbor)
+                    subqueue.append(estimation)  
+                    if target_loc_has_key(neighbor):
+                        is_break = True
+                        break
+            if is_break: break
+        queue = subqueue
+        queue = sorted(queue)
 
     if not is_break: step = inf
 

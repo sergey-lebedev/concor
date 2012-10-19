@@ -60,6 +60,9 @@ def play(player_list):
     # template for visited cells
     __builtin__.visited_template = dict([(location, False) for location in adjacency_list])
 
+    # template for dijkstra distances
+    __builtin__.distances_template = dict([(location, 0) for location in adjacency_list])
+
     # blank for possibilities list
     __builtin__.ij_list_for_p = [(i, j) for i in range(1, width) for j in range(1, height)]
 
@@ -146,7 +149,7 @@ if not challenge:
     print "Player %d '%s' win"% (p, PLAYERS[p]['owner'])
     print "Number of turns: %d"% (counter)
 else:
-    botlist = ['experimental_bot', 'greedy_bot']
+    botlist = ['experimental_bot', 'tactical_bot']
     counter = [0] * len(botlist)
     numbers = range(len(botlist))
     rounds = 500

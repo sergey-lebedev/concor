@@ -1,5 +1,4 @@
 from ..algorithms import *
-import copy
 import math
 DEBUG = False
 inf = float("infinity")     
@@ -62,12 +61,22 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final, d
         projected_player_list[current_player] = {'location': neighbor}
         #print projected_player_list
         # leafs don't need game state copy
+        """
+        current_game_state = {}
+        if not is_final:
+            current_game_state['wall_list'] = []
+            for element in wall_list:
+                current_game_state['wall_list'].append(element.copy())
+            current_game_state['player_list'] = []
+            for element in player_list:
+                current_game_state['player_list'].append(element.copy())
+        """
         if is_final:
             current_game_state = {}
         else:
             current_game_state = copy.deepcopy(game_state)
-            current_game_state['player_list'][current_player]['location'] = neighbor 
-            current_game_state['player'] = player_list[next_player]
+            current_game_state['player_list'][current_player]['location'] = neighbor
+            current_game_state['player'] = player_list[next_player].copy()
             current_game_state['turn'] = turn + 1
 
         # reachability detection
@@ -192,17 +201,17 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final, d
                             break
 
                         # step meter
-                        if is_reachable:
-                            projected_available_positions =\
-                                available_positions_generator(opponent['location'],
-                                                                projected_wall_list,
-                                                                player_list,
-                                                                adjacency_list)
-                            step = spwi(opponent['location'], 
-                                        projected_available_positions, 
-                                        opponent['target_loc'])
-                            #print step
-                            distances[opponent_id] = step
+                        #if is_reachable:
+                        projected_available_positions =\
+                            available_positions_generator(opponent['location'],
+                                                            projected_wall_list,
+                                                            player_list,
+                                                            adjacency_list)
+                        step = spwi(opponent['location'], 
+                                    projected_available_positions, 
+                                    opponent['target_loc'])
+                        #print step
+                        distances[opponent_id] = step
 
                     if is_reachable:
                         opponent_distance = min(distances.values())

@@ -24,11 +24,8 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final, d
     target_loc = player['target_loc']
     #opponent_list
     opponent_list = [item for item in player_list if item != player]
-    #neigbors
-    available_positions = available_positions_generator(loc, wall_list, player_list, adjacency_list)
-    neighbors = [location for location in available_positions[loc]]
-    #possibility matrix
-    p = w2p(wall_list)
+    # caching adjacency list
+    adjacency_list_cache = iapg([], wall_list, [], adjacency_list)
     #actions
     action_list = []  
 
@@ -43,16 +40,15 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final, d
     for opponent in opponent_list:
         opponent_id = opponent['id']
         # reachability detection
-        projected_available_positions =\
-            available_positions_generator(opponent['location'],
-                                            wall_list,
-                                            [],
-                                            adjacency_list)
         step = spwi(opponent['location'], 
-                    projected_available_positions, 
+                    adjacency_list_cache, 
                     opponent['target_loc'])
 
         free_distances[opponent_id] = step
+
+    #neigbors
+    available_positions = iapg(player, [], player_list, adjacency_list_cache)
+    neighbors = [location for location in available_positions[loc]]
 
     #print distance
     for neighbor in neighbors:
@@ -68,37 +64,28 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final, d
                 current_game_state['wall_list'].append(element.copy())
             current_game_state['player_list'] = []
             for element in player_list:
-                current_game_state['player_list'].append(element.copy())   
-            current_game_state['player'] = player.copy()
-            current_game_state['player_list'][current_player]['location'] = neighbor 
-            current_game_state['player'] = player_list[next_player]
+                current_game_state['player_list'].append(element.copy())
+            current_game_state['player_list'][current_player]['location'] = neighbor
+            current_game_state['player'] = player_list[next_player].copy()
             current_game_state['turn'] = turn + 1
 
         # reachability detection
-        projected_available_positions =\
-            available_positions_generator(neighbor, 
-                                          wall_list,
-                                          [],
-                                          adjacency_list)
         player_free_distance = spwi(neighbor, 
-                                    projected_available_positions, 
+                                    adjacency_list_cache, 
                                     target_loc)
    
         # step meter
         projected_available_positions =\
-            available_positions_generator(neighbor, 
-                                          wall_list,
-                                          projected_player_list,
-                                          adjacency_list)
+            iapg(projected_player_list[current_player], 
+                  [],
+                  projected_player_list,
+                  adjacency_list_cache)
         player_distance = spwi(neighbor, available_positions, target_loc)
         
         for opponent in opponent_list:
             # step meter
             projected_available_positions =\
-                available_positions_generator(opponent['location'],
-                                                wall_list,
-                                                projected_player_list,
-                                                adjacency_list)
+                iapg(opponent, [], projected_player_list, adjacency_list_cache)
             step = spwi(opponent['location'], 
                         projected_available_positions, 
                         opponent['target_loc'])
@@ -126,6 +113,9 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final, d
         if pruning:
             break
 
+    #possibility matrix
+    p = w2p(wall_list)
+
     # building
     if player['amount_of_walls'] > 0 and not pruning:
         for location in p:
@@ -149,18 +139,14 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final, d
                         current_game_state['player_list'] = []
                         for element in player_list:
                             current_game_state['player_list'].append(element.copy())
-                        current_game_state['player'] = player.copy()
                         current_game_state['wall_list'].append(wall)
                         current_game_state['player_list'][current_player]['amount_of_walls'] -= 1  
-                        current_game_state['player'] = player_list[next_player]
+                        current_game_state['player'] = player_list[next_player].copy()
                         current_game_state['turn'] = turn + 1
 
                     # reachability detection
                     projected_available_positions =\
-                        available_positions_generator(loc, 
-                                                      projected_wall_list,
-                                                      [],
-                                                      adjacency_list)
+                        iapg(player, [wall], [], adjacency_list_cache)
                     step = spwi(loc, 
                                 projected_available_positions, 
                                 target_loc)
@@ -173,10 +159,7 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final, d
 
                     # step meter
                     projected_available_positions =\
-                        available_positions_generator(loc, 
-                                                      projected_wall_list,
-                                                      player_list,
-                                                      adjacency_list)
+                        iapg(player, [wall], player_list, adjacency_list_cache)
                     player_distance = spwi(loc, 
                                             projected_available_positions, 
                                             target_loc)
@@ -187,10 +170,7 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final, d
                         opponent_id = opponent['id']
                         # reachability detection
                         projected_available_positions =\
-                            available_positions_generator(opponent['location'],
-                                                            projected_wall_list,
-                                                            [],
-                                                            adjacency_list)
+                            iapg(opponent, [wall], [], adjacency_list_cache)
                         step = spwi(opponent['location'], 
                                     projected_available_positions, 
                                     opponent['target_loc'])
@@ -202,10 +182,7 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final, d
 
                         # step meter
                         projected_available_positions =\
-                            available_positions_generator(opponent['location'],
-                                                            projected_wall_list,
-                                                            player_list,
-                                                            adjacency_list)
+                            iapg(opponent, [wall], player_list, adjacency_list_cache)
                         step = spwi(opponent['location'], 
                                     projected_available_positions, 
                                     opponent['target_loc'])
