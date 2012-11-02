@@ -1,7 +1,7 @@
 from ..algorithms import *
 import math
 DEBUG = False
-inf = float("infinity")     
+inf = float("infinity")
 
 def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final, depth):
     pruning = False
@@ -27,7 +27,7 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final, d
     # caching adjacency list
     adjacency_list_cache = iapg([], wall_list, [], adjacency_list)
     #actions
-    action_list = []  
+    action_list = []
 
     # opponents walls counter
     opponents_walls_counter = 0
@@ -40,8 +40,8 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final, d
     for opponent in opponent_list:
         opponent_id = opponent['id']
         # reachability detection
-        step = spwi(opponent['location'], 
-                    adjacency_list_cache, 
+        step = spwi(opponent['location'],
+                    adjacency_list_cache,
                     opponent['target_loc'])
 
         free_distances[opponent_id] = step
@@ -70,24 +70,24 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final, d
             current_game_state['turn'] = turn + 1
 
         # reachability detection
-        player_free_distance = spwi(neighbor, 
-                                    adjacency_list_cache, 
+        player_free_distance = spwi(neighbor,
+                                    adjacency_list_cache,
                                     target_loc)
-   
+
         # step meter
         projected_available_positions =\
-            iapg(projected_player_list[current_player], 
+            iapg(projected_player_list[current_player],
                   [],
                   projected_player_list,
                   adjacency_list_cache)
         player_distance = spwi(neighbor, available_positions, target_loc)
-        
+
         for opponent in opponent_list:
             # step meter
             projected_available_positions =\
                 iapg(opponent, [], projected_player_list, adjacency_list_cache)
-            step = spwi(opponent['location'], 
-                        projected_available_positions, 
+            step = spwi(opponent['location'],
+                        projected_available_positions,
                         opponent['target_loc'])
             #print step
             distances[opponent_id] = step
@@ -122,8 +122,8 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final, d
             if p[location] and not pruning:
                 for wall_type in p[location]:
                     projected_wall_list = list(wall_list)
-                    wall = {'type': wall_type, 
-                            'location': location, 
+                    wall = {'type': wall_type,
+                            'location': location,
                             'player_id': player_id
                     }
                     projected_wall_list.append(wall)
@@ -140,15 +140,15 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final, d
                         for element in player_list:
                             current_game_state['player_list'].append(element.copy())
                         current_game_state['wall_list'].append(wall)
-                        current_game_state['player_list'][current_player]['amount_of_walls'] -= 1  
+                        current_game_state['player_list'][current_player]['amount_of_walls'] -= 1
                         current_game_state['player'] = player_list[next_player].copy()
                         current_game_state['turn'] = turn + 1
 
                     # reachability detection
                     projected_available_positions =\
                         iapg(player, [wall], [], adjacency_list_cache)
-                    step = spwi(loc, 
-                                projected_available_positions, 
+                    step = spwi(loc,
+                                projected_available_positions,
                                 target_loc)
 
                     player_free_distance = step
@@ -160,8 +160,8 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final, d
                     # step meter
                     projected_available_positions =\
                         iapg(player, [wall], player_list, adjacency_list_cache)
-                    player_distance = spwi(loc, 
-                                            projected_available_positions, 
+                    player_distance = spwi(loc,
+                                            projected_available_positions,
                                             target_loc)
 
                     free_distances = {}
@@ -171,8 +171,8 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final, d
                         # reachability detection
                         projected_available_positions =\
                             iapg(opponent, [wall], [], adjacency_list_cache)
-                        step = spwi(opponent['location'], 
-                                    projected_available_positions, 
+                        step = spwi(opponent['location'],
+                                    projected_available_positions,
                                     opponent['target_loc'])
 
                         free_distances[opponent_id] = step
@@ -183,8 +183,8 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final, d
                         # step meter
                         projected_available_positions =\
                             iapg(opponent, [wall], player_list, adjacency_list_cache)
-                        step = spwi(opponent['location'], 
-                                    projected_available_positions, 
+                        step = spwi(opponent['location'],
+                                    projected_available_positions,
                                     opponent['target_loc'])
                         #print step
                         distances[opponent_id] = step
@@ -205,12 +205,12 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final, d
                     #print 'cost: ', value
                     #print 'estimate: ', estimate
                     action = {'action_type': 'building', 'wall': wall, 'cost': value}
-                    #print action 
-                    branch['nodes'].append({'action': action, 'game_state': current_game_state})           
+                    #print action
+                    branch['nodes'].append({'action': action, 'game_state': current_game_state})
                     action_list.append(action)
                     # node pruning
                     if is_final and value != None:
                         pruning = alpha_beta_pruning(alpha, beta, value, owner)
                     if pruning:
-                        break    
+                        break
     return branch

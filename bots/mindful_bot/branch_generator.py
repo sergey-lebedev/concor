@@ -2,7 +2,7 @@ from ..algorithms import *
 import cache
 import copy
 DEBUG = False
-inf = float("infinity")     
+inf = float("infinity")
 
 def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final, level):
     pruning = False
@@ -18,8 +18,8 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final, l
     key = cache.keygen(player_list, wall_list)
 
     if not storage_struct.has_key(key):
-        storage_struct[key] = []    
-    storage_key = storage_struct[key]  
+        storage_struct[key] = []
+    storage_key = storage_struct[key]
 
     #print wall_list
     # player detection
@@ -41,7 +41,7 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final, l
     action_list = []
 
     #print 'keys:'
-    #print storage.keys()    
+    #print storage.keys()
 
     #movement
     distances = {}
@@ -58,12 +58,12 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final, l
             step = storage[key][opponent_id]
         else:
             opponent_available_positions =\
-                available_positions_generator(opponent['location'], 
-                                              wall_list, 
-                                              player_list, 
+                available_positions_generator(opponent['location'],
+                                              wall_list,
+                                              player_list,
                                               adjacency_list)
-            step = bfs_side(opponent['location'], 
-                                opponent_available_positions, 
+            step = bfs_side(opponent['location'],
+                                opponent_available_positions,
                                 opponent)
             substorage[opponent_id] = step
             storage[key] = substorage
@@ -79,7 +79,7 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final, l
         #    current_game_state = {}
         #else:
         current_game_state = copy.deepcopy(game_state)
-        current_game_state['player_list'][current_player]['location'] = neighbor 
+        current_game_state['player_list'][current_player]['location'] = neighbor
         current_game_state['player'] = player_list[next_player]
 
         key = cache.keygen(current_game_state['player_list'], wall_list)
@@ -91,7 +91,7 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final, l
         if substorage.has_key(player_id):
             step = storage[key][player_id]
             #print 'found!'
-        else:   
+        else:
             step = bfs_side(neighbor, available_positions, player)
             substorage[player_id] = step
             storage[key] = substorage
@@ -109,10 +109,10 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final, l
             pruning = alpha_beta_pruning(alpha, beta, value, owner)
         if pruning:
             break
-         
+
     # cost evaluation
     # win move
-    intersection = set(neighbors).intersection(set(target_loc)) 
+    intersection = set(neighbors).intersection(set(target_loc))
     if intersection != set([]):
         location = list(intersection)[0]
         # leafs don't need game state copy
@@ -120,7 +120,7 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final, l
             current_game_state = {}
         else:
             current_game_state = copy.deepcopy(game_state)
-            current_game_state['player_list'][current_player]['location'] = location 
+            current_game_state['player_list'][current_player]['location'] = location
             current_game_state['player'] = player_list[next_player]
 
         value = inf
@@ -138,8 +138,8 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final, l
             if p[location] and not pruning:
                 for wall_type in p[location]:
                     projected_wall_list = list(wall_list)
-                    wall = {'type': wall_type, 
-                            'location': location, 
+                    wall = {'type': wall_type,
+                            'location': location,
                             'player_id': player_id
                     }
                     projected_wall_list.append(wall)
@@ -150,7 +150,7 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final, l
                     #else:
                     current_game_state = copy.deepcopy(game_state)
                     current_game_state['wall_list'].append(wall)
-                    current_game_state['player_list'][current_player]['amount_of_walls'] -= 1  
+                    current_game_state['player_list'][current_player]['amount_of_walls'] -= 1
                     current_game_state['player'] = player_list[next_player]
 
                     distances = {}
@@ -170,8 +170,8 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final, l
                                 available_positions_generator(opponent['location'],                                                     projected_wall_list,
                                                           player_list,
                                                           adjacency_list)
-                            step = bfs_side(opponent['location'], 
-                                            projected_available_positions, 
+                            step = bfs_side(opponent['location'],
+                                            projected_available_positions,
                                             opponent)
                             substorage[opponent_id] = step
                             storage[key] = substorage
@@ -188,12 +188,12 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final, l
                         step = storage[key][player_id]
                     else:
                         projected_available_positions =\
-                            available_positions_generator(loc, 
+                            available_positions_generator(loc,
                                                           projected_wall_list,
                                                           player_list,
                                                           adjacency_list)
-                        step = bfs_side(loc, 
-                                            projected_available_positions, 
+                        step = bfs_side(loc,
+                                            projected_available_positions,
                                             player)
                         substorage[player_id] = step
                         storage[key] = substorage
@@ -202,12 +202,12 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final, l
                         #print 'cost: ', value
                         #print 'estimate: ', estimate
                         action = {'action_type': 'building', 'wall': wall, 'cost': value}
-                        #print action 
-                        branch['nodes'].append({'action': action, 'game_state': current_game_state})           
+                        #print action
+                        branch['nodes'].append({'action': action, 'game_state': current_game_state})
                         action_list.append(action)
                     # node pruning
                     if is_final:
                         pruning = alpha_beta_pruning(alpha, beta, value, owner)
                     if pruning:
-                        break    
+                        break
     return branch

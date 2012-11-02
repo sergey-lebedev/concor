@@ -8,6 +8,7 @@ from settings import *
 
 __builtin__.enable_curses = True
 __builtin__.challenge = False
+#__builtin__.amount_of_players = 2
 #__builtin__.width = 5
 #__builtin__.height = 5
 #__builtin__.AMOUNT_OF_WALLS = 6
@@ -50,7 +51,7 @@ def play(player_list):
     counter = 0
     end = False
     win = False
-    p = 0  
+    p = 0
 
     wall_list = []
 
@@ -68,7 +69,7 @@ def play(player_list):
 
     # init draw
     if enable_draw:
-        curscr = init_draw() 
+        curscr = init_draw()
         draw(player_list, wall_list, curscr)
 
     game_state = []
@@ -86,11 +87,11 @@ def play(player_list):
                     [p, player_list, wall_list] = copy.deepcopy(current_game_state)
                     __builtin__.rollback = False
 
-            # occupied cells  
+            # occupied cells
             loc = player_list[p*amount_of_players/max(AMOUNT_OF_PLAYERS)]['location']
             owner = player_list[p*amount_of_players/max(AMOUNT_OF_PLAYERS)]['owner']
-            available_positions = available_positions_generator(loc, wall_list, player_list, adjacency_list)       
-      
+            available_positions = available_positions_generator(loc, wall_list, player_list, adjacency_list)
+
             if owner == 'user':
                 end = user_turn(player_list, player_list[p*amount_of_players/max(AMOUNT_OF_PLAYERS)], wall_list, available_positions, curscr)
             else:
@@ -110,7 +111,7 @@ def play(player_list):
             if player_list[p*amount_of_players/max(AMOUNT_OF_PLAYERS)]['location'] in PLAYERS[p]['target_loc']:
                 end = True
                 win = True
-    
+
             if enable_turn_limit and (counter >= turn_limit):
                 end = True
                 win = False
@@ -135,8 +136,8 @@ if not challenge:
     # print plist
     player_list = list()
     for i in plist:
-        player_list.append({'id': i, 
-                            'location': PLAYERS[i]['location'], 
+        player_list.append({'id': i,
+                            'location': PLAYERS[i]['location'],
                             'amount_of_walls': AMOUNT_OF_WALLS/amount_of_players,
                             'target_loc': PLAYERS[i]['target_loc'],
                             'owner': PLAYERS[i]['owner'],
@@ -158,24 +159,24 @@ else:
         print '%d / %d' % (r + 1, rounds)
         for i in numbers:
             challenger = botlist[i]
-            opponents = set(numbers) - set([i])       
+            opponents = set(numbers) - set([i])
             for j in opponents:
                 opponent = botlist[j]
                 # print ('%s versus %s') % (challenger, opponent)
                 amount_of_players = 2
                 player_list = []
                 for k in (0, 2):
-                    player_list.append({'id': k, 
-                                        'location': PLAYERS[k]['location'], 
+                    player_list.append({'id': k,
+                                        'location': PLAYERS[k]['location'],
                                         'amount_of_walls': AMOUNT_OF_WALLS/amount_of_players,
                                         'target_loc': PLAYERS[k]['target_loc'],
                                         'axis': PLAYERS[k]['axis'],
                                         'line': PLAYERS[k]['line']
                     })
-                player_list[0]['owner'] = challenger               
-                player_list[1]['owner'] = opponent 
+                player_list[0]['owner'] = challenger
+                player_list[1]['owner'] = opponent
 
-                # play           
+                # play
                 [winner_id, turn_counter] = play(player_list)
                 print "Player %d '%s' win"% (winner_id, player_list[winner_id/amount_of_players]['owner'])
                 if winner_id == 0:

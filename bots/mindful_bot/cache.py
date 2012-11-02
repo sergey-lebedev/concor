@@ -18,7 +18,7 @@ def init():
     del __builtin__.storage
     __builtin__.storage = {}
     del __builtin__.storage_struct
-    __builtin__.storage_struct = {} 
+    __builtin__.storage_struct = {}
 
 def restruct(key):
     # dfs

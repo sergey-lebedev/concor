@@ -15,7 +15,7 @@ def adjacency_list_generator():
             (dx, dy) = DIRECTIONS[direction]
             dyj = dy + j
             dxi = dx + i
-            if (0 <= dyj < height) and (0 <= dxi < width): 
+            if (0 <= dyj < height) and (0 <= dxi < width):
                 link_list.append((dxi, dyj))
                 #link_list[(dxi, dyj)] = True
         adjacency_list[(i, j)] = set(link_list)
@@ -24,7 +24,7 @@ def adjacency_list_generator():
     return adjacency_list
 
 def available_positions_generator(loc, wall_list, player_list, adjacency_list):
-    # calculate available positions   
+    # calculate available positions
     available_positions = {}
     for position in adjacency_list:
         #print positions
@@ -33,21 +33,21 @@ def available_positions_generator(loc, wall_list, player_list, adjacency_list):
 
     for wall in wall_list:
         (col, row) = wall['location']
-        left_top = (col - 1, row - 1)  
-        right_top = (col, row - 1) 
-        left_bottom = (col - 1, row) 
+        left_top = (col - 1, row - 1)
+        right_top = (col, row - 1)
+        left_bottom = (col - 1, row)
         right_bottom = (col, row)
 
         #print left_top, right_top,left_bottom, right_bottom
         if wall['type'] == 'horizontal':
             available_positions[left_top].difference_update(set([left_bottom]))
-            available_positions[left_bottom].difference_update(set([left_top])) 
-            available_positions[right_top].difference_update(set([right_bottom]))    
-            available_positions[right_bottom].difference_update(set([right_top]))         
-        elif wall['type'] == 'vertical':        
+            available_positions[left_bottom].difference_update(set([left_top]))
+            available_positions[right_top].difference_update(set([right_bottom]))
+            available_positions[right_bottom].difference_update(set([right_top]))
+        elif wall['type'] == 'vertical':
             available_positions[left_top].difference_update(set([right_top]))
-            available_positions[left_bottom].difference_update(set([right_bottom])) 
-            available_positions[right_top].difference_update(set([left_top]))    
+            available_positions[left_bottom].difference_update(set([right_bottom]))
+            available_positions[right_top].difference_update(set([left_top]))
             available_positions[right_bottom].difference_update(set([left_bottom]))
 
     #occupied cells
@@ -68,9 +68,9 @@ def available_positions_generator(loc, wall_list, player_list, adjacency_list):
                 for neighbors in available_positions[a_loc]:
                     available_positions[neighbors].difference_update(set([a_loc]))
 
-                b_loc = (a_col + dx, a_row + dy) 
+                b_loc = (a_col + dx, a_row + dy)
                 if (b_loc in available_positions[a_loc] and
-                    b_loc not in player_locations):                            
+                    b_loc not in player_locations):
                     available_positions[b_loc].update(set_loc)
                     available_positions[loc].update(set([b_loc]))
                 else:
@@ -86,13 +86,13 @@ def available_positions_generator(loc, wall_list, player_list, adjacency_list):
                     if (d_loc in available_positions[a_loc] and
                         d_loc not in player_locations):
                         available_positions[d_loc].update(set_loc)
-                        available_positions[loc].update(set([d_loc]))        
+                        available_positions[loc].update(set([d_loc]))
                 available_positions[a_loc] = set([])
     #print available_positions[loc]
     return available_positions
 
 def iapg(player, wall_list, player_list, adjacency_list):
-    # calculate available positions   
+    # calculate available positions
     available_positions = {}
     for position in adjacency_list:
         #print positions
@@ -101,21 +101,21 @@ def iapg(player, wall_list, player_list, adjacency_list):
 
     for wall in wall_list:
         (col, row) = wall['location']
-        left_top = (col - 1, row - 1)  
-        right_top = (col, row - 1) 
-        left_bottom = (col - 1, row) 
+        left_top = (col - 1, row - 1)
+        right_top = (col, row - 1)
+        left_bottom = (col - 1, row)
         right_bottom = (col, row)
 
         #print left_top, right_top,left_bottom, right_bottom
         if wall['type'] == 'horizontal':
             available_positions[left_top].difference_update(set([left_bottom]))
-            available_positions[left_bottom].difference_update(set([left_top])) 
-            available_positions[right_top].difference_update(set([right_bottom]))    
-            available_positions[right_bottom].difference_update(set([right_top]))         
-        elif wall['type'] == 'vertical':        
+            available_positions[left_bottom].difference_update(set([left_top]))
+            available_positions[right_top].difference_update(set([right_bottom]))
+            available_positions[right_bottom].difference_update(set([right_top]))
+        elif wall['type'] == 'vertical':
             available_positions[left_top].difference_update(set([right_top]))
-            available_positions[left_bottom].difference_update(set([right_bottom])) 
-            available_positions[right_top].difference_update(set([left_top]))    
+            available_positions[left_bottom].difference_update(set([right_bottom]))
+            available_positions[right_top].difference_update(set([left_top]))
             available_positions[right_bottom].difference_update(set([left_bottom]))
 
     if player:
@@ -137,9 +137,9 @@ def iapg(player, wall_list, player_list, adjacency_list):
                     for neighbors in available_positions[a_loc]:
                         available_positions[neighbors].difference_update(set([a_loc]))
 
-                    b_loc = (a_col + dx, a_row + dy) 
+                    b_loc = (a_col + dx, a_row + dy)
                     if (b_loc in available_positions[a_loc] and
-                        b_loc not in opponent_locations):                            
+                        b_loc not in opponent_locations):
                         available_positions[b_loc].update(set_loc)
                         available_positions[loc].update(set([b_loc]))
                     else:
@@ -155,7 +155,7 @@ def iapg(player, wall_list, player_list, adjacency_list):
                         if (d_loc in available_positions[a_loc] and
                             d_loc not in opponent_locations):
                             available_positions[d_loc].update(set_loc)
-                            available_positions[loc].update(set([d_loc]))       
+                            available_positions[loc].update(set([d_loc]))
                     available_positions[a_loc] = set([])
     #print available_positions[loc]
     return available_positions
@@ -194,8 +194,8 @@ def w2p(wall_list):
 def bfs(loc, available_positions, target_loc):
     # breadth-first search
     neighbor = loc
-    queue = [loc]   
-    visited = {}   
+    queue = [loc]
+    visited = {}
     visited[loc] = True
     is_break = False
     path = {}
@@ -209,8 +209,8 @@ def bfs(loc, available_positions, target_loc):
                     is_break = True
                     #print neighbor
                 queue.append(neighbor)
-            if is_break: 
-                break  
+            if is_break:
+                break
 
     if not is_break:
         step = None
@@ -232,7 +232,7 @@ def bfs_light(loc, available_positions, target_loc):
     # breadth-first search
     neighbor = loc
     queue = [loc]
-    visited = {}   
+    visited = {}
     visited[loc] = True
     is_break = False
     path = {}
@@ -246,8 +246,8 @@ def bfs_light(loc, available_positions, target_loc):
                     is_break = True
                     #print neighbor
                 queue.append(neighbor)
-            if is_break: 
-                break    
+            if is_break:
+                break
 
     if not is_break:
         step = None
@@ -263,7 +263,7 @@ def bfs_light(loc, available_positions, target_loc):
 
 def spwi(loc, available_positions, target_loc):
     # breadth-first search
-    target_loc_has_key = target_loc.has_key 
+    target_loc_has_key = target_loc.has_key
     if target_loc_has_key(loc): return 0
 
     queue = [loc]
@@ -293,16 +293,16 @@ def spwi(loc, available_positions, target_loc):
 
 def improved_dijkstra(loc, available_positions, target_loc):
     # dijkstra algorithm
-    target_loc_has_key = target_loc.has_key 
+    target_loc_has_key = target_loc.has_key
     if target_loc_has_key(loc): return 0
 
     distances = distances_template.copy()
     distances_has_key = distances.has_key
-    queue = [(0, loc)]   
+    queue = [(0, loc)]
     visited = visited_template.copy()
     visited[loc] = True
-    is_break = False   
- 
+    is_break = False
+
     step = 0
     while queue and not is_break:
         step += 1
@@ -318,7 +318,7 @@ def improved_dijkstra(loc, available_positions, target_loc):
                         distance = distances[node] + 1
                     distances[neighbor] = distance
                     estimation = (distance, neighbor)
-                    subqueue.append(estimation)  
+                    subqueue.append(estimation)
                     if target_loc_has_key(neighbor):
                         is_break = True
                         break
@@ -337,7 +337,7 @@ def bfs_side(loc, available_positions, player):
     # breadth-first search
     neighbor = loc
     queue = [loc]
-    visited = {}   
+    visited = {}
     visited[loc] = True
     is_break = False
     path = {}
@@ -351,8 +351,8 @@ def bfs_side(loc, available_positions, player):
                     is_break = True
                     #print neighbor
                 queue.append(neighbor)
-            if is_break: 
-                break    
+            if is_break:
+                break
 
     if not is_break:
         step = None
@@ -369,8 +369,8 @@ def bfs_side(loc, available_positions, player):
 def dijkstra(loc, available_positions, target_loc):
     # dijkstra algorithm
     neighbor = loc
-    distances = {loc: 0} 
-    queue = [(0, loc)]   
+    distances = {loc: 0}
+    queue = [(0, loc)]
     visited = {}
     is_break = False
     while queue and not is_break:
@@ -384,7 +384,7 @@ def dijkstra(loc, available_positions, target_loc):
                     distance = distances[node] + 1
                 distances[neighbor] = distance
                 estimation = (distance, neighbor)
-                queue.append(estimation)               
+                queue.append(estimation)
                 if neighbor in target_loc:
                     is_break = True
                     break
@@ -407,7 +407,7 @@ def trace2places(trace):
             (offset_col, offset_row) = offset
             (place_col, place_row) = (col + offset_col, row + offset_row)
             place = (place_col, place_row)
-            if ((0 < place_col < width) and 
+            if ((0 < place_col < width) and
                 (0 < place_row < height) and
                 place not in places):
                 places.append(place)
@@ -419,21 +419,21 @@ def alpha_beta_pruning(alpha, beta, value, owner):
         print "alpha-beta pruning"
         print "alpha:", alpha
         print "beta:", beta
-        print "value:", value   
+        print "value:", value
     if owner == 'max' and alpha != None:
         if value >= alpha:
-            if DEBUG: 
+            if DEBUG:
                 print "alpha pruning node"
                 print "alpha:", alpha
                 print "value:", value
             pruning = True
     if owner == 'min' and beta != None:
         if -value < beta:
-            if DEBUG: 
+            if DEBUG:
                 print "beta pruning node"
                 print "beta:", beta
                 print "value:", value
-            pruning = True        
+            pruning = True
     return pruning
 
 def action_choice(action_list):
@@ -492,6 +492,6 @@ def action_choice_greedy(action_list):
         if variants != 0:
             action = random.choice(equal_building_actions_list)
         else:
-            action = {'action_type': None}      
+            action = {'action_type': None}
     #print action
     return action

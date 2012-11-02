@@ -14,13 +14,13 @@ if enable_curses:
     try:
         import curses
     except:
-        enable_curses = False  
+        enable_curses = False
 
 #colorwalls
-if enable_color_players or enable_color_walls: 
+if enable_color_players or enable_color_walls:
     enable_colors = True
     pattern = multicolored
-    pattern['default'] = '' 
+    pattern['default'] = ''
 
 def init_draw():
     curscr = None
@@ -52,7 +52,7 @@ def init_draw():
             else:
                 fg = -1
             pair_number += 1
-            curses.init_pair(pair_number, fg, -1) 
+            curses.init_pair(pair_number, fg, -1)
     return curscr
 
 #field
@@ -62,9 +62,9 @@ for i in range(height_aspect * height + 1):
     for j in range(width_aspect * width + 1):
         if i % height_aspect:
             if j % width_aspect:
-                char = 'blank' 
+                char = 'blank'
             else:
-                char = 'light_vertical'                    
+                char = 'light_vertical'
         else:
             if j % width_aspect:
                 char = 'light_horizontal'
@@ -86,7 +86,7 @@ for i in range(amount_of_players):
     if enable_color_players:
         color_template = COLORS[i * max(AMOUNT_OF_PLAYERS) / amount_of_players]['color']
         modificators = ['bold', 'inverted']
-    player_element =  {'char': player_template, 'color': color_template, 'modificators': modificators}  
+    player_element =  {'char': player_template, 'color': color_template, 'modificators': modificators}
     for j in range(player_positions):
         cutoff = (player_positions - 1) / 2
         if cutoff <= j < (player_positions - cutoff):
@@ -123,7 +123,7 @@ def corner_polish(field):
             horizontal_minimax = [horizontal_min, horizontal_max]
             char = field[i][j]['char']
             if char == 'light_vertical_and_horizontal':
-                if (i == vertical_min) and (j not in horizontal_minimax):                    
+                if (i == vertical_min) and (j not in horizontal_minimax):
                     field[i][j]['char'] = 'light_down_and_horizontal'
                 if (i == vertical_max) and (j not in horizontal_minimax):
                     field[i][j]['char'] = 'light_up_and_horizontal'
@@ -131,35 +131,35 @@ def corner_polish(field):
                     field[i][j]['char'] = 'light_vertical_and_right'
                 if (j == horizontal_max) and (i not in vertical_minimax):
                     field[i][j]['char'] = 'light_vertical_and_left'
-                if (i == vertical_min) and (j == horizontal_min):   
+                if (i == vertical_min) and (j == horizontal_min):
                     field[i][j]['char'] = 'light_down_and_right'
                 elif (i == vertical_min) and (j == horizontal_max):
                     field[i][j]['char'] = 'light_down_and_left'
                 elif (i == vertical_max) and (j == horizontal_max):
-                    field[i][j]['char'] = 'light_up_and_left'                
+                    field[i][j]['char'] = 'light_up_and_left'
                 elif (i == vertical_max) and (j == horizontal_min):
-                    field[i][j]['char'] = 'light_up_and_right'                 
+                    field[i][j]['char'] = 'light_up_and_right'
 
 corner_polish(field)
 
 def septum_polish(field):
     pass
 
-def info(player_list):  
+def info(player_list):
     info_template = []
     for player in player_list:
-        i = player['id']    
+        i = player['id']
         player_template = 'player_%d'%i
         color_template = 'default'
         modificators = []
         if enable_color_players:
             color_template = COLORS[i]['color']
             modificators = ['bold', 'inverted']
-        info_template.append(dummy) 
+        info_template.append(dummy)
         info_template.append({'char': player_template, 'color': color_template, 'modificators': modificators})
         info_template.append({'char': 'left_square_bracket', 'color': 'default', 'modificators': []})
         for char in str(player['amount_of_walls']):
-            info_template.append({'char': char, 'color': 'default', 'modificators': []})    
+            info_template.append({'char': char, 'color': 'default', 'modificators': []})
         info_template.append({'char': 'right_square_bracket', 'color': 'default', 'modificators': []})
     return info_template
 
@@ -201,7 +201,7 @@ def render_for_curses(element):
             attr += curses.A_REVERSE
 
     string = pattern[char]
-    return string, attr  
+    return string, attr
 
 def draw(player_list, wall_list, curscr, additional=[]):
     temp_field = []
@@ -209,42 +209,42 @@ def draw(player_list, wall_list, curscr, additional=[]):
         temp_field.append([])
         for j in range(len(field[i])):
             temp_field[i].append(field[i][j].copy())
-    
+
     i = 0
     for player in player_list:
         (row, col) = player['location']
         for j in range(len(player_pic[i])):
             temp_field[col * height_aspect + 1][row * width_aspect + 1 + j] = player_pic[i][j]
-        i +=1    
+        i +=1
 
     for wall in wall_list:
         (row, col) = wall['location']
         color_template = COLORS[wall['player_id']]['color']
         if wall['type'] == 'vertical':
             vertical_wall_template = 'heavy_vertical'
-            if enable_color_walls:               
-                #vertical_wall_template = '%s_%s'%(color_template, vertical_wall_template) 
+            if enable_color_walls:
+                #vertical_wall_template = '%s_%s'%(color_template, vertical_wall_template)
                 for i in range(len(vertical_wall)):
                     temp_field[(col - 1) * height_aspect + 1 + i][row * width_aspect]['color'] = color_template
             for i in range(len(vertical_wall)):
                 temp_field[(col - 1) * height_aspect + 1 + i][row * width_aspect]['char'] = vertical_wall_template
-  
+
         elif wall['type'] == 'horizontal':
             horizontal_wall_template = 'heavy_horizontal'
-            if enable_color_walls:               
+            if enable_color_walls:
                 #horizontal_wall_template = '%s_%s'%(color_template, horizontal_wall_template)
                 for i in range(len(horizontal_wall)):
                     temp_field[col * height_aspect][(row - 1) * width_aspect + 1 + i]['color'] = color_template
             for i in range(len(horizontal_wall)):
                 temp_field[col * height_aspect][(row - 1) * width_aspect + 1 + i]['char'] = horizontal_wall_template
         else:
-            pass  
+            pass
 
     for i in range(len(additional)):
-        (row, col) = additional[i]  
+        (row, col) = additional[i]
         digit[digit_positions/2] = str(i + 1)
         for j in range(digit_positions):
-            temp_field[col*height_aspect + 1][row * width_aspect + 1 + j]['char'] = digit[j]  
+            temp_field[col*height_aspect + 1][row * width_aspect + 1 + j]['char'] = digit[j]
 
     if enable_curses:
         [MAX_Y, MAX_X] = curscr.getmaxyx()
@@ -290,14 +290,14 @@ def draw(player_list, wall_list, curscr, additional=[]):
         print '\n'*vertical_offset
         for i in range(height_aspect * height + 1):
             string = ' ' * horizontal_offset
-            for j in range(width_aspect * width + 1):              
+            for j in range(width_aspect * width + 1):
                 string += render_for_print(temp_field[i][j])
 
             print string
 
         info_template = info(player_list)
         info_string = ' ' * horizontal_offset
-        for element in info_template:     
+        for element in info_template:
             info_string += render_for_print(element)
 
         print info_string

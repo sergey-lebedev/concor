@@ -25,36 +25,36 @@ def vector_sort(vectors):
             for items in I_quadrant:
                 (a, b) = items
                 if (a / b) > (x / y):
-                    counter += 1    
-            I_quadrant.insert(counter, vector)                
+                    counter += 1
+            I_quadrant.insert(counter, vector)
         elif x < 0 and y >= 0:
             #II_quadrant
             counter = 0
             for items in II_quadrant:
                 (a, b) = items
                 if (b / a) < (y / x):
-                    counter += 1    
-            II_quadrant.insert(counter, vector)  
+                    counter += 1
+            II_quadrant.insert(counter, vector)
         elif x <= 0 and y < 0:
             #III_quadrant
             counter = 0
             for items in III_quadrant:
                 (a, b) = items
                 if (a / b) > (x / y):
-                    counter += 1    
-            III_quadrant.insert(counter, vector)  
+                    counter += 1
+            III_quadrant.insert(counter, vector)
         elif x > 0 and y <= 0:
             #IV_quadrant
             counter = 0
             for items in IV_quadrant:
                 (a, b) = items
                 if (b / a) < (y / x):
-                    counter += 1    
-            IV_quadrant.insert(counter, vector) 
+                    counter += 1
+            IV_quadrant.insert(counter, vector)
         else:
             pass
     result.extend(II_quadrant)
-    result.extend(III_quadrant)  
+    result.extend(III_quadrant)
     result.extend(IV_quadrant)
     result.extend(I_quadrant)
     return result
@@ -85,11 +85,11 @@ def user_turn(player_list, player, wall_list, available_positions, curscr):
         command_list.append(char)
         command_dict[char] = i
 
-    quit = False 
+    quit = False
     ready = False
     new_wall = False
     second_stage = False
-    while not ready:  
+    while not ready:
         while not ready and not second_stage:
             draw(player_list, wall_list, curscr, neighbors)
             if enable_curses:
@@ -121,7 +121,7 @@ def user_turn(player_list, player, wall_list, available_positions, curscr):
                 second_stage = False
 
         walls_installed = 0
-        while not ready and second_stage:      
+        while not ready and second_stage:
             if enable_curses:
                 curses.noecho()
                 k = curscr.getch()
@@ -136,7 +136,7 @@ def user_turn(player_list, player, wall_list, available_positions, curscr):
                     wall = None
                     for i in range(1, width):
                         for j in range(height - 1, 0, -1):
-                            for wall_type in p[(i, j)]:     
+                            for wall_type in p[(i, j)]:
                                 wall = {'type': wall_type, 'location': (i, j), 'player_id': player['id']}
                                 break
                     if wall != None:
@@ -146,16 +146,16 @@ def user_turn(player_list, player, wall_list, available_positions, curscr):
 
             elif command == 'i' or k == KEY_UP:
                 if walls_installed != 0:
-                    wall = wall_list[len(wall_list) - 1]    
+                    wall = wall_list[len(wall_list) - 1]
                     Y -= 1
                     Y = max(1, Y)
                     if wall['type'] == 'vertical' and Y <= 1:
                         wall['type'] = 'horizontal'
                     wall['location'] = (X, Y)
-     
+
             elif command == 'j' or k == KEY_LEFT:
                 if walls_installed != 0:
-                    wall = wall_list[len(wall_list) - 1]   
+                    wall = wall_list[len(wall_list) - 1]
                     X -= 1
                     X = max(1, X)
                     if wall['type'] == 'horizontal' and X <= 1:
@@ -164,7 +164,7 @@ def user_turn(player_list, player, wall_list, available_positions, curscr):
 
             elif command == 'k' or k == KEY_DOWN:
                 if walls_installed != 0:
-                    wall = wall_list[len(wall_list) - 1]  
+                    wall = wall_list[len(wall_list) - 1]
                     Y += 1
                     Y = min(height - wall_length + 1, Y)
                     if wall['type'] == 'vertical' and Y > (height - wall_length):
@@ -173,7 +173,7 @@ def user_turn(player_list, player, wall_list, available_positions, curscr):
 
             elif command == 'l' or k == KEY_RIGHT:
                 if walls_installed != 0:
-                    wall = wall_list[len(wall_list) - 1]  
+                    wall = wall_list[len(wall_list) - 1]
                     X += 1
                     X = min(width - wall_length + 1, X)
                     if wall['type'] == 'horizontal' and X > (width - wall_length):
@@ -184,14 +184,14 @@ def user_turn(player_list, player, wall_list, available_positions, curscr):
                 if walls_installed != 0:
                     wall = wall_list[len(wall_list) - 1]
                     if wall['type'] == 'horizontal':
-                        wall['type'] = 'vertical'   
+                        wall['type'] = 'vertical'
                     elif wall['type'] == 'vertical':
-                        wall['type'] = 'horizontal'   
+                        wall['type'] = 'horizontal'
 
             elif command == 'b':
                 if walls_installed != 0:
                     if wall['type'] in p[(X, Y)]:
-                        player['amount_of_walls'] -= walls_installed                      
+                        player['amount_of_walls'] -= walls_installed
                         ready = True
                 else:
                     ready = False
