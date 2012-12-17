@@ -113,32 +113,32 @@ horizontal_wall = ['heavy_horizontal'] * (width_aspect * wall_length - 1)
 
 #corner_polish
 def corner_polish(field):
-    for i in range(len(field)):
+    for (i, field_i) in enumerate(field):
         vertical_min = 0
         vertical_max = len(field) - 1
         vertical_minimax = [vertical_min, vertical_max]
-        for j in range(len(field[i])):
+        for (j, field_ij) in enumerate(field_i):
             horizontal_min = 0
-            horizontal_max = len(field[i]) - 1
+            horizontal_max = len(field_i) - 1
             horizontal_minimax = [horizontal_min, horizontal_max]
-            char = field[i][j]['char']
+            char = field_ij['char']
             if char == 'light_vertical_and_horizontal':
                 if (i == vertical_min) and (j not in horizontal_minimax):
-                    field[i][j]['char'] = 'light_down_and_horizontal'
+                    field_ij['char'] = 'light_down_and_horizontal'
                 if (i == vertical_max) and (j not in horizontal_minimax):
-                    field[i][j]['char'] = 'light_up_and_horizontal'
+                    field_ij['char'] = 'light_up_and_horizontal'
                 if (j == horizontal_min) and (i not in vertical_minimax):
-                    field[i][j]['char'] = 'light_vertical_and_right'
+                    field_ij['char'] = 'light_vertical_and_right'
                 if (j == horizontal_max) and (i not in vertical_minimax):
-                    field[i][j]['char'] = 'light_vertical_and_left'
+                    field_ij['char'] = 'light_vertical_and_left'
                 if (i == vertical_min) and (j == horizontal_min):
-                    field[i][j]['char'] = 'light_down_and_right'
+                    field_ij['char'] = 'light_down_and_right'
                 elif (i == vertical_min) and (j == horizontal_max):
-                    field[i][j]['char'] = 'light_down_and_left'
+                    field_ij['char'] = 'light_down_and_left'
                 elif (i == vertical_max) and (j == horizontal_max):
-                    field[i][j]['char'] = 'light_up_and_left'
+                    field_ij['char'] = 'light_up_and_left'
                 elif (i == vertical_max) and (j == horizontal_min):
-                    field[i][j]['char'] = 'light_up_and_right'
+                    field_ij['char'] = 'light_up_and_right'
 
 corner_polish(field)
 
@@ -205,17 +205,15 @@ def render_for_curses(element):
 
 def draw(player_list, wall_list, curscr, additional=[]):
     temp_field = []
-    for i in range(len(field)):
+    for (i, field_i) in enumerate(field):
         temp_field.append([])
-        for j in range(len(field[i])):
-            temp_field[i].append(field[i][j].copy())
+        for field_ij in field_i:
+            temp_field[i].append(field_ij.copy())
 
-    i = 0
-    for player in player_list:
+    for (i, player) in enumerate(player_list):
         (row, col) = player['location']
         for j in range(len(player_pic[i])):
             temp_field[col * height_aspect + 1][row * width_aspect + 1 + j] = player_pic[i][j]
-        i +=1
 
     for wall in wall_list:
         (row, col) = wall['location']
@@ -240,8 +238,7 @@ def draw(player_list, wall_list, curscr, additional=[]):
         else:
             pass
 
-    for i in range(len(additional)):
-        (row, col) = additional[i]
+    for (i, (row, col)) in enumerate(additional):
         digit[digit_positions/2] = str(i + 1)
         for j in range(digit_positions):
             temp_field[col*height_aspect + 1][row * width_aspect + 1 + j]['char'] = digit[j]
