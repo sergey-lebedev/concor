@@ -1,5 +1,6 @@
 import copy
 import random
+import time
 
 DEBUG = False
 inf = float("infinity")
@@ -98,6 +99,7 @@ def iapg(player, wall_list, player_list, adjacency_list):
         #print positions
         available_positions[position] = adjacency_list[position].copy()
     #available_positions = adjacency_list.copy()
+    #available_positions = dict([pair for pair in zip(adjacency_list.keys(), adjacency_list.values())])
 
     for wall in wall_list:
         (col, row) = wall['location']

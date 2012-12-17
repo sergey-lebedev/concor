@@ -80,7 +80,7 @@ def branch_generator(game_state, adjacency_list, owner, alpha, beta, is_final, d
                   [],
                   projected_player_list,
                   adjacency_list_cache)
-        player_distance = spwi(neighbor, available_positions, target_loc)
+        player_distance = spwi(neighbor, projected_available_positions, target_loc)
 
         for opponent in opponent_list:
             # step meter
